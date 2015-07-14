@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Raspberry.IO</name>
+    </assembly>
+    <members>
+        <member name="T:Raspberry.IO.AnalogValue">
+            <summary>
+            Represents an analog value.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.AnalogValue.#ctor(System.Decimal,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Raspberry.IO.AnalogValue"/> class.
+            </summary>
+            <param name="range">The total range (ie. maximum value).</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="P:Raspberry.IO.AnalogValue.Value">
+            <summary>
+            Gets or sets the discrete value.
+            </summary>
+            <value>
+            The discrete value.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.AnalogValue.Range">
+            <summary>
+            Gets or sets the total range.
+            </summary>
+            <value>
+            The total range, ie. the maximum value.
+            </value>
+        </member>
+        <member name="P:Raspberry.IO.AnalogValue.Relative">
+            <summary>
+            Gets the relative value.
+            </summary>
+            <value>
+            The relative value.
+            </value>
+        </member>
+        <member name="T:Raspberry.IO.BinaryPinExtensionMethods">
+            <summary>
+            Provides extension methods for binary pins.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.BinaryPinExtensionMethods.Time(Raspberry.IO.IInputBinaryPin,System.Boolean,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Waits for a pin to reach the specified state, then measures the time it remains in this state.
+            </summary>
+            <param name="pin">The measure pin.</param>
+            <param name="waitForUp">if set to <c>true</c>, wait for the pin to be up.</param>
+            <param name="phase1Timeout">The first phase timeout.</param>
+            <param name="phase2Timeout">The second phase timeout.</param>
+            <returns>
+            The time the pin remains up, in milliseconds.
+            </returns>
+        </member>
+        <member name="T:Raspberry.IO.ByteExtensionMethods">
+            <summary>
+            Provides extension methods for byte and byte arrays.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.ByteExtensionMethods.ToBitString(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            Converts a byte array/enumerable to a bit string.
+            </summary>
+            <param name="bytes">bytes to be converted.</param>
+            <returns>A bit string</returns>
+        </member>
+        <member name="T:Raspberry.IO.IInputAnalogPin">
+            <summary>
+            Provides an interface for input, analog pin.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.IInputAnalogPin.Read">
+            <summary>
+            Reads the value of the pin.
+            </summary>
+            <returns>The value.</returns>
+        </member>
+        <member name="T:Raspberry.IO.IInputBinaryPin">
+            <summary>
+            Provides an interface for input, binary pins.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.IInputBinaryPin.Read">
+            <summary>
+            Reads the state of the pin.
+            </summary>
+            <returns><c>true</c> if the pin is in high state; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Raspberry.IO.IInputBinaryPin.Wait(System.Boolean,System.TimeSpan)">
+            <summary>
+            Waits for the specified pin to be in the specified state.
+            </summary>
+            <param name="waitForUp">if set to <c>true</c> waits for the pin to be up. Default value is <c>true</c>.</param>
+            <param name="timeout">The timeout. Default value is <see cref="F:System.TimeSpan.Zero"/>.</param>
+            <remarks>If <c>timeout</c> is set to <see cref="F:System.TimeSpan.Zero"/>, a default timeout is used instead.</remarks>
+        </member>
+        <member name="T:Raspberry.IO.IInputOutputBinaryPin">
+            <summary>
+            Provides an interface for bidirectional binary pins.
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.IOutputBinaryPin">
+            <summary>
+            Provides an interface for output, binary pins.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.IOutputBinaryPin.Write(System.Boolean)">
+            <summary>
+            Writes the value of the pin.
+            </summary>
+            <param name="state">if set to <c>true</c>, pin is set to high state.</param>
+        </member>
+        <member name="M:Raspberry.IO.IInputOutputBinaryPin.AsInput">
+            <summary>
+            Prepares the pin to act as an input.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.IInputOutputBinaryPin.AsOutput">
+            <summary>
+            Prepares the pin to act as an output.
+            </summary>
+        </member>
+        <member name="T:Raspberry.IO.IOutputAnalogPin">
+            <summary>
+            Provides an interface for output, analog pin.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.IOutputAnalogPin.Write(Raspberry.IO.AnalogValue)">
+            <summary>
+            Writes the specified value to the pin.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="T:Raspberry.IO.StringExtensionMethods">
+            <summary>
+            Provides extension methods for strings.
+            </summary>
+        </member>
+        <member name="M:Raspberry.IO.StringExtensionMethods.BitStringToArray(System.String,System.Boolean)">
+            <summary>
+            Converts a bit string in MSBF order (most significant bit first) to a byte array.
+            </summary>
+            <param name="bitString">A bit string (e.g. "00101111").</param>
+            <param name="prefixWithZero">If <c>true</c> the bit string will be prefixed with '0' if it is not divisible by 8.</param>
+            <returns>An array starting with the most significant byte.</returns>
+        </member>
+    </members>
+</doc>

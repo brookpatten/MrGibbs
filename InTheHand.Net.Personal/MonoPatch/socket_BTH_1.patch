@@ -1,0 +1,279 @@
+diff --git a/configure.in b/configure.in
+index 602ea0b..2be4af6 100644
+--- a/configure.in
++++ b/configure.in
+@@ -407,6 +407,13 @@ AC_CHECK_HEADERS(sys/wait.h)
+ AC_CHECK_HEADERS(grp.h)
+ AC_CHECK_HEADERS(syslog.h)
+ 
++# for BlueZ sockets.
++AC_CHECK_HEADERS([bluetooth/bluetooth.h bluetooth/rfcomm.h], [], [],
++     [[#ifdef HAVE_BLUETOOTH_BLUETOOTH_H
++     # include <bluetooth/bluetooth.h>
++     #endif
++     ]])
++
+ # for mono/dis
+ AC_CHECK_HEADERS(wchar.h)
+ AC_CHECK_HEADERS(ieeefp.h)
+diff --git a/mono/io-layer/io-layer.h b/mono/io-layer/io-layer.h
+index e6af1c6..a85ed38 100644
+--- a/mono/io-layer/io-layer.h
++++ b/mono/io-layer/io-layer.h
+@@ -42,6 +42,13 @@
+ #include <ddk/ntapi.h>
+ #endif /* _MSC_VER */
+ #endif /* !HAVE_GETPROCESSID */
++
++// WinXpSp2 for Bluetooth
++#undef NTDDI_VERSION
++#define NTDDI_VERSION 0x05010200
++#include <ws2bth.h>
++#undef NTDDI_VERSION
++
+ #else	/* EVERYONE ELSE */
+ #include "mono/io-layer/wapi.h"
+ #include "mono/io-layer/uglify.h"
+diff --git a/mono/metadata/socket-io.c b/mono/metadata/socket-io.c
+index 6e2f88d..72b755f 100644
+--- a/mono/metadata/socket-io.c
++++ b/mono/metadata/socket-io.c
+@@ -69,6 +69,25 @@
+ #include <sys/un.h>
+ #endif
+ 
++#ifdef HAVE_BLUETOOTH_RFCOMM_H
++#include <bluetooth/bluetooth.h>
++#include <bluetooth/rfcomm.h>
++#endif
++#if defined(AF_BTH) || defined(AF_BLUETOOTH)
++#define BTH_dotnet_offset_btAddr 2
++#define BTH_dotnet_offset_serviceClassId 10
++#define BTH_dotnet_sizeof_GUID 16
++#define BTH_dotnet_offset_port 26
++#define BTH_dotnet_sizeof_struct 30
++#define BTH_windows_sizeof_struct BTH_dotnet_sizeof_struct
++#define BTH_bluez_sizeof_struct 10
++#if defined(AF_BTH)
++#define BTH_platform_sizeof_struct BTH_windows_sizeof_struct
++#else
++#define BTH_platform_sizeof_struct BTH_bluez_sizeof_struct
++#endif
++#endif
++
+ #include "mono/io-layer/socket-wrappers.h"
+ 
+ #if defined(HOST_WIN32)
+@@ -168,6 +187,16 @@ static gint32 convert_family(MonoAddressFamily mono_family)
+ 		family=AF_IRDA;
+ #endif
+ 		break;
++#if defined(AF_BTH)
++	case AddressFamily_Bluetooth:
++		family = AF_BTH;
++		break;
++#endif
++#if defined(AF_BLUETOOTH)
++	case AddressFamily_Bluetooth:
++		family = AF_BLUETOOTH;
++		break;
++#endif
+ 	default:
+ 		g_warning("System.Net.Sockets.AddressFamily has unknown value 0x%x", mono_family);
+ 	}
+@@ -225,6 +254,16 @@ static MonoAddressFamily convert_to_mono_family(guint16 af_family)
+ 		family=AddressFamily_Irda;
+ 		break;
+ #endif
++#ifdef AF_BTH
++	case AF_BTH:
++		family = AddressFamily_Bluetooth;
++		break;
++#endif
++#ifdef AF_BLUETOOTH
++	case AF_BLUETOOTH:
++		family = AddressFamily_Bluetooth;
++		break;
++#endif
+ 	default:
+ 		g_warning("unknown address family 0x%x", af_family);
+ 	}
+@@ -931,6 +970,13 @@ static MonoObject *create_object_from_sockaddr(struct sockaddr *saddr,
+ 		data=mono_array_new_cached(domain, mono_get_byte_class (), sa_size);
+ 	} else
+ #endif
++#if defined(AF_BLUETOOTH)
++	if (saddr->sa_family == AF_BLUETOOTH) {
++		/* The object size is bigger than the sa size on BlueZ (30 vs 10!)
++		 * so use the size of the respective SocketAddress object here. */
++		data=mono_array_new_cached(domain, mono_get_byte_class (), BTH_dotnet_sizeof_struct);
++	} else
++#endif
+ 	{
+ 		/* May be the +2 here is too conservative, as sa_len returns
+ 		 * the length of the entire sockaddr_in/in6, including
+@@ -1015,7 +1061,59 @@ static MonoObject *create_object_from_sockaddr(struct sockaddr *saddr,
+ 
+ 		return sockaddr_obj;
+ #endif
++#if defined(AF_BTH) || defined(AF_BLUETOOTH)
++	} else if (family == AddressFamily_Bluetooth) {
++		guchar *pSrc;
++		int i;
++#if defined(AF_BTH)
++		struct _SOCKADDR_BTH const * const sa_bt=(struct _SOCKADDR_BTH *)saddr;
++#else
++		struct sockaddr_rc const * const sa_bt=(struct sockaddr_rc *)saddr;
++#endif
++		guint32 port32;
++		guint8 port8;
++		
++		if (sa_size < BTH_platform_sizeof_struct) {
++			mono_raise_exception (mono_exception_from_name (mono_get_corlib (), "System", "SystemException"));
++		}
++
++		// btAddr
++#if defined(AF_BTH)
++		pSrc = (guchar *)&sa_bt->btAddr;
++#else
++		pSrc = (guchar *)&sa_bt->rc_bdaddr;
++#endif
++		for (i = 0; i < 6; ++i) {
++			mono_array_set (data, guint8, BTH_dotnet_offset_btAddr + i, pSrc[i]);
++		}
++		// serviceClassId: (Not supported on BlueZ).
++#if defined(AF_BTH)
++		pSrc = (guchar *)&sa_bt->serviceClassId;
++		for (i = 0; i < BTH_dotnet_sizeof_GUID; ++i) {
++			mono_array_set (data, guint8, BTH_dotnet_offset_serviceClassId + i, pSrc[i]);
++		}
++#endif
++		// port: Wintel host-order (little-endian)
++#if defined(AF_BTH)
++		port32 = sa_bt->port;
++		port8 = (guint8)port32;
++		/*REMOVE BEFORE COMMIT*/g_assert((guint32)(signed char)port8 == port32); // Correct endian conversion above?
++#else
++		port8 = sa_bt->rc_channel;
++		port32 = port8;
++#endif
++		port32 = ntohl(port32);
++		mono_array_set (data, guint8, BTH_dotnet_offset_port + 0, (port32 >> 24) & 0xff);
++		mono_array_set (data, guint8, BTH_dotnet_offset_port + 1, (port32 >> 16) & 0xff);
++		mono_array_set (data, guint8, BTH_dotnet_offset_port + 2, (port32 >>  8) & 0xff);
++		mono_array_set (data, guint8, BTH_dotnet_offset_port + 3, (port32 >>  0) & 0xff);
++
++		mono_field_set_value (sockaddr_obj, domain->sockaddr_data_field, data);
++
++		return(sockaddr_obj);
++#endif
+ 	} else {
++		g_warning("Unknown family in create_object_from_sockaddr, 0x%x", family);
+ 		*error = WSAEAFNOSUPPORT;
+ 		return(NULL);
+ 	}
+@@ -1075,6 +1173,7 @@ static struct sockaddr *create_sockaddr_from_object(MonoObject *saddr_obj,
+ {
+ 	MonoClassField *field;
+ 	MonoArray *data;
++	MonoAddressFamily mono_family;
+ 	gint32 family;
+ 	int len;
+ 
+@@ -1096,7 +1195,8 @@ static struct sockaddr *create_sockaddr_from_object(MonoObject *saddr_obj,
+ 		mono_raise_exception (mono_exception_from_name(mono_get_corlib (), "System", "SystemException"));
+ 	}
+ 	
+-	family = convert_family (mono_array_get (data, guint8, 0) + (mono_array_get (data, guint8, 1) << 8));
++	mono_family = mono_array_get (data, guint8, 0) + (mono_array_get (data, guint8, 1) << 8);
++	family = convert_family (mono_family);
+ 	if (family == AF_INET) {
+ 		struct sockaddr_in *sa;
+ 		guint16 port;
+@@ -1175,7 +1275,72 @@ static struct sockaddr *create_sockaddr_from_object(MonoObject *saddr_obj,
+ 
+ 		return (struct sockaddr *)sock_un;
+ #endif
++#if defined(AF_BTH) || defined(AF_BLUETOOTH)
++	} else if (mono_family == AddressFamily_Bluetooth) {
++#if defined(AF_BTH)
++		struct _SOCKADDR_BTH *sa;
++#else
++		struct sockaddr_rc *sa;
++#endif
++		guint32 port32;
++		guint8 port8;
++		guchar *pDst;
++		int i;
++		
++		if (len < 30) {
++			mono_raise_exception (mono_exception_from_name (mono_get_corlib (), "System", "SystemException"));
++		}
++
++#if defined(AF_BTH)
++		sa = g_new0 (struct _SOCKADDR_BTH, 1);
++#else
++		sa = g_new0 (struct sockaddr_rc, 1);
++#endif
++
++#if defined(AF_BTH)
++		sa->addressFamily = (USHORT)family;
++#else
++		sa->rc_family = family;
++#endif
++		// btAddr
++#if defined(AF_BTH)
++		pDst = (guchar *)&sa->btAddr;
++#else
++		pDst = (guchar *)&sa->rc_bdaddr;
++#endif
++		for (i = 0; i < 6; ++i) {
++			pDst[i] = mono_array_get (data, guint8, BTH_dotnet_offset_btAddr + i);
++		}
++#if defined(AF_BTH)
++		// serviceClassId: (Not supported on BlueZ).
++		pDst = (guchar *)&sa->serviceClassId;
++		for (i = 0; i < BTH_dotnet_sizeof_GUID; ++i) {
++			pDst[i] = mono_array_get (data, guint8, BTH_dotnet_offset_serviceClassId + i);
++		}
++#endif
++		// port: Wintel host-order (little-endian)
++		port32 = (mono_array_get (data, guint8, BTH_dotnet_offset_port) << 24) +
++			(mono_array_get (data, guint8, BTH_dotnet_offset_port + 1) << 16) +
++			(mono_array_get (data, guint8, BTH_dotnet_offset_port + 2) << 8) +
++			(mono_array_get (data, guint8, BTH_dotnet_offset_port + 3) << 0);
++		port32 = ntohl(port32);
++		port8 = (guint8)port32;
++		/*REMOVE BEFORE COMMIT*/g_assert((guint32)(signed char)port8 == port32); // Correct endian conversion above?
++#if defined(AF_BTH)
++		sa->port = port32;
++#else
++		sa->rc_channel = port8;
++#endif
++
++#if defined(AF_BTH)
++		*sa_size = sizeof(struct _SOCKADDR_BTH);
++#else
++		*sa_size = sizeof(struct sockaddr_rc);
++#endif
++		return((struct sockaddr *)sa);
++#endif
+ 	} else {
++		g_warning("Unknown family in create_sockaddr_from_object, 0x%x/0x%x", mono_family, family);
+ 		*error = WSAEAFNOSUPPORT;
+ 		return(0);
+ 	}
+diff --git a/mono/metadata/socket-io.h b/mono/metadata/socket-io.h
+index 1d815d1..34a9826 100644
+--- a/mono/metadata/socket-io.h
++++ b/mono/metadata/socket-io.h
+@@ -57,7 +57,8 @@ typedef enum {
+ 	AddressFamily_Cluster=24,
+ 	AddressFamily_Ieee12844=25,
+ 	AddressFamily_Irda=26,
+-	AddressFamily_NetworkDesigners=28
++	AddressFamily_NetworkDesigners=28,
++	AddressFamily_Bluetooth=32,
+ } MonoAddressFamily;
+ 
+ /* This is a copy of System.Net.Sockets.ProtocolType */

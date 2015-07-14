@@ -1,0 +1,322 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Raspberry.System</name>
+    </assembly>
+    <members>
+        <member name="T:Raspberry.Board">
+            <summary>
+            Represents the Raspberry Pi mainboard.
+            </summary>
+            <remarks>
+            Version and revisions are based on <see cref="!:http://raspberryalphaomega.org.uk/2013/02/06/automatic-raspberry-pi-board-revision-detection-model-a-b1-and-b2/"/>.
+            <see cref="!:http://www.raspberrypi-spy.co.uk/2012/09/checking-your-raspberry-pi-board-version/"/> for information.
+            </remarks>
+        </member>
+        <member name="P:Raspberry.Board.Current">
+            <summary>
+            Gets the current mainboard configuration.
+            </summary>
+        </member>
+        <member name="P:Raspberry.Board.IsRaspberryPi">
+            <summary>
+            Gets a value indicating whether this instance is a Raspberry Pi.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is a Raspberry Pi; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Raspberry.Board.ProcessorName">
+            <summary>
+            Gets the processor name.
+            </summary>
+            <value>
+            The name of the processor.
+            </value>
+        </member>
+        <member name="P:Raspberry.Board.Processor">
+            <summary>
+            Gets the processor.
+            </summary>
+            <value>
+            The processor.
+            </value>
+        </member>
+        <member name="P:Raspberry.Board.Firmware">
+            <summary>
+            Gets the board firmware version.
+            </summary>
+        </member>
+        <member name="P:Raspberry.Board.SerialNumber">
+            <summary>
+            Gets the serial number.
+            </summary>
+        </member>
+        <member name="P:Raspberry.Board.IsOverclocked">
+            <summary>
+            Gets a value indicating whether Raspberry Pi board is overclocked.
+            </summary>
+            <value>
+              <c>true</c> if Raspberry Pi is overclocked; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Raspberry.Board.Model">
+            <summary>
+            Gets the model.
+            </summary>
+            <value>
+            The model.
+            </value>
+        </member>
+        <member name="P:Raspberry.Board.ConnectorPinout">
+            <summary>
+            Gets the connector revision.
+            </summary>
+            <value>
+            The connector revision.
+            </value>
+            <remarks>See <see cref="!:http://raspi.tv/2014/rpi-gpio-quick-reference-updated-for-raspberry-pi-b"/> for more information.</remarks>
+        </member>
+        <member name="T:Raspberry.ConnectorPinout">
+            <summary>
+            The Raspberry Pi connector pinout revision.
+            </summary>
+        </member>
+        <member name="F:Raspberry.ConnectorPinout.Unknown">
+            <summary>
+            Connector pinout is unknown.
+            </summary>
+        </member>
+        <member name="F:Raspberry.ConnectorPinout.Rev1">
+            <summary>
+            The first revision, as of Model B rev1.
+            </summary>
+        </member>
+        <member name="F:Raspberry.ConnectorPinout.Rev2">
+            <summary>
+            The second revision, as of Model B rev2.
+            </summary>
+        </member>
+        <member name="F:Raspberry.ConnectorPinout.Plus">
+            <summary>
+            The third revision, as of Model B+.
+            </summary>
+        </member>
+        <member name="T:Raspberry.Model">
+            <summary>
+            The Rasperry Pi model.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.Unknown">
+            <summary>
+            Unknown model.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.A">
+            <summary>
+            Model A.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.APlus">
+            <summary>
+            Model A+.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.BRev1">
+            <summary>
+            Model B rev1.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.BRev2">
+            <summary>
+            Model B rev2.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.BPlus">
+            <summary>
+            Model B+.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.ComputeModule">
+            <summary>
+            Compute module.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Model.B2">
+            <summary>
+            Pi 2 Model B.
+            </summary>
+        </member>
+        <member name="T:Raspberry.ModelExtensionMethods">
+            <summary>
+            Provides extension methods for <see cref="T:Raspberry.Model"/>.
+            </summary>
+        </member>
+        <member name="M:Raspberry.ModelExtensionMethods.GetDisplayName(Raspberry.Model)">
+            <summary>
+            Gets the model display name.
+            </summary>
+            <param name="model">The model.</param>
+            <returns>The display name, if known; otherwise, <c>null</c>.</returns>
+        </member>
+        <member name="T:Raspberry.Processor">
+            <summary>
+            The Raspberry Pi processor.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Processor.Unknown">
+            <summary>
+            Processor is unknown.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Processor.Bcm2708">
+            <summary>
+            Processor is a BCM2708.
+            </summary>
+        </member>
+        <member name="F:Raspberry.Processor.Bcm2709">
+            <summary>
+            Processor is a BCM2709.
+            </summary>
+        </member>
+        <member name="T:Raspberry.Timers.HighResolutionTimer">
+            <summary>
+            Represents a high-resolution timer.
+            </summary>
+        </member>
+        <member name="T:Raspberry.Timers.ITimer">
+            <summary>
+            Provides an interface for a timer.
+            </summary>
+        </member>
+        <member name="M:Raspberry.Timers.ITimer.Start(System.TimeSpan)">
+            <summary>
+            Starts this instance.
+            </summary>
+            <param name="startDelay">The delay before the first occurence.</param>
+        </member>
+        <member name="M:Raspberry.Timers.ITimer.Stop">
+            <summary>
+            Stops this instance.
+            </summary>
+        </member>
+        <member name="P:Raspberry.Timers.ITimer.Interval">
+            <summary>
+            Gets or sets the interval.
+            </summary>
+            <value>
+            The interval.
+            </value>
+        </member>
+        <member name="P:Raspberry.Timers.ITimer.Action">
+            <summary>
+            Gets or sets the action.
+            </summary>
+            <value>
+            The action.
+            </value>
+        </member>
+        <member name="M:Raspberry.Timers.HighResolutionTimer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Raspberry.Timers.HighResolutionTimer"/> class.
+            </summary>
+        </member>
+        <member name="M:Raspberry.Timers.HighResolutionTimer.Sleep(System.TimeSpan)">
+            <summary>
+            Sleeps the specified delay.
+            </summary>
+            <param name="delay">The delay.</param>
+        </member>
+        <member name="M:Raspberry.Timers.HighResolutionTimer.Start(System.TimeSpan)">
+            <summary>
+            Starts this instance.
+            </summary>
+            <param name="startDelay">The delay before the first occurence, in milliseconds.</param>
+        </member>
+        <member name="M:Raspberry.Timers.HighResolutionTimer.Stop">
+            <summary>
+            Stops this instance.
+            </summary>
+        </member>
+        <member name="P:Raspberry.Timers.HighResolutionTimer.Interval">
+            <summary>
+            Gets or sets the interval.
+            </summary>
+            <value>
+            The interval.
+            </value>
+        </member>
+        <member name="P:Raspberry.Timers.HighResolutionTimer.Action">
+            <summary>
+            Gets or sets the action.
+            </summary>
+            <value>
+            The action.
+            </value>
+        </member>
+        <member name="T:Raspberry.Timers.StandardTimer">
+            <summary>
+            Represents a timer.
+            </summary>
+        </member>
+        <member name="M:Raspberry.Timers.StandardTimer.Start(System.TimeSpan)">
+            <summary>
+            Starts this instance.
+            </summary>
+            <param name="startDelay">The delay before the first occurence, in milliseconds.</param>
+        </member>
+        <member name="M:Raspberry.Timers.StandardTimer.Stop">
+            <summary>
+            Stops this instance.
+            </summary>
+        </member>
+        <member name="P:Raspberry.Timers.StandardTimer.Interval">
+            <summary>
+            Gets or sets the interval, in milliseconds.
+            </summary>
+            <value>
+            The interval, in milliseconds.
+            </value>
+        </member>
+        <member name="P:Raspberry.Timers.StandardTimer.Action">
+            <summary>
+            Gets or sets the action.
+            </summary>
+            <value>
+            The action.
+            </value>
+        </member>
+        <member name="T:Raspberry.Timers.Timer">
+            <summary>
+            Provides access to timing features.
+            </summary>
+        </member>
+        <member name="M:Raspberry.Timers.Timer.Create">
+            <summary>
+            Creates a timer.
+            </summary>
+            <returns>The timer.</returns>
+            <remarks>
+            The created timer is the most suitable for the current platform.
+            </remarks>
+        </member>
+        <member name="M:Raspberry.Timers.Timer.Sleep(System.TimeSpan)">
+            <summary>
+            Sleeps during the specified time.
+            </summary>
+            <param name="time">The time.</param>
+        </member>
+        <member name="T:Raspberry.Timers.TimeSpanUtility">
+            <summary>
+            Provides utilities for <see cref="T:System.TimeSpan"/>.
+            </summary>
+        </member>
+        <member name="M:Raspberry.Timers.TimeSpanUtility.FromMicroseconds(System.Double)">
+            <summary>
+            Creates a timespan from a number of microseconds.
+            </summary>
+            <param name="microseconds">The microseconds.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

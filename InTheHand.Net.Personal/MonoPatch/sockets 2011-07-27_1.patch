@@ -1,0 +1,68 @@
+diff --git a/mono/metadata/socket-io.c b/mono/metadata/socket-io.c
+index c18c348..f93c5c2 100644
+--- a/mono/metadata/socket-io.c
++++ b/mono/metadata/socket-io.c
+@@ -169,7 +169,7 @@ static gint32 convert_family(MonoAddressFamily mono_family)
+ #endif
+ 		break;
+ 	default:
+-		g_warning("System.Net.Sockets.AddressFamily has unknown value 0x%x", mono_family);
++		family = mono_family;
+ 	}
+ 
+ 	return(family);
+@@ -226,7 +226,7 @@ static MonoAddressFamily convert_to_mono_family(guint16 af_family)
+ 		break;
+ #endif
+ 	default:
+-		g_warning("unknown address family 0x%x", af_family);
++		family = af_family;
+ 	}
+ 
+ 	return(family);
+@@ -1016,8 +1016,14 @@ static MonoObject *create_object_from_sockaddr(struct sockaddr *saddr,
+ 		return sockaddr_obj;
+ #endif
+ 	} else {
+-		*error = WSAEAFNOSUPPORT;
+-		return(NULL);
++		int i;
++		guint8 *p = (guint8*)saddr;
++		// Copy the rest of the content (field 'ushort family' is copied above).
++		for (i = 2; i < sa_size; i++) {
++			mono_array_set (data, guint8, i, p[i]);
++		}
++		mono_field_set_value (sockaddr_obj, domain->sockaddr_data_field, data);
++		return sockaddr_obj;
+ 	}
+ }
+ 
+@@ -1037,6 +1043,8 @@ get_sockaddr_size (int family)
+ 	} else if (family == AF_UNIX) {
+ 		size = sizeof (struct sockaddr_un);
+ #endif
++	} else {
++		size = sizeof (struct sockaddr_storage);
+ 	}
+ 	return size;
+ }
+@@ -1216,8 +1224,17 @@ static struct sockaddr *create_sockaddr_from_object(MonoObject *saddr_obj,
+ 		return (struct sockaddr *)sock_un;
+ #endif
+ 	} else {
+-		*error = WSAEAFNOSUPPORT;
+-		return(0);
++		uintptr_t len = mono_array_length(data);
++		struct sockaddr *sa = g_malloc0 (len);
++		guint8 *pSa = (guint8*)sa;
++		int i;
++		sa->sa_family = family;
++		// Copy the rest of the content.
++		for (i = 2; i < len; ++i) {
++			pSa[i] = mono_array_get (data, guint8, i);
++		}
++		*sa_size = len;
++		return sa;
+ 	}
+ }
+ 
