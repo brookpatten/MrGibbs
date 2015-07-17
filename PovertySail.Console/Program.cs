@@ -34,6 +34,7 @@ namespace PovertySail.Console
             var supervisor = kernel.Get<Supervisor>();
             supervisor.Initialize();
             supervisor.Run();
+
         }
 
         static IKernel Configure()

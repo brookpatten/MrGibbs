@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using Ninject.Modules;
-using Ninject.Extensions.Conventions;
 
 using PovertySail.Contracts;
 
@@ -16,18 +15,26 @@ namespace PovertySail.Configuration
     {
         public override void Load()
         {
+            //force the contracts dll to load
+            var contract = new PovertySail.Contracts.PluginConfiguration();
+
             string path = Assembly.GetExecutingAssembly().Location;
             FileInfo file = new FileInfo(path);
             DirectoryInfo directory = file.Directory;
 
-            Kernel.Bind(x =>
+            foreach (var otherPath in directory.GetFiles("PovertySail.*.dll"))
             {
-                x.FromAssembliesMatching(new List<string>(){"PovertySail.*"})
-                    .Select(y => 
-                        y.GetInterfaces().Contains(typeof(IPlugin)) && y.IsClass && !y.IsInterface)
-                    .BindSingleInterface()
-                    .Configure(b => b.InSingletonScope());
-            });
+                Assembly assembly = Assembly.LoadFrom(otherPath.FullName);
+
+                var types = assembly.GetExportedTypes();
+                foreach (var type in types)
+                {
+                    if (type.GetInterface(typeof(IPlugin).Name)!=null && type.IsClass && !type.IsInterface && !type.IsAbstract)
+                    {
+                        Kernel.Bind<IPlugin>().To(type).InSingletonScope();
+                    }
+                }
+            }
         }
     }
 }

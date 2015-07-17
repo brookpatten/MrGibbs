@@ -79,6 +79,7 @@ namespace PovertySail.Console
                     operationCount++;
                 }
 
+                _logger.Debug("Sleeping");
                 Thread.Sleep(_sleepTime);
             }
         }
