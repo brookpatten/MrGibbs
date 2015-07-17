@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace PovertySail.Contracts
 {
-    public interface IPlugin
+    public interface IPlugin:IDisposable
     {
         void Initialize(PluginConfiguration configuration);
         bool Initialized { get; }
+        IList<IPluginComponent> Components { get; } 
     }
 }

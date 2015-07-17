@@ -12,11 +12,13 @@ namespace PovertySail.Pebble
     {
         private ILogger _logger;
         private bool _initialized = false;
+        private IList<IPluginComponent> _components; 
 
         
         public PebblePlugin(ILogger logger)
         {
             _logger = logger;
+            _components = new List<IPluginComponent>();
         }
 
         public void Initialize(PluginConfiguration configuration)
@@ -28,6 +30,23 @@ namespace PovertySail.Pebble
         public bool Initialized
         {
             get { return _initialized; }
+        }
+
+
+        public IList<IPluginComponent> Components
+        {
+            get { return _components; }
+        }
+
+        public void Dispose()
+        {
+            if (_components != null)
+            {
+                foreach (var component in _components)
+                {
+                    component.Dispose();
+                }
+            }
         }
     }
 }

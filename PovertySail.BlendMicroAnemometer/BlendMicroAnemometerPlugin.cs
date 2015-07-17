@@ -12,6 +12,7 @@ namespace PovertySail.BlendMicroAnemometer
     {
         private ILogger _logger;
         private bool _initialized = false;
+        private IList<IPluginComponent> _components;
 
         public BlendMicroAnemometerPlugin(ILogger logger)
         {
@@ -20,6 +21,7 @@ namespace PovertySail.BlendMicroAnemometer
 
         public void Initialize(PluginConfiguration configuration)
         {
+            _components = new List<IPluginComponent>();
             _initialized = false;
             configuration.Sensors.Add(new BlendMicroAnemometerSensor(_logger,this));
             _initialized = true;
@@ -28,6 +30,23 @@ namespace PovertySail.BlendMicroAnemometer
         public bool Initialized
         {
             get { return _initialized; }
+        }
+
+
+        public IList<IPluginComponent> Components
+        {
+            get { return _components; }
+        }
+
+        public void Dispose()
+        {
+            if (_components != null)
+            {
+                foreach (var component in _components)
+                {
+                    component.Dispose();
+                }
+            }
         }
     }
 }

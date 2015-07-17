@@ -23,5 +23,18 @@ namespace PovertySail.I2CAccelerometer
         {
             get { return _plugin; }
         }
+
+        public void Start()
+        {
+        }
+
+        public void Update(Models.State state)
+        {
+        }
+
+        public void Dispose()
+        {
+            
+        }
     }
 }

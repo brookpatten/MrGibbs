@@ -39,11 +39,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coordinate.cs" />
+    <Compile Include="CoordinatePoint.cs" />
     <Compile Include="GpsPlugin.cs" />
     <Compile Include="GpsSensor.cs" />
+    <Compile Include="NMEA\NmeaDictionary.cs" />
+    <Compile Include="NMEA\NmeaParser.cs" />
+    <Compile Include="NMEA\NmeaSentenceType.cs" />
+    <Compile Include="NMEA\NmeaSentenceTypePart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PovertySail.Configuration\PovertySail.Configuration.csproj">
+      <Project>{0096b610-9ead-421f-83ac-c3fe2559ec68}</Project>
+      <Name>PovertySail.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PovertySail.Contracts\PovertySail.Contracts.csproj">
       <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
       <Name>PovertySail.Contracts</Name>
@@ -52,6 +62,9 @@
       <Project>{a41a884e-a7fe-4ec6-80a7-145e3fb4311f}</Project>
       <Name>PovertySail.Models</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NMEA.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

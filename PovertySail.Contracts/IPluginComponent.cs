@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PovertySail.Contracts
 {
-    public interface IPluginComponent
+    public interface IPluginComponent:IDisposable
     {
         IPlugin Plugin { get; }
     }

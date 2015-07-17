@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PovertySail.Contracts;
 using PovertySail.Contracts.Infrastructure;
+using PovertySail.Models;
 
 namespace PovertySail.Console
 {
@@ -25,22 +26,27 @@ namespace PovertySail.Console
 
         public void Initialize()
         {
-            try
+            var failed = new List<IPlugin>();
+            foreach (var plugin in _configuration.Plugins)
             {
-                foreach (var plugin in _configuration.Plugins)
+                try
                 {
                     _logger.Info("Initializing Plugin " + plugin.GetType().Name);
                     plugin.Initialize(_configuration);
                 }
+                catch (Exception ex)
+                {
+                    _logger.Fatal("Exception initializing plugin "+plugin.GetType().Name, ex);
+                    failed.Add(plugin);
+                }
             }
-            catch (Exception ex)
+            foreach (var plugin in failed)
             {
-                _logger.Fatal("Exception initializing plugins", ex);
-                return;
+                EvictPlugin(_configuration,plugin,false);
             }
 
             //remove any plugins that failed to initialize
-            _configuration.Plugins = _configuration.Plugins.Where(x => x.Initialized).ToList();
+            //_configuration.Plugins = _configuration.Plugins.Where(x => x.Initialized).ToList();
             foreach (var plugin in _configuration.Plugins)
             {
                 _logger.Info(plugin.GetType().Name + " Initialized OK");
@@ -49,6 +55,7 @@ namespace PovertySail.Console
 
         public void Run()
         {
+            var state = new State();
             bool run = true;
             int operationCount = 1;
             while (run && operationCount>0)
@@ -57,25 +64,24 @@ namespace PovertySail.Console
 
                 foreach (var sensor in _configuration.Sensors)
                 {
-                    //read some data
+                    sensor.Update(state);
                     operationCount++;
                 }
 
                 foreach (var calculator in _configuration.Calculators)
                 {
-                    //do calculations
+                    calculator.Calculate(state);
                     operationCount++;
                 }
 
                 foreach (var recorder in _configuration.Recorders)
                 {
-                    //record some data
                     operationCount++;
                 }
 
                 foreach (var viewer in _configuration.DashboardViewers)
                 {
-                    //display some data
+                    viewer.Update(state);
                     operationCount++;
                 }
 

@@ -9,18 +9,18 @@ using PovertySail.Models;
 
 namespace PovertySail.Pebble
 {
-    public class PebbleDashboardViewer:IDashboardViewer
+    public class PebbleViewer:IViewer
     {
         private ILogger _logger;
         private PebblePlugin _plugin;
 
-        public PebbleDashboardViewer(ILogger logger, PebblePlugin plugin)
+        public PebbleViewer(ILogger logger, PebblePlugin plugin)
         {
             _plugin = plugin;
             _logger = logger;
         }
 
-        public void Update(Dashboard dashboard)
+        public void Update(State state)
         {
         }
 
@@ -35,6 +35,11 @@ namespace PovertySail.Pebble
         public IPlugin Plugin
         {
             get { return _plugin; }
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

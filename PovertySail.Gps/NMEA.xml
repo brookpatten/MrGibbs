@@ -1,0 +1,233 @@
+﻿<SentenceTypes>
+  <SentenceType name="Global Positioning System Fix Data" code="GGA">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Time" />
+      <SentenceTypePart position="2" name="Latitude" />
+      <SentenceTypePart position="3" name="Latitude Direction" />
+      <SentenceTypePart position="4" name="Longitude" />
+      <SentenceTypePart position="5" name="Longitude Direction" />
+      <SentenceTypePart position="6" name="Fix Quality" />
+      <SentenceTypePart position="7" name="Number of Satellites" />
+      <SentenceTypePart position="8" name="Horizontal Dilution of Precision" />
+      <SentenceTypePart position="9" name="Altitude" />
+      <SentenceTypePart position="10" name="Altitude Unit" />
+      <SentenceTypePart position="11" name="Height of geoid above WGS84 ellipsoid" />
+      <SentenceTypePart position="12" name="Height of geoid above WGS84 ellipsoid Unit" />
+      <SentenceTypePart position="13" name="Time since last DGPS update" />
+      <SentenceTypePart position="14" name="DGPS station ID" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="GPS DOP and Active Satellites" code="GSA">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Automatic/Manual" />
+      <SentenceTypePart position="2" name="Mode" />
+      <SentenceTypePart position="3" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="4" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="5" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="6" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="7" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="8" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="9" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="10" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="11" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="12" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="13" name="PRN of Satllite Vehicle used for fix" />
+      <SentenceTypePart position="14" name="PRN of Satellite Vehicle Used for Fix" />
+      <SentenceTypePart position="15" name="Position Dilution of Precision" />
+      <SentenceTypePart position="16" name="Horizontal Dilution of Precision" />
+      <SentenceTypePart position="17" name="Vertical Dilution of Precision" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="GPS Satellites in View" code="GSV">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="" />
+      <SentenceTypePart position="2" name="" />
+      <SentenceTypePart position="3" name="" />
+      <SentenceTypePart position="4" name="" />
+      <SentenceTypePart position="5" name="" />
+      <SentenceTypePart position="6" name="" />
+      <SentenceTypePart position="7" name="" />
+      <SentenceTypePart position="8" name="" />
+      <SentenceTypePart position="9" name="" />
+      <SentenceTypePart position="10" name="" />
+      <SentenceTypePart position="11" name="" />
+      <SentenceTypePart position="12" name="" />
+      <SentenceTypePart position="13" name="" />
+      <SentenceTypePart position="14" name="" />
+      <SentenceTypePart position="15" name="" />
+      <SentenceTypePart position="16" name="" />
+      <SentenceTypePart position="17" name="" />
+      <SentenceTypePart position="18" name="" />
+      <SentenceTypePart position="19" name="" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Recommended Minimum Specific GPS/TRANSIT Data" code="RMC">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Time of Fix" />
+      <SentenceTypePart position="2" name="Navigation Receiver Warning" />
+      <SentenceTypePart position="3" name="Latitude" />
+      <SentenceTypePart position="4" name="Latitude Direction" />
+      <SentenceTypePart position="5" name="Longitude" />
+      <SentenceTypePart position="6" name="Longitude Direction" />
+      <SentenceTypePart position="7" name="Speed over ground" />
+      <SentenceTypePart position="8" name="Course Made Good" />
+      <SentenceTypePart position="9" name="Date of Fix" />
+      <SentenceTypePart position="10" name="Magnetic Variation" />
+      <SentenceTypePart position="11" name="Magnetic Variation Direction" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Track Made Good and Ground Speed" code="VTG">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="True Course Made Good Over Gound" />
+      <SentenceTypePart position="2" name="True Course Made Good Over Gound Unit" />
+      <SentenceTypePart position="3" name="Magnetic Course Made Good over Ground" />
+      <SentenceTypePart position="4" name="Magnetic Course Made Good over Ground Unit" />
+      <SentenceTypePart position="5" name="Ground Speed" />
+      <SentenceTypePart position="6" name="Ground Speed Unit" />
+      <SentenceTypePart position="7" name="Ground Speed" />
+      <SentenceTypePart position="8" name="Ground Speed Unit" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="?" code="TKV">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Distance Traveled Through the Water" code="VLW">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Total Cumulative Distance" />
+      <SentenceTypePart position="2" name="Total Cumulative Distance Unit" />
+      <SentenceTypePart position="3" name="Total Distance Since Reset" />
+      <SentenceTypePart position="4" name="Total Distance Since Reset Unit" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Water Temperature" code="MTW">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Water Temperature" />
+      <SentenceTypePart position="2" name="Water Temperature Unit" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Water Speed and Heading" code="VHW">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Heading" />
+      <SentenceTypePart position="2" name="Heading Unit" />
+      <SentenceTypePart position="3" name="Heading" />
+      <SentenceTypePart position="4" name="Heading Unit" />
+      <SentenceTypePart position="5" name="Speed" />
+      <SentenceTypePart position="6" name="Speed Unit" />
+      <SentenceTypePart position="7" name="Speed" />
+      <SentenceTypePart position="8" name="Speed Unit" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Speed, Measured Parallel to Wind" code="VPW">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Speed" />
+      <SentenceTypePart position="2" name="Speed Unit" />
+      <SentenceTypePart position="3" name="Speed" />
+      <SentenceTypePart position="4" name="Speed Unit" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Wind Speed and Angle" code="MWV">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Wind Angle" />
+      <SentenceTypePart position="2" name="Wind Angle Reference" />
+      <SentenceTypePart position="3" name="Wind Speed" />
+      <SentenceTypePart position="4" name="Wind Speed Unit" />
+      <SentenceTypePart position="5" name="Wind Instrument Status" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Depth Below Transducer" code="DBT">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Depth" />
+      <SentenceTypePart position="2" name="Depth Unit" />
+      <SentenceTypePart position="3" name="Depth" />
+      <SentenceTypePart position="4" name="Depth Unit" />
+      <SentenceTypePart position="5" name="Depth" />
+      <SentenceTypePart position="6" name="Depth Unit" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="True Wind" code="TKW">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="True Wind Direction" />
+      <SentenceTypePart position="2" name="True Wind Direction Side" />
+      <SentenceTypePart position="3" name="True Wind Speed" />
+      <SentenceTypePart position="4" name="True Wind Speed Unit" />
+      <SentenceTypePart position="5" name="" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Depth" code="DPT">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Depth" />
+      <SentenceTypePart position="2" name="Offset from Transducer" />
+      <SentenceTypePart position="3" name="" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Geographic Latitude and Longitude" code="GLL">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Latitude" />
+      <SentenceTypePart position="2" name="Latitude Direction" />
+      <SentenceTypePart position="3" name="Longitude" />
+      <SentenceTypePart position="4" name="Longitude Direction" />
+      <SentenceTypePart position="5" name="Fix Taken" />
+      <SentenceTypePart position="6" name="Data Active" />
+      <SentenceTypePart position="7" name="Data Active" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="?" code="TKD">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="" />
+      <SentenceTypePart position="2" name="" />
+      <SentenceTypePart position="3" name="" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="830" code="830">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="" />
+      <SentenceTypePart position="2" name="" />
+      <SentenceTypePart position="3" name="" />
+      <SentenceTypePart position="4" name="" />
+      <SentenceTypePart position="5" name="" />
+      <SentenceTypePart position="6" name="" />
+      <SentenceTypePart position="7" name="" />
+      <SentenceTypePart position="8" name="" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="Data and Time" code="ZDA">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Time" />
+      <SentenceTypePart position="2" name="Day" />
+      <SentenceTypePart position="3" name="Month" />
+      <SentenceTypePart position="4" name="Year" />
+      <SentenceTypePart position="5" name="xx" />
+      <SentenceTypePart position="6" name="yy" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="NovaSail" code="OVA">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Version" />
+      <SentenceTypePart position="2" name="Latitude" />
+      <SentenceTypePart position="3" name="Longitude" />
+      <SentenceTypePart position="4" name="Heading" />
+      <SentenceTypePart position="5" name="Speed" />
+      <SentenceTypePart position="6" name="Roll" />
+      <SentenceTypePart position="7" name="Day" />
+      <SentenceTypePart position="8" name="Month" />
+      <SentenceTypePart position="9" name="Year" />
+      <SentenceTypePart position="10" name="Hour" />
+      <SentenceTypePart position="11" name="Minute" />
+      <SentenceTypePart position="12" name="Second" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="AMOD 3080 Header" code="VER" ignore="true">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Model" />
+      <SentenceTypePart position="2" name="Version" />
+    </SentenceTypeParts>
+  </SentenceType>
+  <SentenceType name="AMOD Garbage" code="PMB" ignore="true">
+    <SentenceTypeParts>
+      <SentenceTypePart position="1" name="Garbage1" />
+      <SentenceTypePart position="2" name="Garbage2" />
+    </SentenceTypeParts>
+  </SentenceType>
+</SentenceTypes>

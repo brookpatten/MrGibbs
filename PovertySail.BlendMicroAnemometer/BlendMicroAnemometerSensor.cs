@@ -23,5 +23,17 @@ namespace PovertySail.BlendMicroAnemometer
         {
             get { return _plugin; }
         }
+
+        public void Start()
+        {
+        }
+
+        public void Update(Models.State state)
+        {
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }

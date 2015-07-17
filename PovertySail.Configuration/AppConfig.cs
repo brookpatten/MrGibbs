@@ -16,5 +16,9 @@ namespace PovertySail.Configuration
         {
             get { return ConfigurationHelper.ReadIntAppSetting("SleepTime", 1000); }
         }
+        public static string GpsPort
+        {
+            get { return ConfigurationHelper.ReadStringAppSetting("GpsPort", @"/dev/ttyUSB0"); }
+        }
     }
 }

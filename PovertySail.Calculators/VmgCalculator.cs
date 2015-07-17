@@ -20,7 +20,7 @@ namespace PovertySail.Calculators
             _logger = logger;
         }
 
-        public void Calculate(Dashboard dashboard)
+        public void Calculate(State state)
         {
             
         }
@@ -28,6 +28,10 @@ namespace PovertySail.Calculators
         public IPlugin Plugin
         {
             get { return _plugin; }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

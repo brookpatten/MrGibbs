@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICalculator.cs" />
-    <Compile Include="IDashboardViewer.cs" />
+    <Compile Include="IViewer.cs" />
     <Compile Include="Infrastructure\IClock.cs" />
     <Compile Include="Infrastructure\ILogger.cs" />
     <Compile Include="IPlugin.cs" />

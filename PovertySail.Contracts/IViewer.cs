@@ -7,9 +7,9 @@ using PovertySail.Models;
 
 namespace PovertySail.Contracts
 {
-    public interface IDashboardViewer : IPluginComponent
+    public interface IViewer : IPluginComponent
     {
-        void Update(Dashboard dashboard);
+        void Update(State state);
         event EventHandler OnStartCountdown;
         event EventHandler OnSyncCountdown;
         event EventHandler OnStopCountdown;

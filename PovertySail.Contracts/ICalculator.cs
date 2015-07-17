@@ -9,6 +9,6 @@ namespace PovertySail.Contracts
 {
     public interface ICalculator : IPluginComponent
     {
-        void Calculate(Dashboard dashboard);
+        void Calculate(State state);
     }
 }

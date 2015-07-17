@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PebbleDashboardViewer.cs" />
+    <Compile Include="PebbleViewer.cs" />
     <Compile Include="PebblePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
