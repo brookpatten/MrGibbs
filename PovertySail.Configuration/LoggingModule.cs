@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ninject.Modules;
-using PovertySail.Contracts.Infrastructure;
 using PovertySail.Infrastructure;
 
-using log4net;
 using Ninject.Activation;
+using NLog;
+using ILogger = PovertySail.Contracts.Infrastructure.ILogger;
 
 namespace PovertySail.Configuration
 {
@@ -24,21 +24,11 @@ namespace PovertySail.Configuration
 
         public override void Load()
         {
-            ConfigureGlobalLog4Net();
-
-            Bind<ILog>().ToMethod(x => LogManager.GetLogger(GetParentTypeName(x)))
+            Bind<NLog.ILogger>().ToMethod(x => LogManager.GetLogger(GetParentTypeName(x)))
                 .InTransientScope();
 
-            Bind<ILogger>().To<Log4NetLogger>()
+            Bind<ILogger>().To<NLogLogger>()
                 .InTransientScope();
-        }
-
-        private void ConfigureGlobalLog4Net()
-        {
-            foreach (var file in _xmlConfigFiles)
-            {
-                log4net.Config.XmlConfigurator.Configure(new FileInfo(file));
-            }
         }
 
         private string GetParentTypeName(IContext context)
