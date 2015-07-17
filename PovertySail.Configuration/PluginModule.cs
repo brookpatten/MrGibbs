@@ -15,9 +15,6 @@ namespace PovertySail.Configuration
     {
         public override void Load()
         {
-            //force the contracts dll to load
-            var contract = new PovertySail.Contracts.PluginConfiguration();
-
             string path = Assembly.GetExecutingAssembly().Location;
             FileInfo file = new FileInfo(path);
             DirectoryInfo directory = file.Directory;
