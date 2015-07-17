@@ -20,6 +20,8 @@ namespace PovertySail.Gps
         private Queue<string> _buffer;
         private NmeaParser _parser;
         private System.Globalization.CultureInfo _numberCulture;
+        private Task _task;
+        private bool _run = false;
 
         public GpsSensor(ILogger logger, GpsPlugin plugin,string serialPort)
         {
@@ -40,25 +42,30 @@ namespace PovertySail.Gps
             _buffer = new Queue<string>();
             _port = new SerialPort(_portName);
             _port.BaudRate = 4800;
-            _port.DataReceived += DataReceived;
-
+            _run = true;
+            _task = new Task(Run);
+            
             try
             {
                 _port.Close();
             }
             catch { }
             _port.Open();
+            _task.Start();
         }
 
-        private void DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void Run()
         {
-            lock (_buffer)
+            while (_run)
             {
                 while (_port.BytesToRead > 0)
                 {
                     string line = _port.ReadLine();
-                    _logger.Debug("GPS Read:"+line);
-                    _buffer.Enqueue(line);
+                    _logger.Debug("GPS Read:" + line);
+                    lock (_buffer)
+                    {
+                        _buffer.Enqueue(line);
+                    }
                 }
             }
         }
@@ -226,6 +233,9 @@ namespace PovertySail.Gps
         }
         public void Dispose()
         {
+            _run = false;
+            _task.Wait(1000);
+
             if (_port.IsOpen)
             {
                 _port.Close();
