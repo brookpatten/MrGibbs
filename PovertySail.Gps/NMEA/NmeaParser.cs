@@ -11,7 +11,7 @@ namespace PovertySail.Gps.NMEA
         private NmeaDictionary _nmea;
         public NmeaParser()
         {
-            _nmea = new NmeaDictionary(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("PovertySail.Gps.Nmea.xml"));/*"../../nmea.xml"*/
+            _nmea = new NmeaDictionary(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("PovertySail.Gps.NMEA.xml"));/*"../../nmea.xml"*/
         }
         public Dictionary<string, Dictionary<string, string>> Parse(string nmeaLine)
         {

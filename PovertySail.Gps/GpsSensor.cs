@@ -41,10 +41,13 @@ namespace PovertySail.Gps
             _port = new SerialPort(_portName);
             _port.BaudRate = 4800;
             _port.DataReceived += DataReceived;
-            if (!_port.IsOpen)
+
+            try
             {
-                _port.Open();
+                _port.Close();
             }
+            catch { }
+            _port.Open();
         }
 
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -54,7 +57,7 @@ namespace PovertySail.Gps
                 while (_port.BytesToRead > 0)
                 {
                     string line = _port.ReadLine();
-                    _logger.Debug("GPS Line:"+line);
+                    _logger.Debug("GPS Read:"+line);
                     _buffer.Enqueue(line);
                 }
             }
@@ -78,7 +81,7 @@ namespace PovertySail.Gps
 
                     foreach (var sentence in parsed.Keys)
                     {
-
+                        _logger.Debug("GPS Parsed: "+sentence);
                         if (sentence == "Global Positioning System Fix Data")
                         {
                             //time
