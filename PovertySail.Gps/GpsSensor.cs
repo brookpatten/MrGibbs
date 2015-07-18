@@ -7,6 +7,7 @@ using PovertySail.Contracts;
 using PovertySail.Contracts.Infrastructure;
 using System.IO.Ports;
 using PovertySail.Gps.NMEA;
+using PovertySail.Models;
 
 namespace PovertySail.Gps
 {
@@ -77,160 +78,198 @@ namespace PovertySail.Gps
                 double latitude = double.MinValue;
                 double longitude = double.MinValue;
                 double speed = double.MinValue;
-                double courseOverGround;
-                TimeSpan? time = null;
+                double height = double.MinValue;
+                double courseOverGround=double.MinValue;
                 DateTime? date = null;
 
                 while (_buffer.Count > 0)
                 {
                     string line = _buffer.Dequeue();
-                    var parsed = _parser.Parse(line);
-
-                    foreach (var sentence in parsed.Keys)
+                    try
                     {
-                        _logger.Debug("GPS Parsed: "+sentence);
-                        if (sentence == "Global Positioning System Fix Data")
+                        var parsed = _parser.Parse(line);
+
+                        foreach (var sentence in parsed.Keys)
                         {
-                            //time
-                            string timestring = parsed[sentence]["Time"];
-                            char[] splitter = { '.' };
-                            string[] parts = timestring.Split(splitter);
-                            if (parts[0].Length == 6)
+                            _logger.Debug("GPS Parsed: "+sentence);
+                            if (sentence == "Global Positioning System Fix Data")
                             {
-                                int hour = int.Parse(parts[0].Substring(0, 2));
-                                int minute = int.Parse(parts[0].Substring(2, 2));
-                                int second = int.Parse(parts[0].Substring(4, 2));
-                                int millisecond = 0;
-                                if (parts.Length > 1)
+                                //time
+                                string timestring = parsed[sentence]["Time"];
+                                char[] splitter = { '.' };
+                                string[] parts = timestring.Split(splitter);
+                                if (parts[0].Length == 6)
                                 {
-                                    millisecond = (int)(double.Parse("0." + parts[1], _numberCulture.NumberFormat) * 1000.0);
+                                    int hour = int.Parse(parts[0].Substring(0, 2));
+                                    int minute = int.Parse(parts[0].Substring(2, 2));
+                                    int second = int.Parse(parts[0].Substring(4, 2));
+                                    int millisecond = 0;
+                                    if (parts.Length > 1)
+                                    {
+                                        millisecond = (int)(double.Parse("0." + parts[1], _numberCulture.NumberFormat) * 1000.0);
+                                    }
+
+                                    if (!date.HasValue)
+                                    {
+                                        date = DateTime.UtcNow;
+                                    }
+
+                                    date = new DateTime(date.Value.Year,date.Value.Month,date.Value.Day,hour,minute,second,millisecond);
                                 }
-                                time = new TimeSpan(0, hour, minute, second, millisecond);
-                            }
-                            else
-                            {
-                                throw new Exception("Invalid Time Format");
-                            }
+                                else
+                                {
+                                    throw new Exception("Invalid Time Format");
+                                }
 
-                            //latitude
-                            string latitudeString = parsed[sentence]["Latitude"];
-                            string latitudeDirectionString = parsed[sentence]["Latitude Direction"];
-                            int latdegrees = int.Parse(latitudeString.Substring(0, 2));
-                            double latminute = double.Parse(latitudeString.Substring(2), _numberCulture.NumberFormat);
-                            latitude = Coordinate.CoordinateToDouble(latdegrees, latminute, 0);
-                            if (latitudeDirectionString.ToLower() == "s")
-                            {
-                                latitude = -latitude;
-                            }
+                                //latitude
+                                string latitudeString = parsed[sentence]["Latitude"];
+                                string latitudeDirectionString = parsed[sentence]["Latitude Direction"];
+                                int latdegrees = int.Parse(latitudeString.Substring(0, 2));
+                                double latminute = double.Parse(latitudeString.Substring(2), _numberCulture.NumberFormat);
+                                latitude = Coordinate.CoordinateToDouble(latdegrees, latminute, 0);
+                                if (latitudeDirectionString.ToLower() == "s")
+                                {
+                                    latitude = -latitude;
+                                }
 
-                            //longitude
-                            string longitudeString = parsed[sentence]["Longitude"];
-                            string longitudeDirectionString = parsed[sentence]["Longitude Direction"];
-                            int longdegrees = int.Parse(longitudeString.Substring(0, 3));
-                            double longminute = double.Parse(longitudeString.Substring(3), _numberCulture.NumberFormat);
-                            longitude = Coordinate.CoordinateToDouble(longdegrees, longminute, 0);
-                            if (longitudeDirectionString.ToLower() == "w")
-                            {
-                                longitude = -longitude;
+                                //longitude
+                                string longitudeString = parsed[sentence]["Longitude"];
+                                string longitudeDirectionString = parsed[sentence]["Longitude Direction"];
+                                int longdegrees = int.Parse(longitudeString.Substring(0, 3));
+                                double longminute = double.Parse(longitudeString.Substring(3), _numberCulture.NumberFormat);
+                                longitude = Coordinate.CoordinateToDouble(longdegrees, longminute, 0);
+                                if (longitudeDirectionString.ToLower() == "w")
+                                {
+                                    longitude = -longitude;
+                                }
                             }
-                        }
-                        else if (sentence == "Recommended Minimum Specific GPS/TRANSIT Data")
-                        {
-                            //time
-                            string timestring = parsed[sentence]["Time of Fix"];
-                            char[] splitter = { '.' };
-                            string[] parts = timestring.Split(splitter);
-                            if (parts[0].Length == 6)
+                            else if (sentence == "Recommended Minimum Specific GPS/TRANSIT Data")
                             {
-                                int hour = int.Parse(parts[0].Substring(0, 2));
-                                int minute = int.Parse(parts[0].Substring(2, 2));
-                                int second = int.Parse(parts[0].Substring(4, 2));
-                                time = new TimeSpan(0, hour, minute, second, 0);
-                            }
-                            else
-                            {
-                                throw new Exception("Invalid Time Format");
-                            }
+                                //time
+                                //don't uuse this because it doesn't have millis
+                                //string timestring = parsed[sentence]["Time of Fix"];
+                                //char[] splitter = { '.' };
+                                //string[] parts = timestring.Split(splitter);
+                                //if (parts[0].Length == 6)
+                                //{
+                                //    int hour = int.Parse(parts[0].Substring(0, 2));
+                                //    int minute = int.Parse(parts[0].Substring(2, 2));
+                                //    int second = int.Parse(parts[0].Substring(4, 2));
+                                //    time = new TimeSpan(0, hour, minute, second, 0);
+                                //}
+                                //else
+                                //{
+                                //    throw new Exception("Invalid Time Format");
+                                //}
 
-                            //latitude
-                            string latitudeString = parsed[sentence]["Latitude"];
-                            string latitudeDirectionString = parsed[sentence]["Latitude Direction"];
-                            int latdegrees = int.Parse(latitudeString.Substring(0, 2));
-                            double latminute = double.Parse(latitudeString.Substring(2), _numberCulture.NumberFormat);
-                            latitude = Coordinate.CoordinateToDouble(latdegrees, latminute, 0);
-                            if (latitudeDirectionString.ToLower() == "s")
-                            {
-                                latitude = -latitude;
-                            }
+                                //latitude
+                                string latitudeString = parsed[sentence]["Latitude"];
+                                string latitudeDirectionString = parsed[sentence]["Latitude Direction"];
+                                int latdegrees = int.Parse(latitudeString.Substring(0, 2));
+                                double latminute = double.Parse(latitudeString.Substring(2), _numberCulture.NumberFormat);
+                                latitude = Coordinate.CoordinateToDouble(latdegrees, latminute, 0);
+                                if (latitudeDirectionString.ToLower() == "s")
+                                {
+                                    latitude = -latitude;
+                                }
 
-                            //longitude
-                            string longitudeString = parsed[sentence]["Longitude"];
-                            string longitudeDirectionString = parsed[sentence]["Longitude Direction"];
-                            int longdegrees = int.Parse(longitudeString.Substring(0, 3));
-                            double longminute = double.Parse(longitudeString.Substring(3), _numberCulture.NumberFormat);
-                            longitude = Coordinate.CoordinateToDouble(longdegrees, longminute, 0);
-                            if (longitudeDirectionString.ToLower() == "w")
-                            {
-                                longitude = -longitude;
-                            }
+                                //longitude
+                                string longitudeString = parsed[sentence]["Longitude"];
+                                string longitudeDirectionString = parsed[sentence]["Longitude Direction"];
+                                int longdegrees = int.Parse(longitudeString.Substring(0, 3));
+                                double longminute = double.Parse(longitudeString.Substring(3), _numberCulture.NumberFormat);
+                                longitude = Coordinate.CoordinateToDouble(longdegrees, longminute, 0);
+                                if (longitudeDirectionString.ToLower() == "w")
+                                {
+                                    longitude = -longitude;
+                                }
 
-                            string speedString = parsed[sentence]["Speed over ground"];
-                            double.TryParse(speedString, out speed);
-                            //speed = double.Parse(speedString, _numberCulture.NumberFormat);
+                                string speedString = parsed[sentence]["Speed over ground"];
+                                double.TryParse(speedString, out speed);
+                                //speed = double.Parse(speedString, _numberCulture.NumberFormat);
 
-                            string datestring = parsed[sentence]["Date of Fix"];
-                            if (datestring.Length == 6)
-                            {
-                                int day = int.Parse(datestring.Substring(0, 2));
-                                int month = int.Parse(datestring.Substring(2, 2));
-                                int year = 2000 + int.Parse(datestring.Substring(4, 2));
-                                DateTime dt = new DateTime(year, month, day);
-                                dt = ZeroTime(dt);
-                                date = dt;
-                                time = new TimeSpan(0, time.Value.Hours, time.Value.Minutes, time.Value.Seconds, time.Value.Milliseconds);
+                                string cogString = parsed[sentence]["Course Made Good"];
+                                double.TryParse(cogString, out courseOverGround);
+
+                                string datestring = parsed[sentence]["Date of Fix"];
+                                if (datestring.Length == 6)
+                                {
+                                    int day = int.Parse(datestring.Substring(0, 2));
+                                    int month = int.Parse(datestring.Substring(2, 2));
+                                    int year = 2000 + int.Parse(datestring.Substring(4, 2));
+
+                                    if (!date.HasValue)
+                                    {
+                                        date = DateTime.UtcNow;
+                                    }
+
+                                    date = new DateTime(year,month,day, date.Value.Hour, date.Value.Minute, date.Value.Second, date.Value.Millisecond);
+                                }
+                                else
+                                {
+                                    throw new Exception("Invalid Time Format");
+                                }
                             }
-                            else
+                            else if (sentence == "Data and Time")
                             {
-                                throw new Exception("Invalid Time Format");
-                            }
-                        }
-                        else if (sentence == "Data and Time")
-                        {
-                            //time
-                            string timestring = parsed[sentence]["Time"];
-                            char[] splitter = { '.' };
-                            string[] parts = timestring.Split(splitter);
-                            if (parts[0].Length == 6)
-                            {
-                                int hour = int.Parse(parts[0].Substring(0, 2));
-                                int minute = int.Parse(parts[0].Substring(2, 2));
-                                int second = int.Parse(parts[0].Substring(4, 2));
-                                int millisecond = (int)(double.Parse("0." + parts[1], _numberCulture.NumberFormat) * 1000.0);
-                                int day = int.Parse(parsed[sentence]["Day"]);
-                                int month = int.Parse(parsed[sentence]["Month"]);
-                                int year = int.Parse(parsed[sentence]["Year"]);
-                                DateTime dt = new DateTime(year, month, day);
-                                dt = ZeroTime(dt);
-                                date = dt;
-                                time = new TimeSpan(0, hour, minute, second, millisecond);
-                            }
-                            else
-                            {
-                                throw new Exception("Invalid Time Format");
+                                //time
+                                string timestring = parsed[sentence]["Time"];
+                                char[] splitter = { '.' };
+                                string[] parts = timestring.Split(splitter);
+                                if (parts[0].Length == 6)
+                                {
+                                    int hour = int.Parse(parts[0].Substring(0, 2));
+                                    int minute = int.Parse(parts[0].Substring(2, 2));
+                                    int second = int.Parse(parts[0].Substring(4, 2));
+                                    int millisecond = (int)(double.Parse("0." + parts[1], _numberCulture.NumberFormat) * 1000.0);
+                                    int day = int.Parse(parsed[sentence]["Day"]);
+                                    int month = int.Parse(parsed[sentence]["Month"]);
+                                    int year = int.Parse(parsed[sentence]["Year"]);
+
+                                    if (!date.HasValue)
+                                    {
+                                        date = DateTime.UtcNow;
+                                    }
+
+                                    date = new DateTime(year, month, day, hour,minute,second,millisecond);
+                                }
+                                else
+                                {
+                                    throw new Exception("Invalid Time Format");
+                                }
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.Warn("Exception parsing gps line:"+line);
+                    }
                 }
-                
 
+                lock (state)
+                {
+                    if (latitude != double.MinValue && longitude != double.MinValue)
+                    {
+                        state.Location = new CoordinatePoint(new Coordinate(latitude), new Coordinate(longitude), height);
+                    }
+                    if (speed != double.MinValue)
+                    {
+                        state.Speed = speed;
+                    }
+                    if (courseOverGround != double.MinValue)
+                    {
+                        state.CourseOverGround = courseOverGround;
+                    }
+                    if (date.HasValue)
+                    {
+                        state.Time = date.Value;
+                    }
+                }
                 //update the state
             }
             
         }
-        private DateTime ZeroTime(DateTime dt)
-        {
-            return dt - new TimeSpan(0, dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
-        }
+        
         public void Dispose()
         {
             _run = false;

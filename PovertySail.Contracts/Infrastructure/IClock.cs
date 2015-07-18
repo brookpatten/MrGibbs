@@ -10,5 +10,7 @@ namespace PovertySail.Contracts.Infrastructure
     {
         DateTime GetUtcTime();
         DateTime GetLocalTime(TimeZoneInfo timeZone);
+        void SetUtcTime(DateTime time);
+        DateTime? LastSetAt { get; }
     }
 }

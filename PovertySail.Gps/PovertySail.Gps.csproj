@@ -39,8 +39,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Coordinate.cs" />
-    <Compile Include="CoordinatePoint.cs" />
     <Compile Include="GpsPlugin.cs" />
     <Compile Include="GpsSensor.cs" />
     <Compile Include="NMEA\NmeaDictionary.cs" />

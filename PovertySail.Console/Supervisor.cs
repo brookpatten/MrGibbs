@@ -62,27 +62,79 @@ namespace PovertySail.Console
             {
                 operationCount = 0;
 
+                IList<IPlugin> erroredPlugins = new List<IPlugin>();
+
                 foreach (var sensor in _configuration.Sensors)
                 {
-                    sensor.Update(state);
-                    operationCount++;
+                    try
+                    {
+                        sensor.Update(state);
+                        operationCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("Exception updating sensor "+sensor.GetType().Name);
+                        if (!erroredPlugins.Contains(sensor.Plugin))
+                        {
+                            erroredPlugins.Add(sensor.Plugin);
+                        }
+                    }
                 }
 
                 foreach (var calculator in _configuration.Calculators)
                 {
-                    calculator.Calculate(state);
-                    operationCount++;
+                    try
+                    {
+                        calculator.Calculate(state);
+                        operationCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("Exception updating calculator " + calculator.GetType().Name);
+                        if (!erroredPlugins.Contains(calculator.Plugin))
+                        {
+                            erroredPlugins.Add(calculator.Plugin);
+                        }
+                    }
                 }
 
-                foreach (var recorder in _configuration.Recorders)
-                {
-                    operationCount++;
-                }
+                //foreach (var recorder in _configuration.Recorders)
+                //{
+                //    try
+                //    {
+                //        operationCount++;
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        _logger.Error("Exception updating recorder " + recorder.GetType().Name);
+                //        if (!erroredPlugins.Contains(recorder.Plugin))
+                //        {
+                //            erroredPlugins.Add(recorder.Plugin);
+                //        }
+                //    }
+                //}
 
                 foreach (var viewer in _configuration.DashboardViewers)
                 {
-                    viewer.Update(state);
-                    operationCount++;
+                    try
+                    {
+                        viewer.Update(state);
+                        operationCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("Exception updating viewer " + viewer.GetType().Name);
+                        if (!erroredPlugins.Contains(viewer.Plugin))
+                        {
+                            erroredPlugins.Add(viewer.Plugin);
+                        }
+                    }
+                }
+
+                //attempt to reinitialize any plugins that encountered errors
+                foreach (var plugin in erroredPlugins)
+                {
+                    EvictPlugin(_configuration,plugin,true);
                 }
 
                 _logger.Debug("Sleeping");
@@ -98,7 +150,7 @@ namespace PovertySail.Console
             configuration.Calculators = configuration.Calculators.Where(x => x.Plugin != plugin).ToList();
             configuration.Recorders = configuration.Recorders.Where(x => x.Plugin != plugin).ToList();
             configuration.DashboardViewers = configuration.DashboardViewers.Where(x => x.Plugin != plugin).ToList();
-
+            
             if (reinitialize)
             {
                 //allow it to re-add the components and attempt to restart

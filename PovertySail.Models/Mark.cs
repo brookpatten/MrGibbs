@@ -8,5 +8,6 @@ namespace PovertySail.Models
 {
     public class Mark
     {
+        public CoordinatePoint Location { get; set; }
     }
 }

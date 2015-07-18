@@ -10,8 +10,12 @@ namespace PovertySail.Models
     public class State
     {
         private int? _targetMarkIndex;
-
-        private Dictionary<string,double> Metrics { get; set; } 
+        public DateTime Time { get; set; }
+        public CoordinatePoint Location { get; set; }
+        
+        public double CourseOverGround { get; set; }
+        public double Speed { get; set; }
+        public DateTime? StartTime { get; set; }
 
         public State()
         {
