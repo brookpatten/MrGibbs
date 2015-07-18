@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AppBank.cs" />
+    <Compile Include="AppInfo.cs" />
     <Compile Include="ApplicationManifest.cs" />
     <Compile Include="ApplicationMetadata.cs" />
     <Compile Include="AppMessage\AppMessageDictionary.cs" />

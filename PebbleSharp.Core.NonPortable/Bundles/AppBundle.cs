@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using PebbleSharp.Core.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace PebbleSharp.Core.Bundles
 {
@@ -9,7 +10,8 @@ namespace PebbleSharp.Core.Bundles
         public byte[] App { get; private set; }
 
         public ApplicationMetadata AppMetadata { get; private set; }
-
+        public PebbleSharp.Core.NonPortable.AppInfo AppInfo { get; private set; }
+        
         protected override void LoadData( IZip zip )
         {
             if ( string.IsNullOrWhiteSpace( Manifest.Application.Filename ) )
@@ -23,6 +25,15 @@ namespace PebbleSharp.Core.Bundles
                 App = Util.GetBytes( binStream );
 
                 AppMetadata = BinarySerializer.ReadObject<ApplicationMetadata>( App );
+            }
+
+            using (Stream appinfoStream = zip.OpenEntryStream("appinfo.json"))
+            {
+                if (appinfoStream != null)
+                {
+                    var serializer = new DataContractJsonSerializer(typeof(PebbleSharp.Core.NonPortable.AppInfo));
+                    AppInfo = (PebbleSharp.Core.NonPortable.AppInfo)serializer.ReadObject(appinfoStream);
+                }
             }
         }
 

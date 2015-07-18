@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using PebbleSharp.Net45;
+using PebbleSharp.Core.NonPortable;
+using PebbleSharp.Core.Bundles;
 using PovertySail.Contracts;
 using PovertySail.Contracts.Infrastructure;
 
@@ -13,8 +16,8 @@ namespace PovertySail.Pebble
     {
         private ILogger _logger;
         private bool _initialized = false;
-        private IList<IPluginComponent> _components; 
-
+        private IList<IPluginComponent> _components;
+        private const string _pbwPath = "PovertySail.pbw";
         
         public PebblePlugin(ILogger logger)
         {
@@ -26,12 +29,32 @@ namespace PovertySail.Pebble
         {
             //scan for pebbles
             var pebbles = PebbleNet45.DetectPebbles();
+
+            AppBundle bundle=null;
+
+            if(pebbles.Any())
+            {
+                if (!string.IsNullOrEmpty(_pbwPath) && File.Exists(_pbwPath))
+                {
+                    using (var stream = new FileStream(_pbwPath, FileMode.Open))
+                    {
+                        using (var zip = new Zip())
+                        {
+                            zip.Open(stream);
+                            bundle = new AppBundle();
+                            stream.Position = 0;
+                            bundle.Load(stream, zip);
+                        }
+                    }
+                }
+            }
+            
             //add a viewer for each pebble
             foreach (var pebble in pebbles)
             {
                 try
                 {
-                    var viewer = new PebbleViewer(_logger, this, pebble);
+                    var viewer = new PebbleViewer(_logger, this, pebble,bundle);
                     _components.Add(viewer);
                     configuration.DashboardViewers.Add(viewer);
                 }
