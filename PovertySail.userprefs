@@ -1,17 +1,16 @@
 ﻿<Properties StartupItem="PovertySail.Console/PovertySail.Console.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PovertySail.Pebble/PebbleViewer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PovertySail.Contracts/PluginConfiguration.cs">
     <Files>
-      <File FileName="PovertySail.Gps/NMEA/NmeaParser.cs" Line="1" Column="1" />
-      <File FileName="PovertySail.Gps/GpsSensor.cs" Line="1" Column="1" />
-      <File FileName="PovertySail.Console/Program.cs" Line="1" Column="1" />
-      <File FileName="PovertySail.Console/Supervisor.cs" Line="67" Column="1" />
-      <File FileName="PovertySail.Pebble/PebblePlugin.cs" Line="1" Column="1" />
-      <File FileName="PovertySail.Pebble/PebbleViewer.cs" Line="25" Column="30" />
+      <File FileName="PovertySail.Console/Supervisor.cs" Line="158" Column="5" />
+      <File FileName="PovertySail.Contracts/PluginConfiguration.cs" Line="30" Column="14" />
+      <File FileName="PovertySail.Console/Program.cs" Line="37" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/pi/dev/povertysail/PovertySail.Pebble/PebblePlugin.cs" line="64" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

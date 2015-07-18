@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PovertySail.Contracts
 {
-    public class PluginConfiguration
+	public class PluginConfiguration:IDisposable
     {
         public PluginConfiguration()
         {
@@ -22,5 +22,14 @@ namespace PovertySail.Contracts
         public IList<IRecorder> Recorders { get; set; }
         public IList<ISensor> Sensors { get; set; } 
         public IList<ICalculator> Calculators { get; set; } 
+
+		public void Dispose()
+		{
+			if (Plugins != null) {
+				foreach (var plugin in Plugins) {
+					plugin.Dispose ();
+				}
+			}
+		}
     }
 }

@@ -22,7 +22,7 @@ namespace PovertySail.Pebble
         private byte _transactionId;
         
         private UUID _uuid;
-        private Dictionary<string, int> _keys;
+        //private Dictionary<string, int> _keys;
 
         public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, AppBundle bundle)
         {
@@ -34,7 +34,7 @@ namespace PovertySail.Pebble
             _transactionId = 255;
 
             _uuid = new UUID(bundle.AppInfo.UUID);
-            _keys = bundle.AppInfo.AppKeys;
+            //keys = bundle.AppInfo.AppKeys;
 
             var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
             var install = _pebble.InstallAppAsync(bundle,progress);
@@ -80,7 +80,7 @@ namespace PovertySail.Pebble
         public void Dispose()
         {
             _pebble.Disconnect();
-            
+
         }
     }
 }

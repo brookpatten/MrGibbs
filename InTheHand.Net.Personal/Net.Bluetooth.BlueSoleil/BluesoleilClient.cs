@@ -137,7 +137,7 @@ namespace InTheHand.Net.Bluetooth.BlueSoleil
                 _hDev = hDev;
                 //
                 channel = 0; // unknown
-                Console.WriteLine("Connect remote SPP Service with local COM{0}\n", osComPort);
+                //Console.WriteLine("Connect remote SPP Service with local COM{0}\n", osComPort);
                 connSuccess = true;
             } finally {
                 if (!connSuccess) {
@@ -187,7 +187,7 @@ namespace InTheHand.Net.Bluetooth.BlueSoleil
                 BtSdkError ret = _factory.Api.Btsdk_ConnectEx(s_currRmtSppDevHdl, BTSDK_CLS_SERIAL_PORT,
                             ref sppStru, out s_currSPPConnHdl);
                 if (ret != 0) {
-                    Console.WriteLine("Connect remote SPP Service with local COM{0}\n", osComPort);
+                    //Console.WriteLine("Connect remote SPP Service with local COM{0}\n", osComPort);
                 }
             }
         }

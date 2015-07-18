@@ -77,7 +77,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
             // Connect
             byte[] target = BluezUtils.FromBluetoothAddress(addr);
-            Console.WriteLine("Gonna sdp_connect (SafeHandle)...");
+            //Console.WriteLine("Gonna sdp_connect (SafeHandle)...");
             NativeMethods.SdpSessionSafeHandle session = NativeMethods.sdp_connect(StackConsts.BDADDR_ANY,
                 target, StackConsts.SdpConnectFlags.SDP_RETRY_IF_BUSY);
             if (session.IsInvalid) {
@@ -95,7 +95,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception in DoSdpQuery",ex);
+                //Console.WriteLine("Exception in DoSdpQuery",ex);
                 throw;
             }
             finally {
@@ -106,14 +106,14 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         List<ServiceRecord> DoSdpQuery(NativeMethods.SdpSessionSafeHandle session,
             Structs.uuid_t svcUuid, bool rfcommOnly)
         {
-			Console.WriteLine("Size ="+Marshal.SizeOf(typeof(Structs.uuid_t)));
+			//Console.WriteLine("Size ="+Marshal.SizeOf(typeof(Structs.uuid_t)));
             var listAllocs = new List<IntPtr>();
             IntPtr searchList = BluezUtils.sdp_list_append(IntPtr.Zero, svcUuid, listAllocs);
 
             // Attribute pattern
             IntPtr attridList;
             StackConsts.sdp_attrreq_type_t reqType;
-            Console.WriteLine("rfcommOnly: " + rfcommOnly);
+            //Console.WriteLine("rfcommOnly: " + rfcommOnly);
             if (rfcommOnly) {
                 const UInt16 ClassListId = (ushort)UniversalAttributeId.ServiceClassIdList; //=1
                 const UInt16 ProtoDListId = (ushort)UniversalAttributeId.ProtocolDescriptorList; //=4
@@ -139,10 +139,10 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             BluezUtils.CheckAndThrow(ret, "sdp_service_search_attr_req");
 			var rList = BuildRecordList(pResponseList);
 
-			foreach (var record in rList) {
-				string output = ServiceRecordUtilities.Dump (record);
-				Console.WriteLine (output);
-			}
+//			foreach (var record in rList) {
+//				string output = ServiceRecordUtilities.Dump (record);
+//				Console.WriteLine (output);
+//			}
 
 
 			return rList;
@@ -151,7 +151,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         //----
         internal List<ServiceRecord> BuildRecordList(IntPtr pResponseList)
         {
-			Console.WriteLine ("BuildRecordList");
+			//Console.WriteLine ("BuildRecordList");
             var list = new List<ServiceRecord>();
             if (pResponseList == IntPtr.Zero) {
                 //Console.WriteLine("Empty responseList.");
@@ -180,7 +180,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
         internal ServiceRecord BuildRecord(Structs.sdp_record_t rcdData)
         {
-			Console.WriteLine ("BuildRecord");
+			//Console.WriteLine ("BuildRecord");
             var attrList = new List<ServiceAttribute>();
             int count = 0;
             IntPtr pCurAttr = rcdData.attrlist;
@@ -197,14 +197,14 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                     break;
                 }
             }//while
-            Console.WriteLine("attr count: {0}", count);
+            //Console.WriteLine("attr count: {0}", count);
             var r = new ServiceRecord(attrList);
 			return r;
         }
 
         private ServiceAttribute BuildAttribute(IntPtr pAttrData)
         {
-			Console.WriteLine ("BuildAttribute");
+			//Console.WriteLine ("BuildAttribute");
             var attrData = (Structs.sdp_data_struct__Bytes)Marshal.PtrToStructure(
                 pAttrData, typeof(Structs.sdp_data_struct__Bytes));
             //ushort attrId0 = attrData.attrId;
@@ -212,7 +212,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             //Console.WriteLine("attrId: {0} = 0x{1:X}", attrId, attrId0);
 
 			var elem = BuildElement(pAttrData);
-			Console.WriteLine ("Child Element of Attribute " + attrData.attrId + " is " + elem.ElementTypeDescriptor);
+			//Console.WriteLine ("Child Element of Attribute " + attrData.attrId + " is " + elem.ElementTypeDescriptor);
 
 
 			//return new ServiceAttribute(attrId0, elem);
@@ -221,7 +221,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
         private ServiceElement BuildElement(IntPtr pElemData)
         {
-			Console.WriteLine ("BuildElement");
+			//Console.WriteLine ("BuildElement");
             var elemData = (Structs.sdp_data_struct__Bytes)Marshal.PtrToStructure(
                 pElemData, typeof(Structs.sdp_data_struct__Bytes));
             var debug = (Structs.sdp_data_struct__Debug)Marshal.PtrToStructure(
@@ -230,21 +230,21 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 			//Console.WriteLine ("dtd=" + elemData.dtd);
 
 			//Console.WriteLine ("ServiceElement length in bytes is " + debug.all.Length);
-			Console.WriteLine ("sdp_data_struct__Bytes length is measured at " + Marshal.SizeOf (typeof(Structs.sdp_data_struct__Bytes)));
-			string debugString = "";
-			foreach (var b in debug.all) {
-				debugString += b + ":";
-			}
-			Console.WriteLine (debugString);
-
-			string valString = "";
-			foreach (var b in elemData.val) {
-				valString += b + ":";
-			}
-
-
-			Console.WriteLine ("Debug sdp_data_struct__Bytes at "+pElemData.ToString()+" " + elemData.dtd + "," + elemData.attrId + ","+valString+"," + elemData.next.ToString() + "," + elemData.unitSize);
-
+			//Console.WriteLine ("sdp_data_struct__Bytes length is measured at " + Marshal.SizeOf (typeof(Structs.sdp_data_struct__Bytes)));
+//			string debugString = "";
+//			foreach (var b in debug.all) {
+//				debugString += b + ":";
+//			}
+//			Console.WriteLine (debugString);
+//
+//			string valString = "";
+//			foreach (var b in elemData.val) {
+//				valString += b + ":";
+//			}
+//
+//
+//			Console.WriteLine ("Debug sdp_data_struct__Bytes at "+pElemData.ToString()+" " + elemData.dtd + "," + elemData.attrId + ","+valString+"," + elemData.next.ToString() + "," + elemData.unitSize);
+//
 
             //
             ElementTypeDescriptor etd; SizeIndex sizeIndex;
@@ -253,15 +253,15 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             //
             if (etd == ElementTypeDescriptor.ElementSequence
                     || etd == ElementTypeDescriptor.ElementAlternative) {
-				Console.WriteLine ("ElementTypeDescriptor = ElementSequence or ElementAlternative");
+				//Console.WriteLine ("ElementTypeDescriptor = ElementSequence or ElementAlternative");
 
 				var list = new List<ServiceElement> ();
                 IntPtr pCur = elemData.ReadIntPtr();
 				if (pCur != IntPtr.Zero) {
 					list = DoSequence (pCur);
-					Console.WriteLine ("Element Child List Length=" + list.Count);
+					//Console.WriteLine ("Element Child List Length=" + list.Count);
 				} else {
-					Console.WriteLine ("Element Child is null");
+					//Console.WriteLine ("Element Child is null");
 				}
 				//Console.WriteLine ("list length=" + list.Count);
 #if DEBUG
@@ -282,13 +282,13 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 byte[] data;
                 if (etd == ElementTypeDescriptor.TextString
                         || etd == ElementTypeDescriptor.Url) {
-					Console.WriteLine ("ElementTypeDescriptor = TextString or Url");
+					//Console.WriteLine ("ElementTypeDescriptor = TextString or Url");
                     buf = new byte[elemData.unitSize];
                     IntPtr pStr = elemData.ReadIntPtr();
                     Marshal.Copy(pStr, buf, 0, buf.Length - 1);
                     //----
                 } else if (etd == ElementTypeDescriptor.Uuid) {
-					Console.WriteLine ("ElementTypeDescriptor = Uuid");
+					//Console.WriteLine ("ElementTypeDescriptor = Uuid");
                     var elemDataUuid = (Structs.sdp_data_struct__uuid_t)Marshal.PtrToStructure(
                         pElemData, typeof(Structs.sdp_data_struct__uuid_t));
                     Debug.Assert(elemDataUuid.dtd == elemDataUuid.val.type, "uuid type");
@@ -298,7 +298,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                     Array.Copy(data, buf, buf.Length);
                     //----
                 } else {
-					Console.WriteLine ("ElementTypeDescriptor = ?");
+					//Console.WriteLine ("ElementTypeDescriptor = ?");
 
                     int len = FromSizeIndex(sizeIndex);
                     buf = new byte[len];
@@ -316,7 +316,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
         private List<ServiceElement> DoSequence(IntPtr pCur)
         {
-			Console.WriteLine ("DoSequence");
+			//Console.WriteLine ("DoSequence");
             List<ServiceElement> list = new List<ServiceElement>();
             if (pCur != IntPtr.Zero) {
                 for (int HACK = 0; HACK < Math.Min(4, RestrictRunawayCount); ++HACK) {

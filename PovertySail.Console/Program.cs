@@ -31,10 +31,10 @@ namespace PovertySail.Console
                 return;
             }
 
-            var supervisor = kernel.Get<Supervisor>();
-            supervisor.Initialize();
-            supervisor.Run();
-
+			using (var supervisor = kernel.Get<Supervisor> ()) {
+				supervisor.Initialize ();
+				supervisor.Run ();
+			}
         }
 
         static IKernel Configure()

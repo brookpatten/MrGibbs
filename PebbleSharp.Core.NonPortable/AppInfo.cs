@@ -16,8 +16,8 @@ namespace PebbleSharp.Core.NonPortable
         [DataMember(Name = "sdkVersion", IsRequired = true)]
         public string SdkVersion { get; private set; }
 
-        [DataMember(Name = "capabilities", IsRequired = true)]
-        public string[] Capabilities { get; private set; }
+        //[DataMember(Name = "capabilities", IsRequired = true)]
+        //public string[] Capabilities { get; private set; }
 
         [DataMember(Name = "shortName", IsRequired = true)]
         public string ShortName { get; private set; }
@@ -26,8 +26,8 @@ namespace PebbleSharp.Core.NonPortable
         //resources
 
         //appKeys
-        [DataMember(Name = "appKeys", IsRequired = true)]
-        public Dictionary<string, int> AppKeys { get; set; }
+        //[DataMember(Name = "appKeys", IsRequired = true)]
+        //public Dictionary<string, int> AppKeys { get; set; }
 
         [DataMember(Name = "uuid", IsRequired = true)]
         public string UUID { get; private set; }

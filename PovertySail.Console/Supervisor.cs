@@ -10,7 +10,7 @@ using PovertySail.Models;
 
 namespace PovertySail.Console
 {
-    public class Supervisor
+	public class Supervisor:IDisposable
     {
         private ILogger _logger;
         private PluginConfiguration _configuration;
@@ -167,5 +167,12 @@ namespace PovertySail.Console
                 configuration.Plugins = configuration.Plugins.Where(x => x != plugin).ToList();
             }
         }
+
+		public void Dispose()
+		{
+			if (_configuration != null) {
+				_configuration.Dispose ();
+			}
+		}
     }
 }

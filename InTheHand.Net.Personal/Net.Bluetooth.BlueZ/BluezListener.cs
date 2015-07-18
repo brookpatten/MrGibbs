@@ -42,7 +42,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         //----
         protected override BluetoothEndPoint PrepareBindEndPoint(BluetoothEndPoint serverEP_)
         {
-            Console.WriteLine("Calling BluezRfcommEndPoint.CreateBindEndPoint");
+            //Console.WriteLine("Calling BluezRfcommEndPoint.CreateBindEndPoint");
             var bindEP = BluezRfcommEndPoint.CreateBindEndPoint(serverEP_);
             // Win32 uses -1 for 'auto assign' but BlueZ uses 0.
             if (serverEP_.Port == -1) {
@@ -65,12 +65,12 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                     "sdp_extract_pdu had {0} but only used {1}", sdpRecord.Length, used));
             _sdpSession = AddRecord(rec);
             //???NativeMethods.sdp_free_record(pRec);
-            Console.WriteLine("Done SetService");
+            //Console.WriteLine("Done SetService");
         }
 
         protected override void RemoveService()
         {
-            Console.WriteLine("Gonna _sdpSession.Close()...");
+            //Console.WriteLine("Gonna _sdpSession.Close()...");
             _sdpSession.Close();
         }
 

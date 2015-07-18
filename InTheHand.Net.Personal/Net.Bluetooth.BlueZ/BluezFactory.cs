@@ -41,7 +41,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 _radioList = new List<IBluetoothRadio>();
                 _radioList.Add(new NullBluetoothFactory.NullRadio());
             }
-            Console.WriteLine("Done BluezFactory init.");
+            //Console.WriteLine("Done BluezFactory init.");
         }
 
         protected override void Dispose(bool disposing)
@@ -92,7 +92,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                     }
                     _hDevId = hDevId;
                     _hDevDescr = hDevDescr;
-                    Console.WriteLine("Id: {0}, DD: {1}", DevId, DevDescr);
+                    //Console.WriteLine("Id: {0}, DD: {1}", DevId, DevDescr);
                 }
             }
         }
@@ -159,7 +159,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             int idPrimary = NativeMethods.hci_get_route(IntPtr.Zero);
            /////////////////////////////// BluezUtils.CheckAndThrow((BluezError)idPrimary, "hci_get_route");
             var dd = NativeMethods.hci_open_dev(idPrimary);
-            Console.WriteLine("InitRadios idPrimary: {0}, dd: {1}", idPrimary, dd);
+            //Console.WriteLine("InitRadios idPrimary: {0}, dd: {1}", idPrimary, dd);
             _radioPrimary = new BluezRadio(this, dd);
             //
             int maxToTry = 10;
@@ -168,7 +168,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 var curDd = NativeMethods.hci_open_dev(curId);
                 var ret = (BluezError)curDd;
                 if (BluezUtils.IsSuccess(ret)) {
-                    Console.WriteLine("InitRadios curDd: {0}", curDd);
+                    //Console.WriteLine("InitRadios curDd: {0}", curDd);
                     var curR = new BluezRadio(this, curDd);
                     list.Add(curR);
                 }
@@ -179,7 +179,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
         protected override IBluetoothRadio GetPrimaryRadio()
         {
-            Console.WriteLine("BluezFactory GetPrimaryRadio");
+            //Console.WriteLine("BluezFactory GetPrimaryRadio");
 #if ONE_RADIO
             InitRadios();
             return _primaryRadio;

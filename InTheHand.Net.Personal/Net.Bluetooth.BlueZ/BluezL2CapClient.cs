@@ -67,7 +67,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
         protected override BluetoothEndPoint PrepareBindEndPoint(BluetoothEndPoint serverEP)
         {
-            Console.WriteLine("Calling BluezL2capEndPoint.CreateBindEndPoint");
+            //Console.WriteLine("Calling BluezL2capEndPoint.CreateBindEndPoint");
             return BluezL2capEndPoint.CreateBindEndPoint(serverEP);
         }
 
@@ -151,7 +151,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             //----
             protected BluetoothEndPoint PrepareConnectEndPoint(BluetoothEndPoint serverEP)
             {
-                Console.WriteLine("Calling BluezL2capEndPoint.CreateConnectEndPoint");
+                //Console.WriteLine("Calling BluezL2capEndPoint.CreateConnectEndPoint");
                 return BluezL2capEndPoint.CreateConnectEndPoint(serverEP);
             }
 

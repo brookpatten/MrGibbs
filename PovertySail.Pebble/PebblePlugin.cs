@@ -44,6 +44,7 @@ namespace PovertySail.Pebble
                             bundle = new AppBundle();
                             stream.Position = 0;
                             bundle.Load(stream, zip);
+
                         }
                     }
                 }
@@ -60,7 +61,7 @@ namespace PovertySail.Pebble
                 }
                 catch (Exception ex)
                 {
-                    _logger.Warn("Failed to connect to pebble "+pebble.PebbleID);
+					_logger.Error("Failed to connect to pebble "+pebble.PebbleID,ex);
                 }
             }
 

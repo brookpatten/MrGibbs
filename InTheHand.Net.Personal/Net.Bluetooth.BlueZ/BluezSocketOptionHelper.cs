@@ -19,7 +19,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             var o = _sock.GetSocketOption(StackConsts.SOL_RFCOMM, StackConsts.so_RFCOMM_LM);
             var i = (int)o;
             var e = (StackConsts.RFCOMM_LM)i;
-            Console.WriteLine("Read: {0} 0x{0:X}", e);
+            //Console.WriteLine("Read: {0} 0x{0:X}", e);
             return e;
         }
 
@@ -27,7 +27,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         {
             _linkModeSetting &= ~bit; // Clear it firstt
             if (value) _linkModeSetting |= bit;
-            Console.WriteLine("Setting: {0} 0x{0:X}", _linkModeSetting);
+            //Console.WriteLine("Setting: {0} 0x{0:X}", _linkModeSetting);
             _sock.SetSocketOption(StackConsts.SOL_RFCOMM, StackConsts.so_RFCOMM_LM, (int)_linkModeSetting);
         }
 

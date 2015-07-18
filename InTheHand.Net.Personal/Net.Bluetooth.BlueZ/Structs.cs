@@ -195,8 +195,8 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 try {
                     var arr = new byte[sizeOf];
                     Marshal.Copy(p, arr, 0, arr.Length);
-                    Console.WriteLine("uuid_t: {0} (len: {1})",
-                        BitConverter.ToString(arr), sizeOf);
+                    //Console.WriteLine("uuid_t: {0} (len: {1})",
+                        //BitConverter.ToString(arr), sizeOf);
                 } finally {
                     Marshal.FreeHGlobal(p);
                 }

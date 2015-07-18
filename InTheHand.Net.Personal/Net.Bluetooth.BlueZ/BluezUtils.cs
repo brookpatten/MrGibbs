@@ -38,7 +38,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             if (ret >= 0)
                 return;
 			var ex = new Win32Exception (Marshal.GetLastWin32Error());
-			Console.WriteLine ("BluezUtils.CheckAndThrow:" + ex.Message);
+			//Console.WriteLine ("BluezUtils.CheckAndThrow:" + ex.Message);
 			throw ex;
 			//Throw(ret, descr);
         }
@@ -61,7 +61,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             //-stackTrace = new StackTrace().ToString();
             var msg = "BluezUtils.Throw: '" + descr + "', ret: " + ret0 + " at: " + stackTrace;
             Debug.WriteLine(msg);
-            Console.WriteLine(msg);
+            //Console.WriteLine(msg);
             throw new SocketException(sockErr.Value);
         }
 

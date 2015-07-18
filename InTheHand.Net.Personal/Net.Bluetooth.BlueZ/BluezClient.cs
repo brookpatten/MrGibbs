@@ -35,14 +35,14 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         internal BluezClient(BluezFactory fcty)
             : base(fcty)
         {
-            Console.WriteLine("1 Param ctor");
+            //Console.WriteLine("1 Param ctor");
             _fcty = fcty;
         }
 
         internal BluezClient(BluezFactory fcty, BluetoothEndPoint localEP)
             : base(fcty, localEP)
         {
-            Console.WriteLine("2 Param ctor");
+            //Console.WriteLine("2 Param ctor");
             _fcty = fcty;
             //TODO _radio = _fcty.GetAdapterWithAddress(localEP.DeviceAddress);
         }
@@ -50,7 +50,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         internal BluezClient(BluezFactory fcty, System.Net.Sockets.Socket acceptedSocket)
             : base(fcty, acceptedSocket)
         {
-            Console.WriteLine("3 Param ctor");
+            //Console.WriteLine("3 Param ctor");
             _fcty = fcty;
         }
 
@@ -77,7 +77,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
         protected override BluetoothEndPoint PrepareBindEndPoint(BluetoothEndPoint serverEP)
         {
-            Console.WriteLine("Calling BluezRfcommEndPoint.CreateBindEndPoint");
+            //Console.WriteLine("Calling BluezRfcommEndPoint.CreateBindEndPoint");
             return BluezRfcommEndPoint.CreateBindEndPoint(serverEP);
         }
 
@@ -86,11 +86,11 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             int maxDevices, bool authenticated, bool remembered, bool unknown, bool discoverableOnly,
             BluetoothClient.LiveDiscoveryCallback liveDiscoHandler, object liveDiscoState)
         {
-            Console.WriteLine("DiscoverDevices");
+            //Console.WriteLine("DiscoverDevices");
             BluezDbus bus = null;
             Action<IBluetoothDeviceInfo> removeDlgt = null;
             if (liveDiscoHandler != null || liveDiscoState != null) {
-                Console.WriteLine("Gonna AddInquiryEvents 2");
+                //Console.WriteLine("Gonna AddInquiryEvents 2");
                 bus = _fcty.BluezDbus;
                 Action<IBluetoothDeviceInfo> dlgt = delegate(IBluetoothDeviceInfo bdi) {
                     liveDiscoHandler(bdi, liveDiscoState);
@@ -113,7 +113,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             int maxDevices, bool authenticated, bool remembered, bool unknown, bool discoverableOnly,
             BluetoothClient.LiveDiscoveryCallback liveDiscoHandler, object liveDiscoState)
         {
-            Console.WriteLine("DoDiscoverDevices");
+            //Console.WriteLine("DoDiscoverDevices");
             var discoTime = DateTime.UtcNow;
             List<IBluetoothDeviceInfo> known = new List<IBluetoothDeviceInfo>(); // hack often GC fodder
             var bus = _fcty.BluezDbus;
@@ -132,14 +132,14 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 var SizeofItem = Marshal.SizeOf(TypeofItem);
                 IntPtr pii = BluezUtils.malloc(maxDevices * SizeofItem);
                 try {
-                    Console.WriteLine("Gonna hci_inquiry num_rsp: {0}, t: {1} ({2} was {3}) ", maxDevices, t, td, InquiryLength);
+                    //Console.WriteLine("Gonna hci_inquiry num_rsp: {0}, t: {1} ({2} was {3}) ", maxDevices, t, td, InquiryLength);
                     // TO-DO LAP/IAC: var lap = InquiryAccessCode;
                     //var stackTrace = new StackTrace();
                     //var msg = "Gonna hci_inquiry at: " + stackTrace;
                     //Debug.WriteLine(msg);
                     //Console.WriteLine(msg);
                     int num = NativeMethods.hci_inquiry(_fcty.DevId, t, maxDevices, IntPtr.Zero, ref pii, flags);
-                    Console.WriteLine("inquiry num=" + num);
+                    //Console.WriteLine("inquiry num=" + num);
                     //BluezUtils.CheckAndThrow((BluezError)num, "hci_inquiry");
                     BluezUtils.Assert((BluezError)num, "hci_inquiry");
                     //
@@ -199,7 +199,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             //----
             protected BluetoothEndPoint PrepareConnectEndPoint(BluetoothEndPoint serverEP)
             {
-                Console.WriteLine("Calling BluezRfcommEndPoint.CreateBindEndPoint");
+                //Console.WriteLine("Calling BluezRfcommEndPoint.CreateBindEndPoint");
                 return BluezRfcommEndPoint.CreateConnectEndPoint(serverEP);
             }
 
@@ -234,15 +234,15 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             }
             var records = _sdpQuery.EndQuery(ar);
 
-			foreach (var record in records) {
-				Console.WriteLine ("Service Record:" + record.ToString());
-			}
+			//foreach (var record in records) {
+				//Console.WriteLine ("Service Record:" + record.ToString());
+			//}
 
             var ports = BluetoothConnector.ListAllRfcommPortsInRecords(records);
 
-			foreach (var port in ports) {
-				Console.WriteLine ("Port:" + port);
-			}
+			//foreach (var port in ports) {
+			//	Console.WriteLine ("Port:" + port);
+			//}
 
             return ports;
         }

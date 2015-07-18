@@ -68,12 +68,12 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                     "sdp_extract_pdu had {0} but only used {1}", sdpRecord.Length, used));
             _sdpSession = AddRecord(rec);
             //???NativeMethods.sdp_free_record(pRec);
-            Console.WriteLine("Done SetService");
+            //Console.WriteLine("Done SetService");
         }
 
         protected override void RemoveService()
         {
-            Console.WriteLine("Gonna _sdpSession.Close()...");
+            //Console.WriteLine("Gonna _sdpSession.Close()...");
             _sdpSession.Close();
         }
 

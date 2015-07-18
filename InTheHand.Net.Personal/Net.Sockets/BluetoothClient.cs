@@ -411,7 +411,7 @@ namespace InTheHand.Net.Sockets
             if (remoteEP == null) {
                 throw new ArgumentNullException("remoteEP");
             }
-            Console.WriteLine("IBluetoothClient = "+m_impl.GetType().Name);
+            //Console.WriteLine("IBluetoothClient = "+m_impl.GetType().Name);
             m_impl.Connect(remoteEP);
         }
         /// <summary>
@@ -444,9 +444,9 @@ namespace InTheHand.Net.Sockets
             if (service == Guid.Empty) {
                 throw new ArgumentNullException("service");
             }
-            Console.WriteLine("Creating Endpoint");
+            //Console.WriteLine("Creating Endpoint");
             BluetoothEndPoint point = new BluetoothEndPoint(address, service);
-            Console.WriteLine("Connecting");
+            //Console.WriteLine("Connecting");
             this.Connect(point);
         }
 

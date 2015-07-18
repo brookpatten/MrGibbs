@@ -49,7 +49,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             if (dict != null) {
                 SetProperties(objectPath, bdi, dict);
             } else {
-                Console.WriteLine("No dbus device properties.");
+                //Console.WriteLine("No dbus device properties.");
             }
             return bdi;
         }
@@ -79,7 +79,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 // Int16--Console.WriteLine("RSSI type: " + value.GetType().Name);
                 bdi._rssiAtInquiry = (int?)Convert.ToInt32(value);
             } else {
-                Console.WriteLine("Where's the 'RSSI' property?!?");
+                //Console.WriteLine("Where's the 'RSSI' property?!?");
             }
             //
             return bdi;
@@ -130,7 +130,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             } else {
                 bdi._cod = new ClassOfDevice(0);
             }
-            Console.WriteLine("After SetProperties, _name: " + bdi._name);
+            //Console.WriteLine("After SetProperties, _name: " + bdi._name);
         }
 
         private static void EnsureHasObjectPath(BluezDeviceInfo bdi)
@@ -149,8 +149,8 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 bdi._dbusPath = a.CreateDevice(BluezUtils.FromBluetoothAddressToDbus(bdi._addr));
             }
             Debug.Assert(bdi._dbusPath != null, "NOT _dbusPath!=null after EnsureHasObjectPath.");
-            Console.WriteLine("EnsureHasObjectPath after: "
-                + Utils.MiscUtils.ToStringQuotedOrNull(bdi._dbusPath));
+            //Console.WriteLine("EnsureHasObjectPath after: "
+                //+ Utils.MiscUtils.ToStringQuotedOrNull(bdi._dbusPath));
         }
 
         //----
@@ -164,7 +164,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             get
             {
                 if (_name == null) {
-                    Console.WriteLine("_name is null");
+                    //Console.WriteLine("_name is null");
                     //
                     EnsureHasObjectPath(this);
                     Debug.Assert(_dbusPath != null, "(2) NOT _dbusPath!=null");

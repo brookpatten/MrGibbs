@@ -74,7 +74,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             } finally {
                 _started.Set();
             }
-            Console.WriteLine("Dbus loop running");
+            //Console.WriteLine("Dbus loop running");
             //
             while (true) {
                 _fctyBus.Iterate();
@@ -115,7 +115,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 var d = GetDevice(curDevicePath);
                 var deviceDict = d.GetProperties();
                 var addrStr = (string)deviceDict["Address"];
-                Console.WriteLine("  GDL got addrStr: " + addrStr);
+                //Console.WriteLine("  GDL got addrStr: " + addrStr);
                 var addr = BluetoothAddress.Parse(addrStr);
                 var bdi = BluezDeviceInfo.CreateFromStored(_fcty, curDevicePath, addr, deviceDict);
                 outList.Add(bdi);
@@ -149,7 +149,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             try {
                 devicePath = a.FindDevice(addrStrIn);
             } catch (Exception ex) {
-                Console.WriteLine("GetDevice_ error: " + ex.Message);
+                //Console.WriteLine("GetDevice_ error: " + ex.Message);
                 Debug.Assert(ex.Message.StartsWith("org.bluez.Error.DoesNotExist:"),
                     "Unexected exception type: " + ex);
                 if (ex.Message.StartsWith("org.bluez.Error.DoesNotExist:", StringComparison.OrdinalIgnoreCase)) {
@@ -173,7 +173,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             }
             var deviceDict = d.GetProperties();
             var addrStr = (string)deviceDict["Address"];
-            Console.WriteLine("  GDP got addrStr: " + addrStr);
+            //Console.WriteLine("  GDP got addrStr: " + addrStr);
             return deviceDict;
         }
 
@@ -208,7 +208,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 var path = a.CreatePairedDevice(FromBluetoothAddress(device), agent, capabilityStr);
                 return true;
             } catch (Exception ex) {
-                Console.WriteLine("PairRequest_ error: " + ex.Message);
+                //Console.WriteLine("PairRequest_ error: " + ex.Message);
                 // "org.bluez.Error.AlreadyExists: Bonding already exists"
                 if (ex.Message.StartsWith("org.bluez.Error.AlreadyExists:", StringComparison.OrdinalIgnoreCase)) {
                     Console.WriteLine("WARNING org.bluez.Error.AlreadyExists");
@@ -230,20 +230,20 @@ namespace InTheHand.Net.Bluetooth.BlueZ
 
             if (mgr != null)
             {
-                Console.WriteLine("got Manager");
+                //Console.WriteLine("got Manager");
             }
             else
             {
-                Console.WriteLine("Manager is null for "+Service);
+                //Console.WriteLine("Manager is null for "+Service);
             }
 #if false
             string pathTmp;
             pathTmp = mgr.DefaultAdapter();
-            Console.WriteLine("DefaultAdapter : string");
+            //Console.WriteLine("DefaultAdapter : string");
             var adapterPath = new ObjectPath(pathTmp);
 #else
             ObjectPath adapterPath = mgr.DefaultAdapter();
-            Console.WriteLine("DefaultAdapter : ObjectPath");
+            //Console.WriteLine("DefaultAdapter : ObjectPath");
 #endif
             return adapterPath;
         }
@@ -252,7 +252,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         {
             ObjectPath adapterPath = GetDefaultAdapterPath();
             var a = FactoryBus.GetObject<BluezDbusInterface.Adapter>(Service, adapterPath);
-            Console.WriteLine("got Adapter");
+            //Console.WriteLine("got Adapter");
             return a;
         }
 
@@ -303,19 +303,19 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             _liveDiscoAdapterHack = GetDefaultAdapter();
             _liveDiscoAdapterHack.DeviceFound += adapter_DeviceFound;
             _liveDiscoAdapterHack.PropertyChanged += _registeredAdapter_PropertyChanged;
-            Console.WriteLine("Now Registered2");
+            //Console.WriteLine("Now Registered2");
         }
 
         void _registeredAdapter_PropertyChanged(string name, object newValue)
         {
-            Console.WriteLine("xAdapter_PropertyChanged name: {0}, newValue: {1}",
-                name, newValue);
+            //Console.WriteLine("xAdapter_PropertyChanged name: {0}, newValue: {1}",
+                //name, newValue);
         }
 
         void adapter_DeviceFound(string address, IDictionary<string, object> properties)
         {
-            Console.WriteLine("xAdapter_DeviceFound addr: {0}, prop.Count: {1}",
-                address, properties.Count);
+            //Console.WriteLine("xAdapter_DeviceFound addr: {0}, prop.Count: {1}",
+                //address, properties.Count);
             if (!_livePropDumped) {
                 _livePropDumped = true;
                 BluezUtils.DumpKeys(properties);

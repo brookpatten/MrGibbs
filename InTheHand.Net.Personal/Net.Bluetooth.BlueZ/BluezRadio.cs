@@ -41,11 +41,11 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             BluezUtils.Assert(ret, "hci_read_bd_addr");
             if (BluezUtils.IsSuccess(ret)) {
                 _addr = BluezUtils.ToBluetoothAddress(bdaddr);
-                Console.WriteLine("Radio SUCCESS, addr: " + _addr);
+                //Console.WriteLine("Radio SUCCESS, addr: " + _addr);
             } else {
                 // NEVER used EXCEPT in the debugger if we skip the CheckandThrow above.
                 _addr = BluetoothAddress.None;
-                Console.WriteLine("Radio FAIL, addr: " + _addr);
+                //Console.WriteLine("Radio FAIL, addr: " + _addr);
             }
             _nameTmp = new byte[250];
             //
@@ -55,13 +55,13 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             //--
             // Set Adapter.
             _adapter = GetAdapter(_objectPath);
-            Console.WriteLine("Got adapter at .ctor.3.");
+            //Console.WriteLine("Got adapter at .ctor.3.");
             //
             var prop = GetProperties();
             string addrDt = (string)prop[PropertyName.Address];
             var addrD = BluetoothAddress.Parse(addrDt);
             Utils.MiscUtils.AssertEquals(addrD, _addr);
-            Console.WriteLine("Check DONE Radio..ctor. " + addrD + " vs " + _addr);
+            //Console.WriteLine("Check DONE Radio..ctor. " + addrD + " vs " + _addr);
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes",
@@ -101,7 +101,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             } else {
                 throw new ArgumentException("Unknown enum value: " + value);
             }
-            Console.WriteLine("DONE SetAdapterMode.");
+            //Console.WriteLine("DONE SetAdapterMode.");
         }
 
         //----
@@ -159,7 +159,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                     }
                 }
                 // The D-Bus API is not working for me on Ubuntu..............
-                Console.WriteLine("Done CHECK DBus Radio CoD: " + cod + " vs " + codP);
+                //Console.WriteLine("Done CHECK DBus Radio CoD: " + cod + " vs " + codP);
                 //
                 return cod;
             }
