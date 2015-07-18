@@ -1,0 +1,71 @@
+2015-07-17 02:27:57.7290|INFO|PovertySail.Console.Supervisor|Initializing Plugin BlendMicroAnemometerPlugin
+2015-07-17 02:27:57.9580|INFO|PovertySail.Console.Supervisor|Initializing Plugin CalculatorPlugin
+2015-07-17 02:27:57.9651|INFO|PovertySail.Console.Supervisor|Initializing Plugin GpsPlugin
+2015-07-17 02:27:57.9681|INFO|PovertySail.Console.Supervisor|Initializing Plugin I2CAccelerometerPlugin
+2015-07-17 02:27:57.9711|INFO|PovertySail.Console.Supervisor|Initializing Plugin PebblePlugin
+2015-07-17 02:27:57.9747|INFO|PovertySail.Console.Supervisor|BlendMicroAnemometerPlugin Initialized OK
+2015-07-17 02:27:57.9759|INFO|PovertySail.Console.Supervisor|CalculatorPlugin Initialized OK
+2015-07-17 02:27:57.9769|INFO|PovertySail.Console.Supervisor|GpsPlugin Initialized OK
+2015-07-17 02:27:57.9769|INFO|PovertySail.Console.Supervisor|I2CAccelerometerPlugin Initialized OK
+2015-07-17 05:06:45.5247|INFO|PovertySail.Console.Supervisor|Initializing Plugin BlendMicroAnemometerPlugin
+2015-07-17 05:06:45.7599|INFO|PovertySail.Console.Supervisor|Initializing Plugin CalculatorPlugin
+2015-07-17 05:06:45.7717|INFO|PovertySail.Console.Supervisor|Initializing Plugin GpsPlugin
+2015-07-17 05:06:45.8325|FATAL|PovertySail.Console.Supervisor|Exception initializing plugin GpsPlugin
+2015-07-17 05:06:45.8352|INFO|PovertySail.Console.Supervisor|Initializing Plugin I2CAccelerometerPlugin
+2015-07-17 05:06:45.8385|INFO|PovertySail.Console.Supervisor|Initializing Plugin PebblePlugin
+2015-07-17 05:06:45.8538|WARN|PovertySail.Console.Supervisor|Evicting GpsPlugin without reinitialize
+2015-07-17 05:06:45.8643|INFO|PovertySail.Console.Supervisor|BlendMicroAnemometerPlugin Initialized OK
+2015-07-17 05:06:45.8675|INFO|PovertySail.Console.Supervisor|CalculatorPlugin Initialized OK
+2015-07-17 05:06:45.8712|INFO|PovertySail.Console.Supervisor|I2CAccelerometerPlugin Initialized OK
+2015-07-17 05:06:45.8753|INFO|PovertySail.Console.Supervisor|PebblePlugin Initialized OK
+2015-07-17 05:09:54.9877|INFO|PovertySail.Console.Supervisor|Initializing Plugin BlendMicroAnemometerPlugin
+2015-07-17 05:09:55.2259|INFO|PovertySail.Console.Supervisor|Initializing Plugin CalculatorPlugin
+2015-07-17 05:09:55.2350|INFO|PovertySail.Console.Supervisor|Initializing Plugin GpsPlugin
+2015-07-17 05:09:55.2959|FATAL|PovertySail.Console.Supervisor|Exception initializing plugin GpsPlugin
+2015-07-17 05:09:55.3257|INFO|PovertySail.Console.Supervisor|Initializing Plugin I2CAccelerometerPlugin
+2015-07-17 05:09:55.3288|INFO|PovertySail.Console.Supervisor|Initializing Plugin PebblePlugin
+2015-07-17 05:09:55.3444|WARN|PovertySail.Console.Supervisor|Evicting GpsPlugin without reinitialize
+2015-07-17 05:09:55.3584|INFO|PovertySail.Console.Supervisor|BlendMicroAnemometerPlugin Initialized OK
+2015-07-17 05:09:55.3601|INFO|PovertySail.Console.Supervisor|CalculatorPlugin Initialized OK
+2015-07-17 05:09:55.3612|INFO|PovertySail.Console.Supervisor|I2CAccelerometerPlugin Initialized OK
+2015-07-17 05:09:55.3624|INFO|PovertySail.Console.Supervisor|PebblePlugin Initialized OK
+2015-07-17 05:13:10.9007|INFO|PovertySail.Console.Supervisor|Initializing Plugin BlendMicroAnemometerPlugin
+2015-07-17 05:13:11.1553|INFO|PovertySail.Console.Supervisor|Initializing Plugin CalculatorPlugin
+2015-07-17 05:13:11.1647|INFO|PovertySail.Console.Supervisor|Initializing Plugin GpsPlugin
+2015-07-17 05:13:11.4190|INFO|PovertySail.Console.Supervisor|Initializing Plugin I2CAccelerometerPlugin
+2015-07-17 05:13:11.4226|INFO|PovertySail.Console.Supervisor|Initializing Plugin PebblePlugin
+2015-07-17 05:13:11.4246|INFO|PovertySail.Console.Supervisor|BlendMicroAnemometerPlugin Initialized OK
+2015-07-17 05:13:11.4259|INFO|PovertySail.Console.Supervisor|CalculatorPlugin Initialized OK
+2015-07-17 05:13:11.4269|INFO|PovertySail.Console.Supervisor|GpsPlugin Initialized OK
+2015-07-17 05:13:11.4279|INFO|PovertySail.Console.Supervisor|I2CAccelerometerPlugin Initialized OK
+2015-07-17 05:13:11.4289|INFO|PovertySail.Console.Supervisor|PebblePlugin Initialized OK
+2015-07-17 05:13:47.8206|INFO|PovertySail.Console.Supervisor|Initializing Plugin BlendMicroAnemometerPlugin
+2015-07-17 05:13:48.0770|INFO|PovertySail.Console.Supervisor|Initializing Plugin CalculatorPlugin
+2015-07-17 05:13:48.0822|INFO|PovertySail.Console.Supervisor|Initializing Plugin GpsPlugin
+2015-07-17 05:13:48.3446|INFO|PovertySail.Console.Supervisor|Initializing Plugin I2CAccelerometerPlugin
+2015-07-17 05:13:48.3476|INFO|PovertySail.Console.Supervisor|Initializing Plugin PebblePlugin
+2015-07-17 05:13:48.3495|INFO|PovertySail.Console.Supervisor|BlendMicroAnemometerPlugin Initialized OK
+2015-07-17 05:13:48.3506|INFO|PovertySail.Console.Supervisor|CalculatorPlugin Initialized OK
+2015-07-17 05:13:48.3516|INFO|PovertySail.Console.Supervisor|GpsPlugin Initialized OK
+2015-07-17 05:13:48.3526|INFO|PovertySail.Console.Supervisor|I2CAccelerometerPlugin Initialized OK
+2015-07-17 05:13:48.3536|INFO|PovertySail.Console.Supervisor|PebblePlugin Initialized OK
+2015-07-17 05:22:28.1638 Initializing Plugin BlendMicroAnemometerPlugin 
+2015-07-17 05:22:28.4156 Initializing Plugin CalculatorPlugin 
+2015-07-17 05:22:28.4249 Initializing Plugin GpsPlugin 
+2015-07-17 05:22:28.6829 Initializing Plugin I2CAccelerometerPlugin 
+2015-07-17 05:22:28.6860 Initializing Plugin PebblePlugin 
+2015-07-17 05:22:28.6878 BlendMicroAnemometerPlugin Initialized OK 
+2015-07-17 05:22:28.6889 CalculatorPlugin Initialized OK 
+2015-07-17 05:22:28.6899 GpsPlugin Initialized OK 
+2015-07-17 05:22:28.6908 I2CAccelerometerPlugin Initialized OK 
+2015-07-17 05:22:28.6918 PebblePlugin Initialized OK 
+2015-07-17 05:29:00.6777 Initializing Plugin BlendMicroAnemometerPlugin 
+2015-07-17 05:29:00.9310 Initializing Plugin CalculatorPlugin 
+2015-07-17 05:29:00.9362 Initializing Plugin GpsPlugin 
+2015-07-17 05:29:01.2286 Initializing Plugin I2CAccelerometerPlugin 
+2015-07-17 05:29:01.2320 Initializing Plugin PebblePlugin 
+2015-07-17 05:29:01.2341 BlendMicroAnemometerPlugin Initialized OK 
+2015-07-17 05:29:01.2356 CalculatorPlugin Initialized OK 
+2015-07-17 05:29:01.2370 GpsPlugin Initialized OK 
+2015-07-17 05:29:01.2384 I2CAccelerometerPlugin Initialized OK 
+2015-07-17 05:29:01.2398 PebblePlugin Initialized OK 

@@ -25,6 +25,7 @@ namespace PovertySail.Pebble
             _logger = logger;
             _pebble = pebble;
             _pebble.ConnectAsync().Wait();
+			_logger.Info ("Connected to pebble " + _pebble.PebbleID);
             _transactionId = 255;
         }
 
@@ -45,6 +46,7 @@ namespace PovertySail.Pebble
 
 
             var t = _pebble.SendApplicationMessage(message);
+			_logger.Debug ("Sent state to pebble " + _pebble.PebbleID);
             //t.Start();
             //t.Wait();
         }
