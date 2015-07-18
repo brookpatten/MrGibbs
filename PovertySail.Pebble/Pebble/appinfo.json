@@ -1,0 +1,41 @@
+{
+    "appKeys": {
+        "caption1": 0,
+        "caption2": 2,
+        "caption3": 4,
+        "command": 0,
+        "message": 6,
+        "value1": 1,
+        "value2": 3,
+        "value3": 5
+    },
+    "capabilities": [
+        ""
+    ],
+    "companyName": "brook.patten@gmail.com",
+    "longName": "PovertySail",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/i20.png",
+                "menuIcon": true,
+                "name": "IMAGE_I20",
+                "type": "png"
+            },
+            {
+                "file": "images/saildash.png",
+                "name": "IMAGE_SCREENSHOT",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "2",
+    "shortName": "PovertySail",
+    "uuid": "2d3b6b60-b249-458e-85a7-75e9fa7ead84",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
