@@ -10,9 +10,5 @@ namespace PovertySail.Contracts
     public interface IViewer : IPluginComponent
     {
         void Update(State state);
-        event EventHandler OnStartCountdown;
-        event EventHandler OnSyncCountdown;
-        event EventHandler OnStopCountdown;
-        event EventHandler OnSetMark;
     }
 }

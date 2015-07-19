@@ -19,7 +19,7 @@ namespace PovertySail.BlendMicroAnemometer
             _logger = logger;
         }
 
-        public void Initialize(PluginConfiguration configuration)
+        public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
         {
             _components = new List<IPluginComponent>();
             _initialized = false;

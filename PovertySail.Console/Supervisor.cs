@@ -15,6 +15,7 @@ namespace PovertySail.Console
         private ILogger _logger;
         private PluginConfiguration _configuration;
         private int _sleepTime;
+        private State _state;
 
         public Supervisor(ILogger logger,IList<IPlugin> plugins, int sleepTime)
         {
@@ -26,13 +27,14 @@ namespace PovertySail.Console
 
         public void Initialize()
         {
+            _state = new State();
             var failed = new List<IPlugin>();
             foreach (var plugin in _configuration.Plugins)
             {
                 try
                 {
                     _logger.Info("Initializing Plugin " + plugin.GetType().Name);
-                    plugin.Initialize(_configuration);
+                    InitializePlugin(plugin);
                 }
                 catch (Exception ex)
                 {
@@ -53,15 +55,83 @@ namespace PovertySail.Console
             }
         }
 
+        private void InitializePlugin(IPlugin plugin)
+        {
+            plugin.Initialize(_configuration, OnWatchButton, OnWatchButton, OnSpeedButton);
+        }
+
+        public void OnWatchButton(object sender,EventArgs args)
+        {
+            lock(_state)
+            {
+                if(_state.StartTime.HasValue)
+                {
+                    if(_state.StartTime > _state.Time)
+                    {
+                        var remaining = _state.StartTime.Value - _state.Time;
+
+                        if(remaining.Minutes>=4)
+                        {
+                            _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 0, remaining.Seconds, remaining.Milliseconds));
+                            _state.AddMessage(10, "Countdown synced");
+                        }
+                        else if (remaining.Minutes >= 3)
+                        {
+                            _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 1, remaining.Seconds, remaining.Milliseconds));
+                            _state.AddMessage(10, "Countdown synced");
+                        }
+                        else
+                        {
+                            _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 0, remaining.Seconds, remaining.Milliseconds));
+                            _state.AddMessage(10, "Countdown synced");
+                        }
+                    }
+                    else
+                    {
+                        _state.StartTime = null;
+                        _state.AddMessage(10, "Countdown reset");
+                    }
+                }
+                else
+                {
+                    _state.StartTime = _state.Time.AddMinutes(5);
+                    _state.AddMessage(10, "Countdown started");
+                }
+            }
+        }
+
+        public void OnHeadingButton(object sender, EventArgs args)
+        {
+            lock (_state)
+            {
+
+            }
+        }
+
+        public void OnSpeedButton(object sender, EventArgs args)
+        {
+            lock (_state)
+            {
+
+            }
+        }
+
         public void Run()
         {
             _logger.Info("Plugin Supervisor is running");
-            var state = new State();
             bool run = true;
             int operationCount = 1;
+            int cycleCount = 1;
+            _state.AddMessage(10, "Startup Complete");
             while (run && operationCount>0)
             {
+                _state.Time = DateTime.UtcNow;
                 operationCount = 0;
+
+                if(cycleCount%5==0)
+                {
+                    _state.CycleMessages();
+                }
 
                 IList<IPlugin> erroredPlugins = new List<IPlugin>();
 
@@ -69,7 +139,10 @@ namespace PovertySail.Console
                 {
                     try
                     {
-                        sensor.Update(state);
+                        lock (_state)
+                        {
+                            sensor.Update(_state);
+                        }
                         operationCount++;
                     }
                     catch (Exception ex)
@@ -86,7 +159,10 @@ namespace PovertySail.Console
                 {
                     try
                     {
-                        calculator.Calculate(state);
+                        lock (_state)
+                        {
+                            calculator.Calculate(_state);
+                        }
                         operationCount++;
                     }
                     catch (Exception ex)
@@ -119,7 +195,10 @@ namespace PovertySail.Console
                 {
                     try
                     {
-                        viewer.Update(state);
+                        lock (_state)
+                        {
+                            viewer.Update(_state);
+                        }
                         operationCount++;
                     }
                     catch (Exception ex)
@@ -138,6 +217,7 @@ namespace PovertySail.Console
                     EvictPlugin(_configuration,plugin,true);
                 }
 
+                cycleCount++;
                 _logger.Debug("Sleeping");
                 Thread.Sleep(_sleepTime);
             }
@@ -155,7 +235,7 @@ namespace PovertySail.Console
             if (reinitialize)
             {
                 //allow it to re-add the components and attempt to restart
-                plugin.Initialize(configuration);
+                InitializePlugin(plugin);
 
                 if (!plugin.Initialized)
                 {

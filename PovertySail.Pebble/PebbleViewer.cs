@@ -10,6 +10,7 @@ using PovertySail.Models;
 using PebbleSharp.Core;
 using PebbleSharp.Core.NonPortable.AppMessage;
 using PebbleSharp.Core.Bundles;
+using PebbleSharp.Core.Responses;
 
 namespace PovertySail.Pebble
 {
@@ -45,6 +46,35 @@ namespace PovertySail.Pebble
             var launch = _pebble.LaunchApp( _uuid);
             launch.Wait();
             _logger.Info("Launched app on pebble " + pebble.PebbleID);
+
+            _pebble.RegisterCallback<ApplicationMessageResponse>(Receive);
+        }
+
+        private void Receive(ApplicationMessageResponse response)
+        {
+            if (response.Dictionary != null)
+            {
+                var command = (AppMessageString)response.Dictionary.Values.SingleOrDefault(x => x.Key == 0);
+                if (command != null)
+                {
+                    var button = command.Value;
+
+                    _logger.Info("Received Command " + button + "from pebble " + _pebble.PebbleID);
+
+                    if (button == "up" && OnHeadingButton != null)
+                    {
+                        OnHeadingButton(this, new EventArgs());
+                    }
+                    else if (button == "down" && OnWatchButton != null)
+                    {
+                        OnWatchButton(this, new EventArgs());
+                    }
+                    else if (button == "select" && OnSpeedButton != null)
+                    {
+                        OnSpeedButton(this, new EventArgs());
+                    }
+                }
+            }
         }
 
         public void Update(State state)
@@ -57,11 +87,15 @@ namespace PovertySail.Pebble
 
             message.Values.Add(new AppMessageString() { Key = 0,Value = "Course over ground" });
             message.Values.Add(new AppMessageString() { Key = 1, Value = string.Format("{0:0.0}°", state.CourseOverGround) });
-            message.Values.Add(new AppMessageString() { Key = 2, Value = "Speed" });
-            message.Values.Add(new AppMessageString() { Key = 3, Value = string.Format("{0:0.0}", state.Speed) });
-            message.Values.Add(new AppMessageString() { Key = 4, Value = "Time" });
-            message.Values.Add(new AppMessageString() { Key = 5, Value = state.Time.ToShortTimeString() });
-
+            message.Values.Add(new AppMessageString() { Key = 2, Value = "Speed (kn)" });
+            message.Values.Add(new AppMessageString() { Key = 3, Value = string.Format("{0:0.0}", state.SpeedInKnots) });
+            message.Values.Add(new AppMessageString() { Key = 4, Value = state.Countdown.HasValue ? "Countdown":"" });
+            string countdown = state.Countdown.HasValue ? state.Countdown.Value.Minutes + ":" + state.Countdown.Value.Seconds.ToString("00") : "";
+            message.Values.Add(new AppMessageString() { Key = 5, Value = countdown });
+            if (!string.IsNullOrWhiteSpace(state.Message))
+            {
+                message.Values.Add(new AppMessageString() { Key = 6, Value = state.Message });
+            }
 
             var t = _pebble.SendApplicationMessage(message);
 			_logger.Debug ("Sent state to pebble " + _pebble.PebbleID);
@@ -69,13 +103,11 @@ namespace PovertySail.Pebble
             //t.Wait();
         }
 
-        public event EventHandler OnStartCountdown;
-
-        public event EventHandler OnSyncCountdown;
-
-        public event EventHandler OnStopCountdown;
-
-        public event EventHandler OnSetMark;
+        public event EventHandler OnWatchButton;
+        
+        public event EventHandler OnHeadingButton;
+        
+        public event EventHandler OnSpeedButton;
 
         public IPlugin Plugin
         {

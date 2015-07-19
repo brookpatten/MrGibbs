@@ -25,7 +25,7 @@ namespace PovertySail.Pebble
             _components = new List<IPluginComponent>();
         }
 
-        public void Initialize(PluginConfiguration configuration)
+        public void Initialize(PluginConfiguration configuration,EventHandler onWatchButton,EventHandler onHeadingButton, EventHandler onSpeedButton)
         {
             //scan for pebbles
             var pebbles = PebbleNet45.DetectPebbles();
@@ -60,6 +60,10 @@ namespace PovertySail.Pebble
                 try
                 {
                     var viewer = new PebbleViewer(_logger, this, pebble,bundle);
+                    viewer.OnSpeedButton += onSpeedButton;
+                    viewer.OnWatchButton += onWatchButton;
+                    viewer.OnHeadingButton += onHeadingButton;
+
                     _components.Add(viewer);
                     configuration.DashboardViewers.Add(viewer);
                 }

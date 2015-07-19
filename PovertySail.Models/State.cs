@@ -15,10 +15,48 @@ namespace PovertySail.Models
         
         public double CourseOverGround { get; set; }
         public double Speed { get; set; }
+        public double SpeedInKnots
+        {
+            get
+            {
+                return Speed * 1.94384;
+            }
+        }
         public DateTime? StartTime { get; set; }
+
+        public string Message
+        {
+            get;
+            private set;
+        }
+
+        public TimeSpan? Countdown
+        {
+            get
+            {
+                if(StartTime.HasValue)
+                {
+                    if(StartTime.Value>Time)
+                    {
+                        return StartTime.Value - Time;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        private List<Tuple<int,string>> _messages;
 
         public State()
         {
+            _messages = new List<Tuple<int, string>>();
             Marks = new List<Mark>();
         }
 
@@ -48,5 +86,35 @@ namespace PovertySail.Models
             }
         }
         public IList<Mark> Marks { get; set; } 
+
+        public void AddMessage(int priority,string message)
+        {
+            lock (_messages)
+            {
+                _messages.Add(new Tuple<int, string>(priority, message));
+            }
+            //if we're not showing anything right now, we can go ahead and show it
+            if(string.IsNullOrWhiteSpace(Message))
+            {
+                CycleMessages();
+            }
+        }
+
+        public void CycleMessages()
+        {
+            lock (_messages)
+            {
+                if (_messages.Any())
+                {
+                    var highest = _messages.OrderBy(x => x.Item1).First();
+                    Message = highest.Item2;
+                    _messages.Remove(highest);
+                }
+                else
+                {
+                    Message = null;
+                }
+            }
+        }
     }
 }

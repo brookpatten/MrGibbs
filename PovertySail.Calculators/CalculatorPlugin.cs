@@ -20,7 +20,7 @@ namespace PovertySail.Calculators
             _components = new List<IPluginComponent>();
         }
 
-        public void Initialize(PluginConfiguration configuration)
+        public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
         {
             _initialized = false;
             configuration.Calculators.Add(new VmgCalculator(_logger,this));

@@ -20,7 +20,7 @@ namespace PovertySail.I2CAccelerometer
             _components = new List<IPluginComponent>();
         }
 
-        public void Initialize(PluginConfiguration configuration)
+        public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
         {
             _initialized = false;
             configuration.Sensors.Add(new I2CAccelerometerSensor(_logger, this));

@@ -198,7 +198,7 @@ namespace PebbleSharp.Core.NonPortable.AppMessage
         public abstract PackedType PackedType { get; }
         public abstract ushort Length { get; }
 
-        public T Value { get; set; }
+        public virtual T Value { get; set; }
         public abstract byte[] ValueBytes { get; set; }
 
         public byte[] PackedBytes
@@ -428,12 +428,31 @@ namespace PebbleSharp.Core.NonPortable.AppMessage
 
         public override ushort Length
         {
-            get { return (ushort)System.Text.UTF8Encoding.UTF8.GetBytes(Value).Length; }
+            get { return (ushort)ValueBytes.Length; }
+        }
+
+        public override string Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                if(value!=null && value.EndsWith("\0"))
+                {
+                    base.Value = value.Substring(0, value.Length - 1);
+                }
+                else
+                {
+                    base.Value = value;
+                }
+            }
         }
 
         public override byte[] ValueBytes
         {
-            get { return System.Text.UTF8Encoding.UTF8.GetBytes(Value); }
+            get { return System.Text.UTF8Encoding.UTF8.GetBytes(Value+"\0"); }
             set
             {
                 if (value.Length <= ushort.MaxValue)

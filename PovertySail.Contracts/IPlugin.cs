@@ -8,7 +8,7 @@ namespace PovertySail.Contracts
 {
     public interface IPlugin:IDisposable
     {
-        void Initialize(PluginConfiguration configuration);
+        void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton);
         bool Initialized { get; }
         IList<IPluginComponent> Components { get; } 
     }
