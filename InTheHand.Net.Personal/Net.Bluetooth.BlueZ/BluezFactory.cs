@@ -29,7 +29,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
             if (platformStr.StartsWith("Win", StringComparison.OrdinalIgnoreCase)) {
                 throw new InvalidOperationException("Linux only, NOT Windows.");
             }
-            Console.WriteLine("BluezFactory platform: {0} = 0x{0:x}", Environment.OSVersion.Platform);
+            //Console.WriteLine("BluezFactory platform: {0} = 0x{0:x}", Environment.OSVersion.Platform);
             _busBluez = new BluezDbus(this);
 #if !ONE_RADIO
             InitRadios();

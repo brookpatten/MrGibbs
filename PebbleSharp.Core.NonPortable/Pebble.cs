@@ -299,6 +299,8 @@ namespace PebbleSharp.Core
                 progress.Report( new ProgressValue( "Done", 100 ) );
         }
 
+        
+
         public async Task<bool> InstallFirmwareAsync( FirmwareBundle bundle, IProgress<ProgressValue> progress = null )
         {
             if ( bundle == null ) throw new ArgumentNullException( "bundle" );
@@ -455,22 +457,35 @@ namespace PebbleSharp.Core
 
         public async Task<ApplicationMessageResponse> SendApplicationMessage(AppMessageDictionary data)
         {
-            DebugMessage(data.GetBytes());
+            //DebugMessage(data.GetBytes());
             return await SendMessageAsync<ApplicationMessageResponse>(Endpoint.ApplicationMessage, data.GetBytes());
+        }
+
+        //self._pebble.send_packet(AppRunState(data=AppRunStateStart(uuid=app_uuid)))
+        public async Task LaunchApp(UUID uuid)
+        {
+            var data = new AppMessageDictionary();
+            data.ApplicationId = uuid;
+            data.Command = (byte)Command.Push;
+            data.TransactionId = 1;
+            data.Values.Add(new AppMessageUInt8() { Value = 1 });//this one is key 0, doesn't actually do anything
+            data.Values.Add(new AppMessageUInt8() { Value = 1 });//this one is key 1, which is what we want
+
+            await SendMessageNoResponseAsync(Endpoint.Launcher, data.GetBytes());
         }
 
         private void OnApplicationMessageReceived( ApplicationMessageResponse response )
         {
-            SendMessageNoResponseAsync( Endpoint.ApplicationMessage, new byte[] { 0xFF, response.Dictionary.TransactionId } );
+            SendMessageNoResponseAsync( Endpoint.ApplicationMessage, new byte[] { 0xFF, response.Dictionary!=null ? response.Dictionary.TransactionId :(byte)0} );
 
-            Console.WriteLine("Received Application Message for app " + response.Dictionary.ApplicationId);
-            if (response.Dictionary != null)
-            {
-                foreach (var k in response.Dictionary.Values)
-                {
-                    Console.WriteLine(k.Key+","+k.ToString());
-                }
-            }
+            //Console.WriteLine("Received Application Message for app " + response.Dictionary.ApplicationId);
+            //if (response.Dictionary != null)
+            //{
+            //    foreach (var k in response.Dictionary.Values)
+            //    {
+            //        Console.WriteLine(k.Key+","+k.ToString());
+            //    }
+            //}
         }
 
         private void DebugMessage(byte[] bytes)

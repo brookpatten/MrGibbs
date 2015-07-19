@@ -39,8 +39,12 @@ namespace PovertySail.Pebble
             var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
             var install = _pebble.InstallAppAsync(bundle,progress);
             install.Wait();
-            _logger.Info("Installed app " + bundle.AppInfo.UUID + " on pebble " + pebble.PebbleID);
-            
+            _logger.Info("Installed app on pebble " + pebble.PebbleID);
+
+
+            var launch = _pebble.LaunchApp( _uuid);
+            launch.Wait();
+            _logger.Info("Launched app on pebble " + pebble.PebbleID);
         }
 
         public void Update(State state)
@@ -49,6 +53,7 @@ namespace PovertySail.Pebble
             AppMessageDictionary message = new AppMessageDictionary();
             message.ApplicationId = _uuid;
             message.TransactionId = _transactionId;
+            message.Command = (byte)Command.Push;
 
             message.Values.Add(new AppMessageString() { Value = "Course over ground" });
             message.Values.Add(new AppMessageString() { Value = string.Format("{0:0.0}°", state.CourseOverGround) });

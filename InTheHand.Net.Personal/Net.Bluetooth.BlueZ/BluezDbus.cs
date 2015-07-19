@@ -108,7 +108,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
         {
             var a = GetDefaultAdapter();
             var inList = GetDevices(a);
-            Console.WriteLine("got Devices[]");
+            //Console.WriteLine("got Devices[]");
             //Console.WriteLine("Devices is type: " + inList.GetType().FullName);
             var outList = new List<IBluetoothDeviceInfo>();
             foreach (var curDevicePath in inList) {
@@ -211,7 +211,7 @@ namespace InTheHand.Net.Bluetooth.BlueZ
                 //Console.WriteLine("PairRequest_ error: " + ex.Message);
                 // "org.bluez.Error.AlreadyExists: Bonding already exists"
                 if (ex.Message.StartsWith("org.bluez.Error.AlreadyExists:", StringComparison.OrdinalIgnoreCase)) {
-                    Console.WriteLine("WARNING org.bluez.Error.AlreadyExists");
+                    //Console.WriteLine("WARNING org.bluez.Error.AlreadyExists");
                     Debug.Fail("WARNING org.bluez.Error.AlreadyExists");
                     return true;
                 } else if (ex.Message.StartsWith("org.bluez.Error.ConnectionAttemptFailed:", StringComparison.OrdinalIgnoreCase)) {

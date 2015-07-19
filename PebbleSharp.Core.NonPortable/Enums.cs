@@ -33,6 +33,7 @@ namespace PebbleSharp.Core
         ApplicationMessage = 48,
         Launcher = 49,
         AppCustomize = 50,
+        AppRunState = 52,
         Logs = 2000,
         Ping = 2001,
         LogDump = 2002,

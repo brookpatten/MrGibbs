@@ -48,6 +48,10 @@ namespace PovertySail.Pebble
                         }
                     }
                 }
+                else
+                {
+                    throw new FileNotFoundException("Could not find " + _pbwPath);
+                }
             }
             
             //add a viewer for each pebble

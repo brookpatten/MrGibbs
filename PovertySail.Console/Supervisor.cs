@@ -55,6 +55,7 @@ namespace PovertySail.Console
 
         public void Run()
         {
+            _logger.Info("Plugin Supervisor is running");
             var state = new State();
             bool run = true;
             int operationCount = 1;

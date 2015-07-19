@@ -21,8 +21,8 @@ namespace PebbleSharp.Net45
             // A list of all BT devices that are paired, in range, and named "Pebble *" 
             var pebbles = devices.Where( bdi => bdi.DeviceName.StartsWith( "Pebble " ) ).ToList();
 
-            Console.WriteLine("Found {0} Devices",devices.Count());
-            Console.WriteLine("Found {0} Pebbles", pebbles.Count());
+            //Console.WriteLine("Found {0} Devices",devices.Count());
+            //Console.WriteLine("Found {0} Pebbles", pebbles.Count());
 
             return (from device in pebbles
                      select (Pebble)new PebbleNet45( new PebbleBluetoothConnection( device ),
@@ -58,11 +58,11 @@ namespace PebbleSharp.Net45
                 {
                     _tokenSource = new CancellationTokenSource();
                     _client = new BluetoothClient();
-                    Console.WriteLine("Connecting BluetoothClient");
+                    //Console.WriteLine("Connecting BluetoothClient");
                     _client.Connect( _deviceInfo.DeviceAddress, BluetoothService.SerialPort );
-                    Console.WriteLine("Getting network stream");
+                    //Console.WriteLine("Getting network stream");
                     _networkStream = _client.GetStream();
-                    Console.WriteLine("Checking for Data");
+                    //Console.WriteLine("Checking for Data");
                     Task.Factory.StartNew( CheckForData, _tokenSource.Token, TaskCreationOptions.LongRunning,
                         TaskScheduler.Default );
                 } );

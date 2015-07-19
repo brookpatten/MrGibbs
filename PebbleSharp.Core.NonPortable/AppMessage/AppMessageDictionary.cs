@@ -44,7 +44,7 @@ namespace PebbleSharp.Core.NonPortable.AppMessage
         //4:0:
         //87:195:209:30:
 
-        public const byte COMMAND = 1;//unsure of what this does atm
+        public byte Command { get; set; }
 
         public byte TransactionId { get; set; }
         public UUID ApplicationId { get; set; }
@@ -61,7 +61,8 @@ namespace PebbleSharp.Core.NonPortable.AppMessage
             var command = bytes[index];
             index++;
 
-            if (command == COMMAND)
+            Command = command;
+            //if (command == Command)
             {
                 TransactionId = bytes[index];
                 index++;
@@ -152,7 +153,7 @@ namespace PebbleSharp.Core.NonPortable.AppMessage
             if (Values != null && Values.Any())
             {
                 var bytes = new List<byte>();
-                bytes.Add(COMMAND);
+                bytes.Add(Command);
                 bytes.Add(TransactionId);
                 bytes.AddRange(ApplicationId.Data);
                 bytes.Add((byte)Values.Count);
@@ -179,6 +180,11 @@ namespace PebbleSharp.Core.NonPortable.AppMessage
         ushort Length { get; }
         byte[] ValueBytes { get; set; }
         byte[] PackedBytes { get; }
+    }
+
+    public enum Command:byte
+    {
+        Push=1
     }
 
     public enum PackedType:byte
