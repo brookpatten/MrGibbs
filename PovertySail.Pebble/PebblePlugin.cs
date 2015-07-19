@@ -17,7 +17,7 @@ namespace PovertySail.Pebble
         private ILogger _logger;
         private bool _initialized = false;
         private IList<IPluginComponent> _components;
-        private const string _pbwPath = "PovertySail.pbw";
+        private const string _pbwPath = "/home/pi/dev/povertysail/PovertySail.Pebble/PovertySail.pbw";
         
         public PebblePlugin(ILogger logger)
         {

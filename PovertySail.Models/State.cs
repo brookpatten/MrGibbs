@@ -14,14 +14,8 @@ namespace PovertySail.Models
         public CoordinatePoint Location { get; set; }
         
         public double CourseOverGround { get; set; }
-        public double Speed { get; set; }
-        public double SpeedInKnots
-        {
-            get
-            {
-                return Speed * 1.94384;
-            }
-        }
+        public double SpeedInKnots { get; set; }
+        
         public DateTime? StartTime { get; set; }
 
         public string Message

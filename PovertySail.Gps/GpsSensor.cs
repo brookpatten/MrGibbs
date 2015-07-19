@@ -254,7 +254,7 @@ namespace PovertySail.Gps
                     }
                     if (speed != double.MinValue)
                     {
-                        state.Speed = speed;
+						state.SpeedInKnots = speed;
                     }
                     if (courseOverGround != double.MinValue)
                     {
