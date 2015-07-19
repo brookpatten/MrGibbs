@@ -157,12 +157,9 @@ namespace PebbleSharp.Core.NonPortable.AppMessage
                 bytes.Add(TransactionId);
                 bytes.AddRange(ApplicationId.Data);
                 bytes.Add((byte)Values.Count);
-                uint index = 0;
                 foreach (var tuple in Values)
                 {
-                    tuple.Key = index;
                     bytes.AddRange(tuple.PackedBytes);
-                    index++;
                 }
                 return bytes.ToArray();
             }

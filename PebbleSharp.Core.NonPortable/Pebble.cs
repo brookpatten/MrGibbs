@@ -468,9 +468,8 @@ namespace PebbleSharp.Core
             data.ApplicationId = uuid;
             data.Command = (byte)Command.Push;
             data.TransactionId = 1;
-            data.Values.Add(new AppMessageUInt8() { Value = 1 });//this one is key 0, doesn't actually do anything
-            data.Values.Add(new AppMessageUInt8() { Value = 1 });//this one is key 1, which is what we want
-
+            data.Values.Add(new AppMessageUInt8() { Key=1,Value = 1 });//this one is key 0, doesn't actually do anything
+            
             await SendMessageNoResponseAsync(Endpoint.Launcher, data.GetBytes());
         }
 

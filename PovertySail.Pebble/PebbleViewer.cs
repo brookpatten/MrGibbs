@@ -55,12 +55,12 @@ namespace PovertySail.Pebble
             message.TransactionId = _transactionId;
             message.Command = (byte)Command.Push;
 
-            message.Values.Add(new AppMessageString() { Value = "Course over ground" });
-            message.Values.Add(new AppMessageString() { Value = string.Format("{0:0.0}°", state.CourseOverGround) });
-            message.Values.Add(new AppMessageString() { Value = "Speed" });
-            message.Values.Add(new AppMessageString() { Value = string.Format("{0:0.0}", state.Speed) });
-            message.Values.Add(new AppMessageString() { Value = "Time" });
-            message.Values.Add(new AppMessageString() { Value = state.Time.ToShortTimeString() });
+            message.Values.Add(new AppMessageString() { Key = 0,Value = "Course over ground" });
+            message.Values.Add(new AppMessageString() { Key = 1, Value = string.Format("{0:0.0}°", state.CourseOverGround) });
+            message.Values.Add(new AppMessageString() { Key = 2, Value = "Speed" });
+            message.Values.Add(new AppMessageString() { Key = 3, Value = string.Format("{0:0.0}", state.Speed) });
+            message.Values.Add(new AppMessageString() { Key = 4, Value = "Time" });
+            message.Values.Add(new AppMessageString() { Key = 5, Value = state.Time.ToShortTimeString() });
 
 
             var t = _pebble.SendApplicationMessage(message);
