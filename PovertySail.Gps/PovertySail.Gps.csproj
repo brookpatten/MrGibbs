@@ -49,15 +49,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PovertySail.Configuration\PovertySail.Configuration.csproj">
-      <Project>{0096b610-9ead-421f-83ac-c3fe2559ec68}</Project>
+      <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
       <Name>PovertySail.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\PovertySail.Contracts\PovertySail.Contracts.csproj">
-      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>PovertySail.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\PovertySail.Models\PovertySail.Models.csproj">
-      <Project>{a41a884e-a7fe-4ec6-80a7-145e3fb4311f}</Project>
+      <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>PovertySail.Models</Name>
     </ProjectReference>
   </ItemGroup>

@@ -33,18 +33,12 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="QuadroschrauberSharp.Linux">
-      <HintPath>lib\QuadroschrauberSharp.Linux.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack">
       <HintPath>packages\ServiceStack.3.9.43\lib\net35\ServiceStack.dll</HintPath>
@@ -72,9 +66,6 @@
     </Reference>
     <Reference Include="SuperSocket.Common">
       <HintPath>packages\SuperWebSocket.0.9.0.2\lib\net40\SuperSocket.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.Dlr">
-      <HintPath>lib\SuperWebSocket\SuperSocket.Dlr.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Facility">
       <HintPath>lib\SuperWebSocket\SuperSocket.Facility.dll</HintPath>
@@ -126,4 +117,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
+      <Project>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</Project>
+      <Name>QuadroschrauberSharp.Linux</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

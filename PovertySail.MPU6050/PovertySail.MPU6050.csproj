@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,21 +44,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\lib\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
-      <Project>{ceff9e98-6499-4d7b-b523-bb1959674e79}</Project>
-      <Name>QuadroschrauberSharp.Linux</Name>
-    </ProjectReference>
     <ProjectReference Include="..\lib\QuadroschrauberSharp\QuadroschrauberSharp.csproj">
-      <Project>{6c5550e5-299e-43c8-8e03-825e024db764}</Project>
+      <Project>{6C5550E5-299E-43C8-8E03-825E024DB764}</Project>
       <Name>QuadroschrauberSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\PovertySail.Contracts\PovertySail.Contracts.csproj">
-      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>PovertySail.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\PovertySail.Models\PovertySail.Models.csproj">
-      <Project>{a41a884e-a7fe-4ec6-80a7-145e3fb4311f}</Project>
+      <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>PovertySail.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
+      <Project>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</Project>
+      <Name>QuadroschrauberSharp.Linux</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

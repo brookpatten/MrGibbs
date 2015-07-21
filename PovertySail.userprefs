@@ -1,19 +1,20 @@
 ﻿<Properties StartupItem="PovertySail.Console/PovertySail.Console.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PovertySail.Pebble/PebbleViewer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PovertySail.HMC5883/Hmc5883Plugin.cs">
     <Files>
+      <File FileName="PovertySail.MPU6050/Mpu6050Sensor.cs" Line="7" Column="1" />
+      <File FileName="PovertySail.MPU6050/Mpu6050Plugin.cs" Line="7" Column="1" />
       <File FileName="PovertySail.Console/Supervisor.cs" Line="1" Column="1" />
-      <File FileName="PovertySail.Contracts/PluginConfiguration.cs" Line="30" Column="14" />
-      <File FileName="PovertySail.Console/Program.cs" Line="1" Column="1" />
-      <File FileName="PovertySail.Gps/GpsSensor.cs" Line="257" Column="25" />
-      <File FileName="PovertySail.Models/State.cs" Line="18" Column="9" />
-      <File FileName="PovertySail.Pebble/PebbleViewer.cs" Line="70" Column="62" />
+      <File FileName="lib/QuadroschrauberSharp/Hardware/I2C.cs" Line="1" Column="1" />
+      <File FileName="lib/QuadroschrauberSharp.Linux/I2CLinux.cs" Line="1" Column="1" />
+      <File FileName="lib/QuadroschrauberSharp/Quadroschrauber.cs" Line="1" Column="1" />
+      <File FileName="PovertySail.HMC5883/MyClass.cs" Line="1" Column="1" />
+      <File FileName="PovertySail.HMC5883/Hmc5883Sensor.cs" Line="49" Column="17" />
+      <File FileName="PovertySail.HMC5883/Hmc5883Plugin.cs" Line="8" Column="36" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/pi/dev/povertysail/PovertySail.Pebble/PebblePlugin.cs" line="64" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

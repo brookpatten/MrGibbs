@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PovertySail.Contracts\PovertySail.Contracts.csproj">
-      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>PovertySail.Contracts</Name>
     </ProjectReference>
   </ItemGroup>

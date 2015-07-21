@@ -45,23 +45,23 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InTheHand.Net.Personal\InTheHand.Net.Personal.FX2.csproj">
-      <Project>{98bdde14-8f8c-40cc-9e45-5bac73573ef4}</Project>
+      <Project>{98BDDE14-8F8C-40CC-9E45-5BAC73573EF4}</Project>
       <Name>InTheHand.Net.Personal.FX2</Name>
     </ProjectReference>
     <ProjectReference Include="..\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj">
-      <Project>{e52dcfa6-ed09-4b88-ae50-97072323942c}</Project>
+      <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
       <Name>PebbleSharp.Core.NonPortable</Name>
     </ProjectReference>
     <ProjectReference Include="..\PebbleSharp.Net45\PebbleSharp.Net45.csproj">
-      <Project>{40bd0369-85e6-4712-a28c-0c9178fd6f33}</Project>
+      <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
       <Name>PebbleSharp.Net45</Name>
     </ProjectReference>
     <ProjectReference Include="..\PovertySail.Contracts\PovertySail.Contracts.csproj">
-      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>PovertySail.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\PovertySail.Models\PovertySail.Models.csproj">
-      <Project>{a41a884e-a7fe-4ec6-80a7-145e3fb4311f}</Project>
+      <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>PovertySail.Models</Name>
     </ProjectReference>
   </ItemGroup>

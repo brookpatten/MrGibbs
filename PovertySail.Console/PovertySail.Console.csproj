@@ -93,6 +93,10 @@
       <Project>{17B81C86-A8FF-46D5-8513-048B0571FDCF}</Project>
       <Name>PovertySail.Persistence</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PovertySail.MPU6050\PovertySail.MPU6050.csproj">
+      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
+      <Name>PovertySail.MPU6050</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
