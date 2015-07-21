@@ -18,28 +18,28 @@ namespace PovertySail.MPU6050
         private ILogger _logger;
         private Mpu6050Plugin _plugin;
 
-        public I2C I2C;
-        public QuadroschrauberSharp.Hardware.MPU6050 mpu;
-        public QuadroschrauberSharp.IMU_MPU6050 imu;
+        public I2C i2c;
+        public QuadroschrauberSharp.Hardware.MPU6050 _mpu;
+        public QuadroschrauberSharp.IMU_MPU6050 _imu;
 
         public Mpu6050Sensor(ILogger logger, Mpu6050Plugin plugin)
         {
             _logger = logger;
             _plugin = plugin;
 
-            I2C = new I2C(1);
-            mpu = new QuadroschrauberSharp.Hardware.MPU6050(I2C, 0x69);
-            imu = new IMU_MPU6050(mpu);
+            i2c = new I2C(1);
+            _mpu = new QuadroschrauberSharp.Hardware.MPU6050(i2c, 0x69);
+            _imu = new IMU_MPU6050(_mpu);
             
-            imu.Init(false);
+            _imu.Init(false);
             _logger.Info("Calibrating MPU-6050");
-            imu.Calibrate();
+            _imu.Calibrate();
         }
 
         public void Update(State state)
         {
-            var accel= imu.GetAccel();
-            var gyro = imu.GetGyro();
+            var accel= _imu.GetAccel();
+            var gyro = _imu.GetGyro();
 
             _logger.Info("MPU-6050: Acceleration(" + string.Format("{0:0.00}", accel.x) + "," + string.Format("{0:0.00}", accel.y) + "," + string.Format("{0:0.00}", accel.z) + ") Gyro(" + string.Format("{0:0.00}", gyro.x) + "," + string.Format("{0:0.00}", gyro.y) + "," + string.Format("{0:0.00}", gyro.z) + ")");
 
@@ -52,7 +52,7 @@ namespace PovertySail.MPU6050
 
         public void Dispose()
         {
-            I2C.Close();
+            i2c.Close();
         }
     }
 }
