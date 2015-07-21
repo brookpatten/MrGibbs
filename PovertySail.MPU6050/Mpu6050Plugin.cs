@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using PovertySail.Contracts;
 using PovertySail.Contracts.Infrastructure;
 
-namespace PovertySail.Calculators
+namespace PovertySail.MPU6050
 {
-    public class CalculatorPlugin:IPlugin
+    public class Mpu6050Plugin:IPlugin
     {
-        private ILogger _logger;
         private bool _initialized = false;
-        private IList<IPluginComponent> _components; 
-
-        public CalculatorPlugin(ILogger logger)
+        private ILogger _logger;
+        private IList<IPluginComponent> _components;
+        
+        public Mpu6050Plugin(ILogger logger)
         {
             _logger = logger;
         }
@@ -22,9 +23,10 @@ namespace PovertySail.Calculators
         public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
         {
             _components = new List<IPluginComponent>();
-        
             _initialized = false;
-            configuration.Calculators.Add(new VmgCalculator(_logger,this));
+            var sensor = new Mpu6050Sensor(_logger,this);
+            configuration.Sensors.Add(sensor);
+            _components.Add(sensor);
             _initialized = true;
         }
 
@@ -33,7 +35,6 @@ namespace PovertySail.Calculators
             get { return _initialized; }
         }
 
-
         public IList<IPluginComponent> Components
         {
             get { return _components; }
@@ -41,9 +42,10 @@ namespace PovertySail.Calculators
 
         public void Dispose()
         {
-            if (_components != null)
+            _initialized = false;
+            if(_components!=null)
             {
-                foreach (var component in _components)
+                foreach(var component in _components)
                 {
                     component.Dispose();
                 }

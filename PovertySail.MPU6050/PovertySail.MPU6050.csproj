@@ -39,8 +39,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Mpu6050Plugin.cs" />
+    <Compile Include="Mpu6050Sensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\lib\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
+      <Project>{ceff9e98-6499-4d7b-b523-bb1959674e79}</Project>
+      <Name>QuadroschrauberSharp.Linux</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\QuadroschrauberSharp\QuadroschrauberSharp.csproj">
+      <Project>{6c5550e5-299e-43c8-8e03-825e024db764}</Project>
+      <Name>QuadroschrauberSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PovertySail.Contracts\PovertySail.Contracts.csproj">
+      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
+      <Name>PovertySail.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PovertySail.Models\PovertySail.Models.csproj">
+      <Project>{a41a884e-a7fe-4ec6-80a7-145e3fb4311f}</Project>
+      <Name>PovertySail.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
