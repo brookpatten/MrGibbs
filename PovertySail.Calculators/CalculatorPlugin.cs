@@ -17,11 +17,12 @@ namespace PovertySail.Calculators
         public CalculatorPlugin(ILogger logger)
         {
             _logger = logger;
-            _components = new List<IPluginComponent>();
         }
 
         public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
         {
+            _components = new List<IPluginComponent>();
+        
             _initialized = false;
             configuration.Calculators.Add(new VmgCalculator(_logger,this));
             _initialized = true;

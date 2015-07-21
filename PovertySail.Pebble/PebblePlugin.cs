@@ -22,11 +22,12 @@ namespace PovertySail.Pebble
         public PebblePlugin(ILogger logger)
         {
             _logger = logger;
-            _components = new List<IPluginComponent>();
         }
 
         public void Initialize(PluginConfiguration configuration,EventHandler onWatchButton,EventHandler onHeadingButton, EventHandler onSpeedButton)
         {
+            _components = new List<IPluginComponent>();
+        
             //scan for pebbles
             var pebbles = PebbleNet45.DetectPebbles();
 

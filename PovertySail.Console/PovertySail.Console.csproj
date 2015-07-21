@@ -77,10 +77,6 @@
       <Project>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</Project>
       <Name>PovertySail.Gps</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PovertySail.I2CAccelerometer\PovertySail.I2CAccelerometer.csproj">
-      <Project>{FE725785-7D58-4255-8ADA-9AB31C9E64F3}</Project>
-      <Name>PovertySail.I2CAccelerometer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PovertySail.Infrastructure\PovertySail.Infrastructure.csproj">
       <Project>{860DCFBC-164C-4BCA-A112-AF0439A60211}</Project>
       <Name>PovertySail.Infrastructure</Name>
