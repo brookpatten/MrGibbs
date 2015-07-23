@@ -5,7 +5,7 @@ using PovertySail.Contracts.Infrastructure;
 
 namespace PovertySail.HMC5883
 {
-	public class Hmc5883Plugin:IPlugin
+	public partial class Hmc5883Plugin:IPlugin
 	{
 		private bool _initialized = false;
 		private ILogger _logger;

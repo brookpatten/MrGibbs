@@ -13,6 +13,7 @@ namespace PovertySail.Models
         public DateTime Time { get; set; }
         public CoordinatePoint Location { get; set; }
         
+        public double MagneticHeading { get; set; }
         public double CourseOverGround { get; set; }
         public double SpeedInKnots { get; set; }
         

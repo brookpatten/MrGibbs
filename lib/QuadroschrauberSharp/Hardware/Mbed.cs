@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.IO.Ports;
-using ServiceStack.Text;
+//using ServiceStack.Text;
 
 namespace QuadroschrauberSharp.Hardware
 {
@@ -48,17 +48,17 @@ namespace QuadroschrauberSharp.Hardware
             string line;
             while ((line = port.ReadLine()) != null)
             {
-                JsonObject json = JsonObject.Parse(line);
+                //JsonObject json = JsonObject.Parse(line);
                 /*foreach (var x in json)
                 {
                     Console.WriteLine(x.Key + ": " + x.Value);
                 }*/
-                Received = json;
+                Received = null;
                 ReceivedJsonString = line;
             }
         }
 
-        public JsonObject Received;
+        public object Received;
         public string ReceivedJsonString;
     }
 }

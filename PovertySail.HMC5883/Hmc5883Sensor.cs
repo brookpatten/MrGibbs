@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Runtime.InteropServices;
 using PovertySail.Contracts;
 using PovertySail.Models;
 using PovertySail.Contracts.Infrastructure;
@@ -13,8 +13,7 @@ namespace PovertySail.HMC5883
 	{
 		private ILogger _logger;
 		private Hmc5883Plugin _plugin;
-
-		private I2C _i2c;
+	    private Hmc5883 _hmc5883;
 
 		private DateTime? _lastTime;
 
@@ -25,23 +24,31 @@ namespace PovertySail.HMC5883
 
 			//original pi is 0, pi rev 2 is 1
 			//this probably DOES need to be configurable
-			_i2c = new I2C(1);
+			_hmc5883 = new Hmc5883(1);
+            _hmc5883.Initialize();
 
-
-			//the i2c address is 0x1e
+		    if (!_hmc5883.TestConnection())
+		    {
+		        throw new ExternalException("Failed to connect to HMC5883L");
+		    }
 		}
 
 		public void Update(State state)
 		{
-			if (_lastTime != null) {
-				var difference = state.Time - _lastTime.Value;
+		    short x=0, y=0, z=0;
+            _hmc5883.GetHeading(ref x,ref y,ref z);
+            
+            double heading = Math.Atan2(y,x);
+		    if (heading < 0)
+		    {
+		        heading += 2*Math.PI;
+		    }
 
-				float dtime = (float)difference.TotalMilliseconds / 1000000.0f;
+            double finalHeading = heading * 180.0 / Math.PI;
 
+            _logger.Info("HMC5883L Heading(" + x + "," + y + "," + z + ") ("+finalHeading+")");
 
-			}
-
-			_lastTime = state.Time;
+		    state.MagneticHeading = finalHeading;
 		}
 
 		public IPlugin Plugin
@@ -51,7 +58,10 @@ namespace PovertySail.HMC5883
 
 		public void Dispose()
 		{
-			_i2c.Close();
+		    if (_hmc5883 != null)
+		    {
+                _hmc5883.Dispose();
+		    }
 		}
 	}
 }
