@@ -85,8 +85,10 @@ namespace PovertySail.Pebble
             message.TransactionId = _transactionId;
             message.Command = (byte)Command.Push;
 
-            message.Values.Add(new AppMessageString() { Key = 0,Value = "Course over ground" });
-            message.Values.Add(new AppMessageString() { Key = 1, Value = string.Format("{0:0.0}°", state.CourseOverGround) });
+			message.Values.Add(new AppMessageString() { Key = 0,Value = "Heading" });
+			message.Values.Add(new AppMessageString() { Key = 1, Value = string.Format("{0:0.0}°", state.MagneticHeading) });
+			//message.Values.Add(new AppMessageString() { Key = 0,Value = "Course over ground" });
+            //message.Values.Add(new AppMessageString() { Key = 1, Value = string.Format("{0:0.0}°", state.CourseOverGround) });
             message.Values.Add(new AppMessageString() { Key = 2, Value = "Speed (kn)" });
             message.Values.Add(new AppMessageString() { Key = 3, Value = string.Format("{0:0.0}", state.SpeedInKnots) });
             message.Values.Add(new AppMessageString() { Key = 4, Value = state.Countdown.HasValue ? "Countdown":"" });
