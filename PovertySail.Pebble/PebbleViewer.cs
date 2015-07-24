@@ -14,6 +14,18 @@ using PebbleSharp.Core.Responses;
 
 namespace PovertySail.Pebble
 {
+    internal class LineStateMap
+    {
+        public Func<State, string> Get { get; private set; }
+        public string Caption { get; private set; }
+
+        public LineStateMap(Func<State, string> f, string caption)
+        {
+            Get = f;
+            Caption = caption;
+        }
+    }
+
     public class PebbleViewer:IViewer
     {
         private ILogger _logger;
@@ -24,6 +36,13 @@ namespace PovertySail.Pebble
         
         private UUID _uuid;
         //private Dictionary<string, int> _keys;
+
+        private int _lineCount;
+        private IList<int> _lineValueIndexes = new List<int>();
+
+        private static IList<LineStateMap> _lineStateMaps;
+
+        private Task _lastSend;
 
         public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, AppBundle bundle)
         {
@@ -48,6 +67,29 @@ namespace PovertySail.Pebble
             _logger.Info("Launched app on pebble " + pebble.PebbleID);
 
             _pebble.RegisterCallback<ApplicationMessageResponse>(Receive);
+
+            InitializeViewer();
+        }
+
+        private void InitializeViewer()
+        {
+            _lineCount = 3;
+            if (_lineStateMaps == null)
+            {
+                _lineStateMaps = new List<LineStateMap>();
+                _lineStateMaps.Add(new LineStateMap(s=>s.CourseOverGroundByLocation.HasValue ? string.Format("{0:0.0}",s.CourseOverGroundByLocation.Value):"","Course Over Ground"));
+                _lineStateMaps.Add(new LineStateMap(s => s.SpeedInKnots.HasValue ? string.Format("{0:0.0}", s.SpeedInKnots.Value) : "", "Speed (kn)"));
+                _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown"));
+                _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeading.HasValue ? string.Format("{0:0.0}", s.MagneticHeading.Value) : "", "Magnetic Heading"));
+                _lineStateMaps.Add(new LineStateMap(s => s.MagneticCourseMadeGood.HasValue ? string.Format("{0:0.0}", s.MagneticCourseMadeGood.Value) : "", "Magnetic Course Made Good"));
+                _lineStateMaps.Add(new LineStateMap(s => s.TrueCourseMadeGood.HasValue ? string.Format("{0:0.0}", s.TrueCourseMadeGood.Value) : "", "True Course Made Good"));
+                _lineStateMaps.Add(new LineStateMap(s => s.Heel.HasValue ? string.Format("{0:0.0}", s.Heel.Value) : "", "Heel"));
+            }
+
+            for (int i = 0; i < _lineCount && i<_lineStateMaps.Count; i++)
+            {
+                _lineValueIndexes.Add(i);
+            }
         }
 
         private void Receive(ApplicationMessageResponse response)
@@ -63,14 +105,17 @@ namespace PovertySail.Pebble
 
                     if (button == "up" && OnHeadingButton != null)
                     {
+                        _lineValueIndexes[0] = (_lineValueIndexes[0]+1) % _lineStateMaps.Count;
                         OnHeadingButton(this, new EventArgs());
                     }
                     else if (button == "down" && OnWatchButton != null)
                     {
+                        _lineValueIndexes[2] = (_lineValueIndexes[2] + 1) % _lineStateMaps.Count;
                         OnWatchButton(this, new EventArgs());
                     }
                     else if (button == "select" && OnSpeedButton != null)
                     {
+                        _lineValueIndexes[1] = (_lineValueIndexes[1] + 1) % _lineStateMaps.Count;
                         OnSpeedButton(this, new EventArgs());
                     }
                 }
@@ -79,30 +124,38 @@ namespace PovertySail.Pebble
 
         public void Update(State state)
         {
-            _transactionId--;
-            AppMessageDictionary message = new AppMessageDictionary();
-            message.ApplicationId = _uuid;
-            message.TransactionId = _transactionId;
-            message.Command = (byte)Command.Push;
-
-			message.Values.Add(new AppMessageString() { Key = 0,Value = "Heading" });
-			message.Values.Add(new AppMessageString() { Key = 1, Value = string.Format("{0:0.0}°", state.MagneticHeading) });
-			//message.Values.Add(new AppMessageString() { Key = 0,Value = "Course over ground" });
-            //message.Values.Add(new AppMessageString() { Key = 1, Value = string.Format("{0:0.0}°", state.CourseOverGround) });
-            message.Values.Add(new AppMessageString() { Key = 2, Value = "Speed (kn)" });
-            message.Values.Add(new AppMessageString() { Key = 3, Value = string.Format("{0:0.0}", state.SpeedInKnots) });
-            message.Values.Add(new AppMessageString() { Key = 4, Value = state.Countdown.HasValue ? "Countdown":"" });
-            string countdown = state.Countdown.HasValue ? state.Countdown.Value.Minutes + ":" + state.Countdown.Value.Seconds.ToString("00") : "";
-            message.Values.Add(new AppMessageString() { Key = 5, Value = countdown });
-            if (state.Message!=null)
+            //don't send anything until the last send has completed
+            if (_lastSend == null || _lastSend.IsCanceled || _lastSend.IsCompleted || _lastSend.IsFaulted)
             {
-                message.Values.Add(new AppMessageString() { Key = 6, Value = state.Message.Text });
-            }
+                _transactionId--;
+                AppMessageDictionary message = new AppMessageDictionary();
+                message.ApplicationId = _uuid;
+                message.TransactionId = _transactionId;
+                message.Command = (byte) Command.Push;
 
-            var t = _pebble.SendApplicationMessage(message);
-			_logger.Debug ("Sent state to pebble " + _pebble.PebbleID);
-            //t.Start();
-            //t.Wait();
+                for (int i = 0; i < _lineCount; i++)
+                {
+                    var map = _lineStateMaps[_lineValueIndexes[i]];
+                    message.Values.Add(new AppMessageString() {Key = (uint) message.Values.Count, Value = map.Caption});
+                    message.Values.Add(new AppMessageString()
+                    {
+                        Key = (uint) message.Values.Count,
+                        Value = map.Get(state)
+                    });
+                }
+
+                if (state.Message != null)
+                {
+                    message.Values.Add(new AppMessageString()
+                    {
+                        Key = (uint) message.Values.Count,
+                        Value = state.Message.Text
+                    });
+                }
+
+                _lastSend = _pebble.SendApplicationMessage(message);
+                _logger.Debug("Sent state to pebble " + _pebble.PebbleID);
+            }
         }
 
         public event EventHandler OnWatchButton;

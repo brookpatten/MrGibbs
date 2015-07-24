@@ -49,7 +49,7 @@ namespace PovertySail.MPU6050
         public void Update(State state)
         {
 			if (_lastTime != null) {
-				var difference = state.Time - _lastTime.Value;
+				var difference = state.BestTime - _lastTime.Value;
 
 				float dtime = (float)difference.TotalMilliseconds / 1000000.0f;
 				_imu.Update (dtime);
@@ -68,13 +68,14 @@ namespace PovertySail.MPU6050
 
 
 			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
+			    state.Heel = accel.x*360.0;
 
 			    //if (framecounter++ == 100 && imu != null)
 			    //_imu.Calibrate ();
 
 			}
 
-			_lastTime = state.Time;
+            _lastTime = state.BestTime;
         }
 
         public IPlugin Plugin

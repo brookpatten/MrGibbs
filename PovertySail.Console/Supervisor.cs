@@ -66,9 +66,9 @@ namespace PovertySail.Console
             {
                 if(_state.StartTime.HasValue)
                 {
-                    if(_state.StartTime > _state.Time)
+                    if(_state.StartTime > _state.BestTime)
                     {
-                        var remaining = _state.StartTime.Value - _state.Time;
+                        var remaining = _state.StartTime.Value - _state.BestTime;
 
                         if(remaining.Minutes>=4)
                         {
@@ -94,7 +94,7 @@ namespace PovertySail.Console
                 }
                 else
                 {
-                    _state.StartTime = _state.Time.AddMinutes(5);
+                    _state.StartTime = _state.BestTime.AddMinutes(5);
                     _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown started");
                 }
             }
@@ -124,7 +124,8 @@ namespace PovertySail.Console
             _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Startup Complete");
             while (run && operationCount>0)
             {
-                _state.Time = DateTime.UtcNow;
+                _state.SystemTime = DateTime.UtcNow;
+
                 operationCount = 0;
                 lock (_state)
                 {

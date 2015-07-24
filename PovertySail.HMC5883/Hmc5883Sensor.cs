@@ -38,18 +38,18 @@ namespace PovertySail.HMC5883
 		    short x=0, y=0, z=0;
             _hmc5883.GetHeading(ref x,ref y,ref z);
 		    state.Magneto = new Vector3() {X = x, Y = y, Z = z};
-            
-            //double heading = Math.Atan2(y,x);
-            //if (heading < 0)
-            //{
-            //    heading += 2*Math.PI;
-            //}
 
-            //double finalHeading = heading * 180.0 / Math.PI;
+            double heading = Math.Atan2(y, x);
+            if (heading < 0)
+            {
+                heading += 2 * Math.PI;
+            }
+
+            double finalHeading = heading * 180.0 / Math.PI;
 
             //_logger.Info("HMC5883L Heading(" + x + "," + y + "," + z + ") ("+finalHeading+")");
 
-            //state.MagneticHeading = finalHeading;
+            state.MagneticHeading = finalHeading;
 		}
 
 		public IPlugin Plugin

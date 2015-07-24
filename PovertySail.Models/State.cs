@@ -10,9 +10,10 @@ namespace PovertySail.Models
     public class State
     {
         //provided by system clock or gps
-        public DateTime? Time { get; set; }
+        public DateTime SystemTime { get; set; }
         
         //gps provided data
+        public DateTime? GpsTime { get; set; }
         public CoordinatePoint Location { get; set; }
         public double? CourseOverGroundByLocation { get; set; }
         public double? SpeedInKnots { get; set; }
@@ -24,6 +25,7 @@ namespace PovertySail.Models
         //accel provided data
         public Vector3 Accel { get; set; }
         public Vector3 Gyro { get; set; }
+        public double? Heel { get; set; }
 
         //magneto provided data
         public Vector3 Magneto { get; set; }
@@ -55,9 +57,9 @@ namespace PovertySail.Models
             {
                 if (StartTime.HasValue)
                 {
-                    if (StartTime.Value > Time)
+                    if (StartTime.Value > BestTime)
                     {
-                        return StartTime.Value - Time;
+                        return StartTime.Value - BestTime;
                     }
                     else
                     {
@@ -96,6 +98,21 @@ namespace PovertySail.Models
                 }
             }
         }
+
+        public DateTime BestTime
+        {
+            get
+            {
+                if (GpsTime.HasValue)
+                {
+                    return GpsTime.Value;
+                }
+                else
+                {
+                    return SystemTime;
+                }
+            }
+        }
         
         public void AddMessage(Message message)
         {
@@ -114,7 +131,7 @@ namespace PovertySail.Models
         public void AddMessage(MessageCategory category, MessagePriority priority, int secondsDuration, string text)
         {
             var message = new Message();
-            message.CreatedAt = Time;
+            message.CreatedAt = BestTime;
             message.Text = text;
             message.Priority = priority;
             message.Duration = new TimeSpan(0,0,0,secondsDuration);
@@ -125,11 +142,11 @@ namespace PovertySail.Models
         {
             lock (_messages)
             {
-                if ((Message == null || Message.HideAt < Time) && _messages.Any())
+                if ((Message == null || Message.HideAt < BestTime) && _messages.Any())
                 {
                     var highest = _messages.OrderBy(x => (int)x.Priority).First();
                     Message = highest;
-                    Message.ShownAt = Time;
+                    Message.ShownAt = BestTime;
                     _messages.Remove(highest);
                 }
                 else

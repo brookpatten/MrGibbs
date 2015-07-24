@@ -284,7 +284,7 @@ namespace PovertySail.Gps
                     }
                     if (date.HasValue)
                     {
-                        state.Time = date.Value;
+                        state.GpsTime = date.Value;
                     }
 
                     if (trueCourseMadeGood != double.MinValue)
