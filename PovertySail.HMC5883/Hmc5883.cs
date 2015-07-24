@@ -98,6 +98,8 @@ namespace PovertySail.HMC5883
 
         public void Initialize()
         {
+			
+
             byte data = (byte)(((byte) (HMC5883L_AVERAGING_8 << (HMC5883L_CRA_AVERAGE_BIT - HMC5883L_CRA_AVERAGE_LENGTH + 1))) |
                         ((byte) (HMC5883L_RATE_15 << (HMC5883L_CRA_RATE_BIT - HMC5883L_CRA_RATE_LENGTH + 1))) |
                         ((byte) (HMC5883L_BIAS_NORMAL << (HMC5883L_CRA_BIAS_BIT - HMC5883L_CRA_BIAS_LENGTH + 1))));
@@ -190,7 +192,7 @@ namespace PovertySail.HMC5883
 
             x = BitConverter.ToInt16(_buffer, 0);
             y = BitConverter.ToInt16(_buffer, 4);
-            z = BitConverter.ToInt16(_buffer, 3);
+            z = BitConverter.ToInt16(_buffer, 2);
         }
 
         public short GetHeadingX()
