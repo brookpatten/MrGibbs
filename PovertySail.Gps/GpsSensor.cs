@@ -42,7 +42,7 @@ namespace PovertySail.Gps
         {
             _buffer = new Queue<string>();
             _port = new SerialPort(_portName);
-            _port.BaudRate = 4800;
+            _port.BaudRate = 9600;
             _run = true;
             _task = new Task(Run);
             
