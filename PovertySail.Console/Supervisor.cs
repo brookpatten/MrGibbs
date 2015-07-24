@@ -73,29 +73,29 @@ namespace PovertySail.Console
                         if(remaining.Minutes>=4)
                         {
                             _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 0, remaining.Seconds, remaining.Milliseconds));
-                            _state.AddMessage(10, "Countdown synced");
+                            _state.AddMessage(MessageCategory.System,MessagePriority.Normal,5, "Countdown synced");
                         }
                         else if (remaining.Minutes >= 3)
                         {
                             _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 1, remaining.Seconds, remaining.Milliseconds));
-                            _state.AddMessage(10, "Countdown synced");
+                            _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown synced");
                         }
                         else
                         {
                             _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 0, remaining.Seconds, remaining.Milliseconds));
-                            _state.AddMessage(10, "Countdown synced");
+                            _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown synced");
                         }
                     }
                     else
                     {
                         _state.StartTime = null;
-                        _state.AddMessage(10, "Countdown reset");
+                        _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown reset");
                     }
                 }
                 else
                 {
                     _state.StartTime = _state.Time.AddMinutes(5);
-                    _state.AddMessage(10, "Countdown started");
+                    _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown started");
                 }
             }
         }
@@ -121,14 +121,12 @@ namespace PovertySail.Console
             _logger.Info("Plugin Supervisor is running");
             bool run = true;
             int operationCount = 1;
-            int cycleCount = 1;
-            _state.AddMessage(10, "Startup Complete");
+            _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Startup Complete");
             while (run && operationCount>0)
             {
                 _state.Time = DateTime.UtcNow;
                 operationCount = 0;
-
-                if(cycleCount%5==0)
+                lock (_state)
                 {
                     _state.CycleMessages();
                 }
@@ -217,7 +215,6 @@ namespace PovertySail.Console
                     EvictPlugin(_configuration,plugin,true);
                 }
 
-                cycleCount++;
                 _logger.Debug("Sleeping");
                 Thread.Sleep(_sleepTime);
             }

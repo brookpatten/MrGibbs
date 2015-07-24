@@ -24,7 +24,7 @@ namespace PovertySail.Gps
         {
             _components = new List<IPluginComponent>();
             _initialized = false;
-            var sensor = new GpsSensor(_logger, this,AppConfig.GpsPort);
+            var sensor = new GpsSensor(_logger, this, AppConfig.GpsPort, AppConfig.GpsBaud);
             configuration.Sensors.Add(sensor);
             _components.Add(sensor);
             sensor.Start();

@@ -9,17 +9,41 @@ namespace PovertySail.Models
 {
     public class State
     {
-        private int? _targetMarkIndex;
-        public DateTime Time { get; set; }
+        //provided by system clock or gps
+        public DateTime? Time { get; set; }
+        
+        //gps provided data
         public CoordinatePoint Location { get; set; }
-        
-        public double MagneticHeading { get; set; }
-        public double CourseOverGround { get; set; }
-        public double SpeedInKnots { get; set; }
-        
-        public DateTime? StartTime { get; set; }
+        public double? CourseOverGroundByLocation { get; set; }
+        public double? SpeedInKnots { get; set; }
+        public double? MagneticCourseMadeGood { get; set; }
+        public double? TrueCourseMadeGood { get; set; }
+        public double? MagneticDeviation { get; set; }
+        public double? MagneticDeviationDirection { get; set; }
 
-        public string Message
+        //accel provided data
+        public Vector3 Accel { get; set; }
+        public Vector3 Gyro { get; set; }
+
+        //magneto provided data
+        public Vector3 Magneto { get; set; }
+        public double? MagneticHeading { get; set; }
+
+        //race state
+        public DateTime? StartTime { get; set; }
+        public IList<Mark> Marks { get; set; }
+        private int? _targetMarkIndex;
+
+        //system state
+        private List<Message> _messages;
+
+        public State()
+        {
+            _messages = new List<Message>();
+            Marks = new List<Mark>();
+        }
+
+        public Message Message
         {
             get;
             private set;
@@ -29,9 +53,9 @@ namespace PovertySail.Models
         {
             get
             {
-                if(StartTime.HasValue)
+                if (StartTime.HasValue)
                 {
-                    if(StartTime.Value>Time)
+                    if (StartTime.Value > Time)
                     {
                         return StartTime.Value - Time;
                     }
@@ -45,14 +69,6 @@ namespace PovertySail.Models
                     return null;
                 }
             }
-        }
-
-        private List<Tuple<int,string>> _messages;
-
-        public State()
-        {
-            _messages = new List<Tuple<int, string>>();
-            Marks = new List<Mark>();
         }
 
         public Mark TargetMark
@@ -80,29 +96,40 @@ namespace PovertySail.Models
                 }
             }
         }
-        public IList<Mark> Marks { get; set; } 
-
-        public void AddMessage(int priority,string message)
+        
+        public void AddMessage(Message message)
         {
             lock (_messages)
             {
-                _messages.Add(new Tuple<int, string>(priority, message));
+                message.ShownAt = null;
+                _messages.Add(message);
             }
             //if we're not showing anything right now, we can go ahead and show it
-            if(string.IsNullOrWhiteSpace(Message))
+            if(Message==null)
             {
                 CycleMessages();
             }
+        }
+
+        public void AddMessage(MessageCategory category, MessagePriority priority, int secondsDuration, string text)
+        {
+            var message = new Message();
+            message.CreatedAt = Time;
+            message.Text = text;
+            message.Priority = priority;
+            message.Duration = new TimeSpan(0,0,0,secondsDuration);
+            AddMessage(message);
         }
 
         public void CycleMessages()
         {
             lock (_messages)
             {
-                if (_messages.Any())
+                if ((Message == null || Message.HideAt < Time) && _messages.Any())
                 {
-                    var highest = _messages.OrderBy(x => x.Item1).First();
-                    Message = highest.Item2;
+                    var highest = _messages.OrderBy(x => (int)x.Priority).First();
+                    Message = highest;
+                    Message.ShownAt = Time;
                     _messages.Remove(highest);
                 }
                 else

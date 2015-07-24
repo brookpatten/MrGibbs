@@ -23,14 +23,16 @@ namespace PovertySail.Gps
         private System.Globalization.CultureInfo _numberCulture;
         private Task _task;
         private bool _run = false;
+        private int _baud;
 
-        public GpsSensor(ILogger logger, GpsPlugin plugin,string serialPort)
+        public GpsSensor(ILogger logger, GpsPlugin plugin,string serialPort, int baud)
         {
             _numberCulture = System.Globalization.CultureInfo.GetCultureInfo("en-us");
             _plugin = plugin;
             _logger = logger;
             _portName = serialPort;
             _parser = new NmeaParser();
+            _baud = baud;
         }
 
         public IPlugin Plugin
@@ -42,7 +44,7 @@ namespace PovertySail.Gps
         {
             _buffer = new Queue<string>();
             _port = new SerialPort(_portName);
-            _port.BaudRate = 4800;
+            _port.BaudRate = _baud;
             _run = true;
             _task = new Task(Run);
             
@@ -79,7 +81,13 @@ namespace PovertySail.Gps
                 double longitude = double.MinValue;
                 double speed = double.MinValue;
                 double height = double.MinValue;
-                double courseOverGround=double.MinValue;
+                double courseOverGroundByLocation=double.MinValue;
+
+                double magneticCourseMadeGood=double.MinValue;
+                double trueCourseMadeGood = double.MinValue;
+
+                double magneticDeviation = double.MinValue;
+                double magneticDeviationDirection = double.MinValue;
                 DateTime? date = null;
 
                 while (_buffer.Count > 0)
@@ -189,7 +197,7 @@ namespace PovertySail.Gps
                                 //speed = double.Parse(speedString, _numberCulture.NumberFormat);
 
                                 string cogString = parsed[sentence]["Course Made Good"];
-                                double.TryParse(cogString, out courseOverGround);
+                                double.TryParse(cogString, out courseOverGroundByLocation);
 
                                 string datestring = parsed[sentence]["Date of Fix"];
                                 if (datestring.Length == 6)
@@ -209,6 +217,12 @@ namespace PovertySail.Gps
                                 {
                                     throw new Exception("Invalid Time Format");
                                 }
+
+                                string magneticVariationString = parsed[sentence]["Magnetic Variation"];
+                                double.TryParse(magneticVariationString, out magneticDeviation);
+
+                                string magneticVariationDirectionString = parsed[sentence]["Magnetic Variation Direction"];
+                                double.TryParse(magneticVariationDirectionString, out magneticDeviationDirection);
                             }
                             else if (sentence == "Data and Time")
                             {
@@ -238,6 +252,13 @@ namespace PovertySail.Gps
                                     throw new Exception("Invalid Time Format");
                                 }
                             }
+                            else if (sentence == "Track Made Good and Ground Speed")
+                            {
+                                string trueCourseString = parsed[sentence]["True Course Made Good Over Gound"];
+                                double.TryParse(trueCourseString, out trueCourseMadeGood);
+                                string magneticCourseStrin = parsed[sentence]["Magnetic Course Made Good over Ground"];
+                                double.TryParse(magneticCourseStrin, out magneticCourseMadeGood);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -254,15 +275,32 @@ namespace PovertySail.Gps
                     }
                     if (speed != double.MinValue)
                     {
-						state.SpeedInKnots = speed;
+                        state.SpeedInKnots = speed;
                     }
-                    if (courseOverGround != double.MinValue)
+                    if (courseOverGroundByLocation != double.MinValue)
                     {
-                        state.CourseOverGround = courseOverGround;
+                        state.CourseOverGroundByLocation = courseOverGroundByLocation;
                     }
                     if (date.HasValue)
                     {
                         state.Time = date.Value;
+                    }
+
+                    if (trueCourseMadeGood != double.MinValue)
+                    {
+                        state.TrueCourseMadeGood = trueCourseMadeGood;
+                    }
+                    if (magneticCourseMadeGood != double.MinValue)
+                    {
+                        state.MagneticCourseMadeGood = magneticCourseMadeGood;
+                    }
+                    if (magneticDeviation != double.MinValue)
+                    {
+                        state.MagneticDeviation = magneticDeviation;
+                    }
+                    if (magneticDeviationDirection != double.MinValue)
+                    {
+                        state.MagneticDeviationDirection = magneticDeviationDirection;
                     }
                 }
                 //update the state

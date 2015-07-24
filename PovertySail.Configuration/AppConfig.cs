@@ -20,5 +20,9 @@ namespace PovertySail.Configuration
         {
             get { return ConfigurationHelper.ReadStringAppSetting("GpsPort", @"/dev/ttyUSB0"); }
         }
+        public static int GpsBaud
+        {
+            get { return ConfigurationHelper.ReadIntAppSetting("GpsBaud", 9600); }
+        }
     }
 }

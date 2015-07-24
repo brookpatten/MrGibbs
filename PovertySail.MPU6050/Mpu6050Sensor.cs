@@ -54,20 +54,23 @@ namespace PovertySail.MPU6050
 				float dtime = (float)difference.TotalMilliseconds / 1000000.0f;
 				_imu.Update (dtime);
 
-
-				var accel = _imu.GetAccel ();
+                var accel = _imu.GetAccel ();
 				var gyro = _imu.GetGyro ();
 
-				//var rpy = _imu.GetRollYawPitch ();
+                //these probably need to be normalized to some known scale
+			    state.Accel = new Vector3() {X = accel.x, Y = accel.y, Z = accel.z};
+			    state.Gyro = new Vector3() {X = gyro.x, Y = gyro.y, Z = gyro.z};
 
-				_logger.Info ("MPU-6050: Acceleration(" + string.Format ("{0:0.00}", accel.x) + "," + string.Format ("{0:0.00}", accel.y) + "," + string.Format ("{0:0.00}", accel.z) + ") Gyro(" + string.Format ("{0:0.00}", gyro.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
-				//_logger.Info ("MPU-6050: Roll/Pitch/Yaw(" + string.Format ("{0:0.00}", rpy.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
+			    //var rpy = _imu.GetRollYawPitch ();
+
+			    //_logger.Info ("MPU-6050: Acceleration(" + string.Format ("{0:0.00}", accel.x) + "," + string.Format ("{0:0.00}", accel.y) + "," + string.Format ("{0:0.00}", accel.z) + ") Gyro(" + string.Format ("{0:0.00}", gyro.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
+			    //_logger.Info ("MPU-6050: Roll/Pitch/Yaw(" + string.Format ("{0:0.00}", rpy.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
 
 
-				//_logger.Info ("Heel:" + (accel.x * 360.0)); 
+			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
 
-				//if (framecounter++ == 100 && imu != null)
-				//_imu.Calibrate ();
+			    //if (framecounter++ == 100 && imu != null)
+			    //_imu.Calibrate ();
 
 			}
 

@@ -92,9 +92,9 @@ namespace PovertySail.Pebble
             message.Values.Add(new AppMessageString() { Key = 4, Value = state.Countdown.HasValue ? "Countdown":"" });
             string countdown = state.Countdown.HasValue ? state.Countdown.Value.Minutes + ":" + state.Countdown.Value.Seconds.ToString("00") : "";
             message.Values.Add(new AppMessageString() { Key = 5, Value = countdown });
-            if (!string.IsNullOrWhiteSpace(state.Message))
+            if (state.Message!=null)
             {
-                message.Values.Add(new AppMessageString() { Key = 6, Value = state.Message });
+                message.Values.Add(new AppMessageString() { Key = 6, Value = state.Message.Text });
             }
 
             var t = _pebble.SendApplicationMessage(message);
