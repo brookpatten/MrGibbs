@@ -23,7 +23,7 @@ namespace PovertySail.HMC5883
 			var sensor = new Hmc5883Sensor(_logger,this);
 			configuration.Sensors.Add(sensor);
 			_components.Add(sensor);
-			_initialized = true;
+		    _initialized = true;
 		}
 
 		public bool Initialized

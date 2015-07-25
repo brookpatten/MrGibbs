@@ -24,7 +24,11 @@ namespace PovertySail.Calculators
             _components = new List<IPluginComponent>();
         
             _initialized = false;
-            configuration.Calculators.Add(new VmgCalculator(_logger,this));
+            
+            var calculator = new TiltCompensatedHeadingCalculator(_logger, this);
+            configuration.Calculators.Add(calculator);
+            _components.Add(calculator);
+
             _initialized = true;
         }
 

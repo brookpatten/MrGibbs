@@ -29,6 +29,8 @@ namespace PovertySail.Models
 
         //magneto provided data
         public Vector3 Magneto { get; set; }
+        
+        //calculated values
         public double? MagneticHeading { get; set; }
 
         //race state
