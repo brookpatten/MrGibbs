@@ -25,9 +25,7 @@ namespace PovertySail.Calculators
         
             _initialized = false;
             
-            var calculator = new TiltCompensatedHeadingCalculator(_logger, this);
-            configuration.Calculators.Add(calculator);
-            _components.Add(calculator);
+            //do init here
 
             _initialized = true;
         }

@@ -46,11 +46,11 @@ namespace PovertySail.HMC5883
                 heading += 2 * Math.PI;
             }
 
-            //double finalHeading = heading * 180.0 / Math.PI;
+            //convert to degrees
+            heading = heading * (180.0 / Math.PI);
 
-            //_logger.Info("HMC5883L Heading(" + x + "," + y + "," + z + ") ("+finalHeading+")");
-
-            //state.MagneticHeading = finalHeading;
+            _logger.Debug("HMC5883L Heading(" + x + "," + y + "," + z + ") (" + heading + ")");
+            state.MagneticHeading = heading;
 		}
 
 		public IPlugin Plugin
