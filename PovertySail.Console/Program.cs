@@ -47,6 +47,8 @@ namespace PovertySail.Console
                 new PluginModule()
             });
 
+            kernel.Bind<IRaceController>().To<RaceController>().InSingletonScope();
+
             kernel.Bind<Supervisor>().ToSelf()
                 .InSingletonScope()
                 .WithConstructorArgument("sleepTime", AppConfig.SleepTime);

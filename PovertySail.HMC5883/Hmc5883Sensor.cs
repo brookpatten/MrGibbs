@@ -39,11 +39,10 @@ namespace PovertySail.HMC5883
             _hmc5883.GetHeading(ref x,ref y,ref z);
 		    state.Magneto = new Vector3() {X = x, Y = y, Z = z};
 
-            //this is all done in the calculator now
             double heading = Math.Atan2(y, x);
             if (heading < 0)
             {
-                heading += 2 * Math.PI;
+                heading += 2.0 * Math.PI;
             }
 
             //convert to degrees
@@ -65,6 +64,11 @@ namespace PovertySail.HMC5883
                 _hmc5883.Dispose();
 		    }
 		}
-	}
+
+
+        public void Calibrate()
+        {
+        }
+    }
 }
 

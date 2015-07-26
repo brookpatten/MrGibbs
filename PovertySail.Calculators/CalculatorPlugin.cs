@@ -19,7 +19,7 @@ namespace PovertySail.Calculators
             _logger = logger;
         }
 
-        public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
+        public void Initialize(PluginConfiguration configuration, ISystemController systemController, IRaceController raceController)
         {
             _components = new List<IPluginComponent>();
         

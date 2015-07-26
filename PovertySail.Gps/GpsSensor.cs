@@ -321,5 +321,10 @@ namespace PovertySail.Gps
             _port.Dispose();
             _buffer.Clear();
         }
+
+
+        public void Calibrate()
+        {
+        }
     }
 }
