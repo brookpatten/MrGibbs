@@ -20,5 +20,3 @@ static void system_window_load(Window *window);
 static void system_window_unload(Window *window);
 
 void system_menu_init(void);
-
-void system_menu_deinit(void);

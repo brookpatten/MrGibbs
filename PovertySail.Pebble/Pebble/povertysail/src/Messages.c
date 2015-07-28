@@ -37,6 +37,39 @@ void message_send_dash(uint8_t line, uint8_t map){
   app_message_outbox_send();
 }
 
+void message_send_mark_bearing(uint8_t markindex, int32_t bearing){
+  DictionaryIterator *iter;
+	
+	app_message_outbox_begin(&iter);
+	dict_write_uint8(iter,COMMAND_KEY,Mark);
+  dict_write_uint8(iter,MARK_KEY,markindex);
+  dict_write_int32(iter,BEARING_KEY,bearing);
+	
+	dict_write_end(iter);
+  app_message_outbox_send();
+}
+
+void message_send_mark_location(uint8_t markindex){
+  DictionaryIterator *iter;
+	
+	app_message_outbox_begin(&iter);
+	dict_write_uint8(iter,COMMAND_KEY,Mark);
+  dict_write_uint8(iter,MARK_KEY,markindex);
+  
+	dict_write_end(iter);
+  app_message_outbox_send();
+}
+
+void message_send_new_race(){
+  DictionaryIterator *iter;
+	
+	app_message_outbox_begin(&iter);
+	dict_write_uint8(iter,COMMAND_KEY,NewRace);
+	
+	dict_write_end(iter);
+  app_message_outbox_send();
+}
+
 void message_send_calibrate(void){
   DictionaryIterator *iter;
 	

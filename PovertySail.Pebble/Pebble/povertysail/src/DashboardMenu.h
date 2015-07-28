@@ -20,5 +20,3 @@ static void dashboard_window_load(Window *window);
 static void dashboard_window_unload(Window *window);
 
 void dashboard_menu_init(void);
-
-void dashboard_menu_deinit(void);

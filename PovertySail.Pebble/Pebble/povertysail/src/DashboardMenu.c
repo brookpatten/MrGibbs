@@ -74,6 +74,8 @@ static void dashboard_window_load(Window *window) {
 
 static void dashboard_window_unload(Window *window) {
   menu_layer_destroy(dashboard_menu_layer);
+  
+  window_destroy(dashboard_menu_window);
 }
 
 void dashboard_menu_init(void) {
@@ -83,8 +85,4 @@ void dashboard_menu_init(void) {
       .unload = dashboard_window_unload,
   });
   window_stack_push(dashboard_menu_window, true);
-}
-
-void dashboard_menu_deinit(void) {
-  window_destroy(dashboard_menu_window);
 }

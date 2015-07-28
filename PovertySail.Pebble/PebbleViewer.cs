@@ -107,7 +107,8 @@ namespace PovertySail.Pebble
                     Nominal Speed
                     % Nominal Speed
                     Top Speed
-                    Countdown*/
+                    Countdown
+                    Distance to Mark*/
                 _lineStateMaps = new List<LineStateMap>();
                 _lineStateMaps.Add(new LineStateMap(s => s.SpeedInKnots.HasValue ? string.Format("{0:0.0}", s.SpeedInKnots.Value) : "", "Speed (kn)"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "VMG"));
@@ -123,6 +124,7 @@ namespace PovertySail.Pebble
                 _lineStateMaps.Add(new LineStateMap(s => "", "% Nominal Speed"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Top Speed"));
                 _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown",c=>c.CountdownAction()));
+                _lineStateMaps.Add(new LineStateMap(s => "", "Distance to Mark"));
             }
 
             _lineValueIndexes = new List<int>();

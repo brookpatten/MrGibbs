@@ -2,6 +2,7 @@
 #include "MainMenu.h"
 #include "DashboardMenu.h"
 #include "SystemMenu.h"
+#include "RaceMenu.h"
 
 static uint16_t main_menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
   return 3;
@@ -33,7 +34,7 @@ static void main_menu_select_callback(struct MenuLayer *menu_layer, MenuIndex *c
       dashboard_menu_init();
       break;
     case 1:
-      //dialog_choice_window_push();
+      race_menu_init();
       break;
     case 2:
       system_menu_init();
@@ -75,6 +76,8 @@ static void main_window_load(Window *window) {
 
 static void main_window_unload(Window *window) {
   menu_layer_destroy(main_menu_layer);
+  
+  window_destroy(main_menu_window);
 }
 
 void main_menu_init(void) {
@@ -84,8 +87,4 @@ void main_menu_init(void) {
       .unload = main_window_unload,
   });
   window_stack_push(main_menu_window, true);
-}
-
-void main_menu_deinit(void) {
-  window_destroy(main_menu_window);
 }

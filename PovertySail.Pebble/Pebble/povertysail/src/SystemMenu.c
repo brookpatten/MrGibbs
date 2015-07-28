@@ -2,6 +2,7 @@
 #include "SystemMenu.h"
 #include "Messages.h"
 #include "Dashboard.h"
+#include "Compass.h"
 
 static uint16_t system_menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
   return 4;
@@ -52,7 +53,7 @@ static void system_menu_select_callback(struct MenuLayer *menu_layer, MenuIndex 
 }
 
 static void system_menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "system Row");
+  menu_cell_basic_header_draw(ctx, cell_layer, "System");
 }
 
 static int16_t system_menu_get_header_height_callback(struct MenuLayer *menu_layer, uint16_t section_index, void *context) {
@@ -83,6 +84,8 @@ static void system_window_load(Window *window) {
 
 static void system_window_unload(Window *window) {
   menu_layer_destroy(system_menu_layer);
+  
+  window_destroy(system_menu_window);
 }
 
 void system_menu_init(void) {
@@ -92,8 +95,4 @@ void system_menu_init(void) {
       .unload = system_window_unload,
   });
   window_stack_push(system_menu_window, true);
-}
-
-void system_menu_deinit(void) {
-  window_destroy(system_menu_window);
 }

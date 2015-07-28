@@ -22,5 +22,3 @@ static void dashboard_map_window_load(Window *window) ;
 static void dashboard_map_window_unload(Window *window);
 
 void dashboard_map_menu_init(uint8_t row);
-
-void dashboard_map_menu_deinit(void) ;

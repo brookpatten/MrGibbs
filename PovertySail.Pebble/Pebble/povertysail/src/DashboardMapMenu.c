@@ -4,7 +4,7 @@
 #include "Dashboard.h"
   
 static uint16_t dashboard_map_menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
-  return 13;
+  return 15;
 }
 
 static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *context) {
@@ -29,16 +29,16 @@ static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_laye
       menu_cell_basic_draw(ctx, cell_layer, "Heel", NULL, NULL);
       break;
     case 6:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Speed (Apparant)", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Spd App", NULL, NULL);
       break;
     case 7:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Speed (True)", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Spd True", NULL, NULL);
       break;
     case 8:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Direction (Apparant)", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Dir App", NULL, NULL);
       break;
     case 9:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Direction (True)", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Dir True", NULL, NULL);
       break;
     case 10:
       menu_cell_basic_draw(ctx, cell_layer, "Nominal Speed", NULL, NULL);
@@ -48,6 +48,12 @@ static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_laye
       break;
     case 12:
       menu_cell_basic_draw(ctx, cell_layer, "Top Speed", NULL, NULL);
+      break;
+    case 13:
+      menu_cell_basic_draw(ctx, cell_layer, "Countdown", NULL, NULL);
+      break;
+    case 14:
+      menu_cell_basic_draw(ctx, cell_layer, "Distance to Mark", NULL, NULL);
       break;
     default:
       break;
@@ -70,7 +76,15 @@ static void dashboard_map_menu_select_callback(struct MenuLayer *menu_layer, Men
 }
 
 static void dashboard_map_menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "Dashboard Item");
+  if(dashboardRow==0){
+    menu_cell_basic_header_draw(ctx, cell_layer, "Dashboard Top Row");
+  }
+  else if(dashboardRow==1){
+    menu_cell_basic_header_draw(ctx, cell_layer, "Dashboard Middle Row");
+  }
+  else if(dashboardRow==2){
+    menu_cell_basic_header_draw(ctx, cell_layer, "Dashboard Bottom Row");
+  }
 }
 
 static int16_t dashboard_map_menu_get_header_height_callback(struct MenuLayer *menu_layer, uint16_t section_index, void *context) {
@@ -101,6 +115,8 @@ static void dashboard_map_window_load(Window *window) {
 
 static void dashboard_map_window_unload(Window *window) {
   menu_layer_destroy(dashboard_map_menu_layer);
+  
+  window_destroy(dashboard_map_menu_window);
 }
 
 void dashboard_map_menu_init(uint8_t row) {
@@ -111,8 +127,4 @@ void dashboard_map_menu_init(uint8_t row) {
       .unload = dashboard_map_window_unload,
   });
   window_stack_push(dashboard_map_menu_window, true);
-}
-
-void dashboard_map_menu_deinit(void) {
-  window_destroy(dashboard_map_menu_window);
 }

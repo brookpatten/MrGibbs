@@ -9,6 +9,10 @@ enum AppMessageKey{
   //dash message
   LINE_KEY=1,
   MAP_KEY=2,
+  
+  //mark message
+  MARK_KEY=1,
+  BEARING_KEY=2,
 	
   //data refresh message
   CAPTION1_KEY=0,
@@ -41,6 +45,9 @@ void messages_init(void);
 void messages_deinit(void);
 void message_send_button(uint8_t button);
 void message_send_dash(uint8_t line, uint8_t map);
+void message_send_mark_bearing(uint8_t markindex, int32_t bearing);
+void message_send_mark_location(uint8_t markindex);
+void message_send_new_race();
 void message_send_calibrate(void);
 void message_send_restart(void);
 void message_send_reboot(void);

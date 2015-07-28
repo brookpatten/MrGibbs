@@ -13,8 +13,8 @@ namespace PovertySail.Contracts
         void CountdownAction();
 
         void SetCourseType(int index);
-        void SetMarkLocation(int markIndex);
-        void SetMarkBearing(int markIndex, double bearing);
+        void SetMarkLocation(MarkType markType);
+        void SetMarkBearing(MarkType markType, double bearing);
         void ClearMark(int markIndex);
         void NewRace();
 

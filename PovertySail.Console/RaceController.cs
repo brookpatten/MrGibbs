@@ -77,14 +77,78 @@ namespace PovertySail.Console
             throw new NotImplementedException();
         }
 
-        public void SetMarkLocation(int markIndex)
+        public void SetMarkLocation(MarkType markType)
         {
-            throw new NotImplementedException();
-        }
+            lock (_state)
+            {
+                if (_state.Location != null)
+                {
+                    if (_state.Marks == null)
+                    {
+                        State.Marks = new List<Mark>();
+                    }
 
-        public void SetMarkBearing(int markIndex, double bearing)
+                    if (!_state.Marks.Any())
+                    {
+                        var mark = new Mark() { MarkType = markType, CaptureMethod = MarkCaptureMethod.Location, Location = _state.Location };
+
+                        State.Marks.Add(mark);
+                        State.TargetMark = mark;
+                    }
+                    else if (_state.TargetMark != null && _state.TargetMark.MarkType == markType)
+                    {
+                        _state.TargetMark.CaptureMethod = MarkCaptureMethod.Location;
+                        _state.TargetMark.Location = _state.Location;
+                    }
+                    else if (State.TargetMark != null && _state.TargetMark.MarkType != markType)
+                    {
+                        var mark = new Mark() { MarkType = markType, CaptureMethod = MarkCaptureMethod.Location, Location = _state.Location };
+
+                        State.Marks.Add(mark);
+                        //State.TargetMark = mark;
+                    }
+                    else
+                    {
+                        _logger.Error("User set mark location for " + markType + " but unsure what to do with it");
+                    }
+                }
+            }
+        }
+        public void SetMarkBearing(MarkType markType, double bearing)
         {
-            throw new NotImplementedException();
+            lock (_state)
+            {
+                if (_state.Location != null)
+                {
+                    if (_state.Marks == null)
+                    {
+                        State.Marks = new List<Mark>();
+                    }
+
+                    Bearing fullBearing = new Bearing() { Location = _state.Location, RecordedAt = _state.BestTime, Bearing = bearing };
+                    Mark mark;
+
+                    if (!_state.Marks.Any(x=>x.MarkType==markType))
+                    {
+                        mark = new Mark() { MarkType = markType, CaptureMethod = MarkCaptureMethod.Bearing, Location = null };
+                        mark.Bearings = new List<Bearing>();
+                        mark.Bearings.Add(fullBearing);
+
+                        State.Marks.Add(mark);
+                        State.TargetMark = mark;
+                    }
+                    else
+                    {
+                        mark = _state.Marks.Where(x => x.MarkType == markType).Last();
+                        mark.Bearings.Add(fullBearing);
+                    }
+
+                    if(mark.Bearings.Count>1)
+                    {
+                        //attempt to calculate the location
+                    }
+                }
+            }
         }
 
         public void ClearMark(int markIndex)

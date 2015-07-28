@@ -12,4 +12,3 @@ static uint16_t main_menu_get_num_sections_callback(struct MenuLayer *menu_layer
 static void main_window_load(Window *window);
 static void main_window_unload(Window *window);
 void main_menu_init(void);
-void main_menu_deinit(void);

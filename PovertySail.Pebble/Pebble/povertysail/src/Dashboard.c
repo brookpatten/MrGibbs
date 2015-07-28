@@ -80,7 +80,9 @@ void dashboard_update(DictionaryIterator *received){
 
 void dashboard_init(void) {
 	dashboard_window = window_create();
+  #ifdef PBL_SDK_2
   window_set_fullscreen(dashboard_window,true);
+  #endif
   window_set_background_color(dashboard_window,GColorBlack);
   window_set_click_config_provider(dashboard_window, dashboard_click_config_provider);
 	window_stack_push(dashboard_window, true);
