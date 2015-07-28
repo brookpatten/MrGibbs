@@ -20,7 +20,7 @@ namespace PovertySail.TestBench
 
             double[] fields=new double[6];
 
-            var variation = magVar.SGMagVar(39.2576946666667, -84.2860833333333, 597, jd, 10, fields);
+            var variation = magVar.SGMagVar(39.2576946666667, -84.2860833333333, 219.0/1000.0, jd, 10, fields);
 
             Console.WriteLine(variation);
             Console.ReadLine();

@@ -21,6 +21,7 @@ namespace PovertySail.Calculators
         {
             _plugin = plugin;
             _magVar = new MagVar();
+            _logger = logger;
         }
 
         public void Calculate(State state)
