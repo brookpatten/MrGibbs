@@ -31,7 +31,7 @@ namespace PovertySail.Pebble
             _logger = logger;
         }
 
-        public void Initialize(PluginConfiguration configuration, ISystemController systemController, IRaceController raceController)
+        public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _components = new List<IPluginComponent>();
         
@@ -67,7 +67,7 @@ namespace PovertySail.Pebble
             {
                 try
                 {
-                    var viewer = new PebbleViewer(_logger, this, pebble,bundle,systemController,raceController);
+                    var viewer = new PebbleViewer(_logger, this, pebble,bundle,queueCommand);
                     
                     _components.Add(viewer);
                     configuration.DashboardViewers.Add(viewer);

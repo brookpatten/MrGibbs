@@ -20,7 +20,8 @@ namespace PovertySail.Console
         private IList<IPlugin> _allPlugins;
         private bool _run;
         private bool _restart;
-        
+        private Queue<Action<ISystemController, IRaceController>> _commands;
+
         public Supervisor(ILogger logger,IList<IPlugin> plugins, int sleepTime, IRaceController raceController)
         {
             _raceController = raceController;
@@ -31,6 +32,7 @@ namespace PovertySail.Console
 
         public void Initialize()
         {
+            _commands = new Queue<Action<ISystemController, IRaceController>>();
             _configuration = new PluginConfiguration();
             _configuration.Plugins = _allPlugins.Select(x=>x).ToList();
 
@@ -65,7 +67,15 @@ namespace PovertySail.Console
 
         private void InitializePlugin(IPlugin plugin)
         {
-            plugin.Initialize(_configuration, this, _raceController);
+            plugin.Initialize(_configuration, QueueCommand);
+        }
+
+        private void QueueCommand(Action<ISystemController,IRaceController> command)
+        {
+            lock(_commands)
+            {
+                _commands.Enqueue(command);
+            }
         }
 
         public bool Run()
@@ -159,6 +169,19 @@ namespace PovertySail.Console
                         if (!erroredPlugins.Contains(viewer.Plugin))
                         {
                             erroredPlugins.Add(viewer.Plugin);
+                        }
+                    }
+                }
+
+                //execute any pending commands from the plugins
+                lock (_commands)
+                {
+                    lock (_state)
+                    {
+                        while (_commands.Any())
+                        {
+                            var command = _commands.Dequeue();
+                            command(this, _raceController);
                         }
                     }
                 }

@@ -21,7 +21,7 @@ namespace PovertySail.Pebble
         //the label that will appear on the dashboard for this map
         public string Caption { get; private set; }
         //an option action that cwill be taken when the user pushes the button next to the line on the dashboard (up or down only)
-        public Action<IRaceController> Action { get; private set; }
+        public Action Action { get; private set; }
 
         public LineStateMap(Func<State, string> f, string caption)
         {
@@ -30,7 +30,7 @@ namespace PovertySail.Pebble
             Action = null;
         }
 
-        public LineStateMap(Func<State, string> f, string caption, Action<IRaceController> action)
+        public LineStateMap(Func<State, string> f, string caption, Action action)
         {
             Get = f;
             Caption = caption;
@@ -53,17 +53,15 @@ namespace PovertySail.Pebble
         private IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
         private static IList<LineStateMap> _lineStateMaps;
 
-        private static Dictionary<UICommand, Action<ApplicationMessageResponse,ISystemController ,IRaceController>> _commandMaps;
+        private static Dictionary<UICommand, Action<ApplicationMessageResponse>> _commandMaps;
 
-        private IRaceController _raceController;
-        private ISystemController _systemController;
+        private Action<Action<ISystemController, IRaceController>> _queueCommand;
 
         private Task _lastSend;
 
-        public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, AppBundle bundle, ISystemController systemController, IRaceController raceControllerr)
+        public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, AppBundle bundle, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
-            _raceController = raceControllerr;
-            _systemController = systemController;
+            _queueCommand = queueCommand;
             _plugin = plugin;
             _logger = logger;
             _pebble = pebble;
@@ -123,7 +121,7 @@ namespace PovertySail.Pebble
                 _lineStateMaps.Add(new LineStateMap(s => "", "Nominal Speed"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "% Nominal Speed"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Top Speed"));
-                _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown",c=>c.CountdownAction()));
+                _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown",()=>_queueCommand((s,r)=>r.CountdownAction())));
                 _lineStateMaps.Add(new LineStateMap(s => s.DistanceToTargetMarkInYards.HasValue ? string.Format("{0:0}",s.DistanceToTargetMarkInYards.Value) :"?", "Distance to Mark (yds)"));
             }
 
@@ -134,12 +132,12 @@ namespace PovertySail.Pebble
 
             if(_commandMaps==null)
             {
-                _commandMaps = new Dictionary<UICommand, Action<ApplicationMessageResponse,ISystemController ,IRaceController>>();
+                _commandMaps = new Dictionary<UICommand, Action<ApplicationMessageResponse>>();
                 _commandMaps.Add(UICommand.Dash, ProcessDashCommand);
                 _commandMaps.Add(UICommand.Button, ProcessButtonCommand);
-                _commandMaps.Add(UICommand.Calibrate, (m, s, r) => s.Calibrate());
-                _commandMaps.Add(UICommand.Restart, (m, s, r) => s.Restart());
-                _commandMaps.Add(UICommand.Reboot, (m, s, r) => s.Reboot());
+                _commandMaps.Add(UICommand.Calibrate, m=>_queueCommand((s,r)=>s.Calibrate()));
+                _commandMaps.Add(UICommand.Restart, m => _queueCommand((s, r) => s.Restart()));
+                _commandMaps.Add(UICommand.Reboot, m => _queueCommand((s, r) => s.Reboot()));
                 _commandMaps.Add(UICommand.Mark, ProcessMarkCommand);
             }
         }
@@ -156,7 +154,7 @@ namespace PovertySail.Pebble
 
                     if(_commandMaps.ContainsKey(command))
                     {
-                        _commandMaps[command](response,_systemController,_raceController);
+                        _commandMaps[command](response);
                     }
                     else
                     {
@@ -166,7 +164,7 @@ namespace PovertySail.Pebble
             }
         }
 
-        private void ProcessButtonCommand(ApplicationMessageResponse response,ISystemController systemController,IRaceController controller)
+        private void ProcessButtonCommand(ApplicationMessageResponse response)
         {
             var lineTuple = response.Dictionary.Values.SingleOrDefault(x=>x.Key==1);
             if(lineTuple!=null && lineTuple is AppMessageUInt8)
@@ -176,7 +174,7 @@ namespace PovertySail.Pebble
                 if(action!=null)
                 {
                     _logger.Info("Received button press for line " + line + ", executing action for " + _lineStateMaps[_lineValueIndexes[line]].Caption);
-                    action(controller);
+                    action();
                 }
                 else
                 {
@@ -185,7 +183,7 @@ namespace PovertySail.Pebble
             }
         }
 
-        private void ProcessDashCommand(ApplicationMessageResponse response, ISystemController systemController, IRaceController controller)
+        private void ProcessDashCommand(ApplicationMessageResponse response)
         {
             //which line are we changing?
             var line = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
@@ -194,7 +192,7 @@ namespace PovertySail.Pebble
             _lineValueIndexes[(int)line] = (int)map;
         }
 
-        private void ProcessMarkCommand(ApplicationMessageResponse response, ISystemController systemController, IRaceController controller)
+        private void ProcessMarkCommand(ApplicationMessageResponse response)
         {
             var mark = (MarkType)((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
 
@@ -206,12 +204,13 @@ namespace PovertySail.Pebble
                 //convert to double
                 double bearing=0;
                 //TODO convert from pebble triangle to double degrees
-                controller.SetMarkBearing(mark, bearing,true);
+                _queueCommand((s, r) => r.SetMarkBearing(mark, bearing, true));
             }
             else
             {
                 //location
-                controller.SetMarkLocation(mark);
+                _queueCommand((s, r) => r.SetMarkLocation(mark));
+            
             }
         }
 

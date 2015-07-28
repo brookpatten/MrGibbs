@@ -125,12 +125,12 @@ namespace PovertySail.Console
                         State.Marks = new List<Mark>();
                     }
 
-                    Bearing fullBearing = new Bearing() { Location = _state.Location, RecordedAt = _state.BestTime, Bearing = bearing };
+                    Bearing fullBearing = new Bearing() { Location = _state.Location, RecordedAt = _state.BestTime, CompassHeading = bearing };
 
                     //compensate for magnetic deviation
                     if(magneticBearing && _state.MagneticDeviation.HasValue)
                     {
-                        fullBearing.Bearing = fullBearing.Bearing + _state.MagneticDeviation.Value;
+                        fullBearing.CompassHeading = fullBearing.CompassHeading + _state.MagneticDeviation.Value;
                     }
 
                     Mark mark;
@@ -155,7 +155,7 @@ namespace PovertySail.Console
                         var bearing1 = mark.Bearings[mark.Bearings.Count-2];
                         var bearing2 = mark.Bearings[mark.Bearings.Count - 1];
 
-                        var location = CoordinatePointUtilities.FindIntersection(bearing1.Location, bearing1.Bearing, bearing2.Location, bearing2.Bearing);
+                        var location = CoordinatePointUtilities.FindIntersection(bearing1.Location, bearing1.CompassHeading, bearing2.Location, bearing2.CompassHeading);
                         mark.Location = location;
 
                         //TODO, if there's more than 2, do we average down?
