@@ -90,6 +90,8 @@ namespace PovertySail.Gps
                 double magneticDeviation = double.MinValue;
                 DateTime? date = null;
 
+                double altitude = double.MinValue;
+
                 while (_buffer.Count > 0)
                 {
                     string line = _buffer.Dequeue();
@@ -150,6 +152,21 @@ namespace PovertySail.Gps
                                 {
                                     longitude = -longitude;
                                 }
+
+                                string altitudeString = parsed[sentence]["Altitude"];
+                                string altitudeUnitString = parsed[sentence]["Altitude Unit"];
+                                if (double.TryParse(altitudeString, out altitude))
+                                {
+                                    if (altitudeUnitString.Trim().ToLower() == "m")
+                                    {
+                                        //do nothing, it's meters
+                                    }
+                                    else if (altitudeUnitString.Trim().ToLower() == "k")
+                                    {
+                                        altitude = altitude * 1000.0;
+                                    }
+                                }
+                                
                             }
                             else if (sentence == "Recommended Minimum Specific GPS/TRANSIT Data")
                             {
@@ -299,7 +316,14 @@ namespace PovertySail.Gps
                     }
                     if (magneticDeviation != double.MinValue)
                     {
+                        _logger.Info("GPS set variation to "+magneticDeviation);
                         state.MagneticDeviation = magneticDeviation;
+                    }
+
+                    if (altitude != double.MinValue)
+                    {
+                        _logger.Info("GPS set altitude to " + altitude);
+                        state.AltitudeInMeters = altitude;
                     }
                 }
                 //update the state
