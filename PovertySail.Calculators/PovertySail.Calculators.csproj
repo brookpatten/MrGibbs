@@ -41,8 +41,6 @@
   <ItemGroup>
     <Compile Include="CalculatorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TiltCompensatedHeadingCalculator.cs" />
-    <Compile Include="VmgCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PovertySail.Contracts\PovertySail.Contracts.csproj">
