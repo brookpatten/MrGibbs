@@ -160,6 +160,8 @@ namespace PovertySail.Console
                         var location = CoordinatePointUtilities.FindIntersection(bearing1.Location, bearing1.CompassHeading, bearing2.Location, bearing2.CompassHeading);
                         mark.Location = location;
 
+                        _logger.Info(string.Format("Calculated new location of {0} via bearings to be {1},{2}",markType,mark.Location.Latitude.Value,mark.Location.Longitude.Value));
+
                         //TODO, if there's more than 2, do we average down?
                     }
                 }
