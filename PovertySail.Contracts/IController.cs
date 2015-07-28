@@ -14,7 +14,7 @@ namespace PovertySail.Contracts
 
         void SetCourseType(int index);
         void SetMarkLocation(MarkType markType);
-        void SetMarkBearing(MarkType markType, double bearing);
+        void SetMarkBearing(MarkType markType, double bearing, bool magneticBearing);
         void ClearMark(int markIndex);
         void NewRace();
 

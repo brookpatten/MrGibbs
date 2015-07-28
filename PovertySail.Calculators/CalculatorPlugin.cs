@@ -24,8 +24,10 @@ namespace PovertySail.Calculators
             _components = new List<IPluginComponent>();
         
             _initialized = false;
-            
-            //do init here
+
+            var distanceCalc = new DistanceToMarkCalculator(_logger, this);
+            _components.Add(distanceCalc);
+            configuration.Calculators.Add(distanceCalc);
 
             _initialized = true;
         }

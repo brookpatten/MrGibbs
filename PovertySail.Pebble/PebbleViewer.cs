@@ -124,7 +124,7 @@ namespace PovertySail.Pebble
                 _lineStateMaps.Add(new LineStateMap(s => "", "% Nominal Speed"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Top Speed"));
                 _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown",c=>c.CountdownAction()));
-                _lineStateMaps.Add(new LineStateMap(s => "", "Distance to Mark"));
+                _lineStateMaps.Add(new LineStateMap(s => s.DistanceToTargetMarkInYards.HasValue ? string.Format("{0:0}",s.DistanceToTargetMarkInYards.Value) :"?", "Distance to Mark (yds)"));
             }
 
             _lineValueIndexes = new List<int>();
@@ -140,6 +140,7 @@ namespace PovertySail.Pebble
                 _commandMaps.Add(UICommand.Calibrate, (m, s, r) => s.Calibrate());
                 _commandMaps.Add(UICommand.Restart, (m, s, r) => s.Restart());
                 _commandMaps.Add(UICommand.Reboot, (m, s, r) => s.Reboot());
+                _commandMaps.Add(UICommand.Mark, ProcessMarkCommand);
             }
         }
 
@@ -191,6 +192,27 @@ namespace PovertySail.Pebble
             //change it to which map?
             var map = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 2)).Value;
             _lineValueIndexes[(int)line] = (int)map;
+        }
+
+        private void ProcessMarkCommand(ApplicationMessageResponse response, ISystemController systemController, IRaceController controller)
+        {
+            var mark = (MarkType)((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
+
+            var bearingTuple = response.Dictionary.Values.SingleOrDefault(x=>x.Key==2);
+            if (bearingTuple!=null)
+            {
+                //bearing
+                int pebbleBearing = ((AppMessageInt32)bearingTuple).Value;
+                //convert to double
+                double bearing=0;
+                //TODO convert from pebble triangle to double degrees
+                controller.SetMarkBearing(mark, bearing,true);
+            }
+            else
+            {
+                //location
+                controller.SetMarkLocation(mark);
+            }
         }
 
         public void Update(State state)

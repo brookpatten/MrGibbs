@@ -114,7 +114,7 @@ namespace PovertySail.Console
                 }
             }
         }
-        public void SetMarkBearing(MarkType markType, double bearing)
+        public void SetMarkBearing(MarkType markType, double bearing, bool magneticBearing)
         {
             lock (_state)
             {
@@ -126,6 +126,13 @@ namespace PovertySail.Console
                     }
 
                     Bearing fullBearing = new Bearing() { Location = _state.Location, RecordedAt = _state.BestTime, Bearing = bearing };
+
+                    //compensate for magnetic deviation
+                    if(magneticBearing && _state.MagneticDeviation.HasValue)
+                    {
+                        fullBearing.Bearing = fullBearing.Bearing + _state.MagneticDeviation.Value;
+                    }
+
                     Mark mark;
 
                     if (!_state.Marks.Any(x=>x.MarkType==markType))
@@ -145,7 +152,13 @@ namespace PovertySail.Console
 
                     if(mark.Bearings.Count>1)
                     {
-                        //attempt to calculate the location
+                        var bearing1 = mark.Bearings[mark.Bearings.Count-2];
+                        var bearing2 = mark.Bearings[mark.Bearings.Count - 1];
+
+                        var location = CoordinatePointUtilities.FindIntersection(bearing1.Location, bearing1.Bearing, bearing2.Location, bearing2.Bearing);
+                        mark.Location = location;
+
+                        //TODO, if there's more than 2, do we average down?
                     }
                 }
             }

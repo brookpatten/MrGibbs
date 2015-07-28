@@ -35,7 +35,7 @@ namespace PovertySail.Models
         //calculated values
         public double? MagneticHeading { get; set; }
 
-        public double? DistanceToTargetMark { get; set; }
+        public double? DistanceToTargetMarkInYards { get; set; }
 
         //race state
         public DateTime? StartTime { get; set; }
