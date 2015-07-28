@@ -82,6 +82,10 @@
       <Project>{860DCFBC-164C-4BCA-A112-AF0439A60211}</Project>
       <Name>PovertySail.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PovertySail.MagneticVariation\PovertySail.MagneticVariation.csproj">
+      <Project>{2be5501b-fa4a-408f-8269-f2d6e7a02699}</Project>
+      <Name>PovertySail.MagneticVariation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PovertySail.Models\PovertySail.Models.csproj">
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>PovertySail.Models</Name>
