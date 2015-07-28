@@ -314,15 +314,15 @@ namespace PovertySail.Gps
                     {
                         state.MagneticCourseMadeGood = magneticCourseMadeGood;
                     }
-                    if (magneticDeviation != double.MinValue)
-                    {
-                        _logger.Info("GPS set variation to "+magneticDeviation);
-                        state.MagneticDeviation = magneticDeviation;
-                    }
+                    //if (magneticDeviation != double.MinValue)
+                    //{
+                    //    _logger.Info("GPS set variation to "+magneticDeviation);
+                    //    state.MagneticDeviation = magneticDeviation;
+                    //}
 
                     if (altitude != double.MinValue)
                     {
-                        _logger.Info("GPS set altitude to " + altitude);
+                        //_logger.Info("GPS set altitude to " + altitude);
                         state.AltitudeInMeters = altitude;
                     }
                 }

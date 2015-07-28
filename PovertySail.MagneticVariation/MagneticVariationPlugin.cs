@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using PovertySail.Contracts;
 using PovertySail.Contracts.Infrastructure;
 
-namespace PovertySail.Calculators
+namespace PovertySail.MagneticVariation
 {
-    public class CalculatorPlugin:IPlugin
+    public class MagneticVariationPlugin:IPlugin
     {
         private ILogger _logger;
         private bool _initialized = false;
-        private IList<IPluginComponent> _components; 
+        private IList<IPluginComponent> _components;
+        private TSAGeoMag _tsaGeoMag;
 
-        public CalculatorPlugin(ILogger logger)
+        public MagneticVariationPlugin(ILogger logger)
         {
             _logger = logger;
         }
@@ -25,9 +26,11 @@ namespace PovertySail.Calculators
         
             _initialized = false;
 
-            var distanceCalc = new DistanceToMarkCalculator(_logger, this);
-            _components.Add(distanceCalc);
-            configuration.Calculators.Add(distanceCalc);
+            _tsaGeoMag = new TSAGeoMag(_logger);
+
+            var magvarCalc = new MagneticVariationCalculator(_logger, this, _tsaGeoMag);
+            _components.Add(magvarCalc);
+            configuration.Calculators.Add(magvarCalc);
 
             _initialized = true;
         }

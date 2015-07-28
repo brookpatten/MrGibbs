@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PovertySail.Calculators;
 using PovertySail.Models;
+using PovertySail.MagneticVariation;
+using NLog;
 
 namespace PovertySail.TestBench
 {
@@ -13,16 +16,20 @@ namespace PovertySail.TestBench
     {
         static void Main(string[] args)
         {
-            MagVar magVar = new MagVar();
+            var nlog = LogManager.GetCurrentClassLogger();
+            var logger = new PovertySail.Infrastructure.NLogLogger(nlog);
 
-            double julianDate = JulianDate.JD(DateTime.UtcNow);
-            long jd = (long) julianDate;
 
-            double[] fields=new double[6];
+            var mag = new TSAGeoMag(logger);
 
-            var variation = magVar.SGMagVar(39.2576946666667, -84.2860833333333, 219.0/1000.0, jd, 10, fields);
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            var variation = mag.getDeclination(39.2576946666667, -84.2860833333333, TSAGeoMag.decimalYear(DateTime.Now),
+                219.0/1000.0);
+            watch.Stop();
 
-            Console.WriteLine(variation);
+
+            Console.WriteLine("Variation is {0} calculated in {1:0.00}s",variation,watch.Elapsed.TotalSeconds);
             Console.ReadLine();
 
         }

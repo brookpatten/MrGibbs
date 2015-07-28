@@ -9,31 +9,27 @@ using PovertySail.Contracts.Infrastructure;
 using PovertySail.Contracts;
 using PovertySail.Models;
 
-namespace PovertySail.Calculators
+namespace PovertySail.MagneticVariation
 {
     public class MagneticVariationCalculator:ICalculator
     {
         private ILogger _logger;
         private IPlugin _plugin;
-        private MagVar _magVar;
+        private TSAGeoMag _tsaGeoMag;
 
-        public MagneticVariationCalculator(ILogger logger, IPlugin plugin)
+        public MagneticVariationCalculator(ILogger logger, IPlugin plugin, TSAGeoMag tsaGeoMag)
         {
             _plugin = plugin;
-            _magVar = new MagVar();
+            _tsaGeoMag = tsaGeoMag;
             _logger = logger;
         }
 
         public void Calculate(State state)
         {
-            double[] fields=new double[6];
             if (state.Location!=null && state.Location.Latitude!=null && state.Location.Longitude!=null && state.AltitudeInMeters.HasValue)
             {
-                double julianDate = JulianDate.JD(state.BestTime);
-                long jd = (long) julianDate;
-
-                state.MagneticDeviation = _magVar.SGMagVar(state.Location.Latitude.Value, state.Location.Longitude.Value,
-                    state.AltitudeInMeters.Value, jd, 10, fields);
+                double now = TSAGeoMag.decimalYear(state.BestTime);
+                _tsaGeoMag.getDeclination(state.Location.Latitude.Value, state.Location.Longitude.Value, now,state.AltitudeInMeters.Value/1000.0);
 
                 _logger.Info("Calculated Magnetic Deviation as " + state.MagneticDeviation + " for " + state.Location.Latitude.Value + "," + state.Location.Longitude.Value + " altitude " + state.AltitudeInMeters.Value);
             }
