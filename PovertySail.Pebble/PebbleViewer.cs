@@ -150,15 +150,14 @@ namespace PovertySail.Pebble
                 if(commandTuple!=null && commandTuple is AppMessageUInt8)
                 {
                     UICommand command = (UICommand)((AppMessageUInt8)commandTuple).Value;
-                    _logger.Info("Received Command " + command.ToString() + "from pebble " + _pebble.PebbleID);
-
+                    
                     if(_commandMaps.ContainsKey(command))
                     {
                         _commandMaps[command](response);
                     }
                     else
                     {
-                        _logger.Info("No Command map for "+command);
+                        _logger.Info("Received Command " + command.ToString() + " from pebble " + _pebble.PebbleID+", but there is no map specified");
                     }
                 }
             }
@@ -189,6 +188,9 @@ namespace PovertySail.Pebble
             var line = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
             //change it to which map?
             var map = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 2)).Value;
+
+            _logger.Info("Pebble "+_pebble.PebbleID+" Has requested Dashboard Row "+line+" to show "+_lineStateMaps[map].Caption);
+
             _lineValueIndexes[(int)line] = (int)map;
         }
 
