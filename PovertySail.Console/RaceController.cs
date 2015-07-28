@@ -128,9 +128,17 @@ namespace PovertySail.Console
                     Bearing fullBearing = new Bearing() { Location = _state.Location, RecordedAt = _state.BestTime, CompassHeading = bearing };
 
                     //compensate for magnetic deviation
-                    if(magneticBearing && _state.MagneticDeviation.HasValue)
+                    if(magneticBearing)
                     {
-                        fullBearing.CompassHeading = fullBearing.CompassHeading + _state.MagneticDeviation.Value;
+                        if (_state.MagneticDeviation.HasValue)
+                        {
+                            fullBearing.CompassHeading = fullBearing.CompassHeading + _state.MagneticDeviation.Value;
+                        }
+                        else
+                        {
+                            _logger.Error("Cannot calculate mark location using magnetic bearing without magnetic deviation!");
+                            return;
+                        }
                     }
 
                     _logger.Info(string.Format("Received bearing for {0} of {1:0.00} ({2:0.00} true) from {3},{4}, altitude {5}, deviation {6}", markType, bearing, fullBearing.CompassHeading, fullBearing.Location.Latitude.Value, fullBearing.Location.Longitude.Value, _state.AltitudeInMeters, _state.MagneticDeviation));

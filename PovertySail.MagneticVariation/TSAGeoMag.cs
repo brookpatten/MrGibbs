@@ -499,7 +499,7 @@ namespace  PovertySail.MagneticVariation
 
                 sr.Close();
                 sr.Dispose();
-                
+                _logger.Info("Loaded Magnetic Variation Coefficients from File WMM.COF");
             } 
             catch (Exception ex)
             {
@@ -522,6 +522,7 @@ namespace  PovertySail.MagneticVariation
                 stream.Dispose();
                 writer.Close();
                 writer.Dispose();
+                _logger.Info("Loaded Magnetic Variation Coefficients from Hardcoded values");
             }
             
             // CONVERT SCHMIDT NORMALIZED GAUSS COEFFICIENTS TO UNNORMALIZED
