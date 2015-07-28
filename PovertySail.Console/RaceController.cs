@@ -133,6 +133,8 @@ namespace PovertySail.Console
                         fullBearing.CompassHeading = fullBearing.CompassHeading + _state.MagneticDeviation.Value;
                     }
 
+                    _logger.Info(string.Format("Received bearing for {0} of {1:0.00} ({2:0.00} true) from {3},{4}, altitude {5}, deviation {6}", markType, bearing, fullBearing.CompassHeading, fullBearing.Location.Latitude.Value, fullBearing.Location.Longitude.Value, _state.AltitudeInMeters, _state.MagneticDeviation));
+
                     Mark mark;
 
                     if (!_state.Marks.Any(x=>x.MarkType==markType))
@@ -150,7 +152,7 @@ namespace PovertySail.Console
                         mark.Bearings.Add(fullBearing);
                     }
 
-                    if(mark.Bearings.Count>1)
+                    if(mark.Bearings.Count>1 && mark.CaptureMethod == MarkCaptureMethod.Bearing)
                     {
                         var bearing1 = mark.Bearings[mark.Bearings.Count-2];
                         var bearing2 = mark.Bearings[mark.Bearings.Count - 1];

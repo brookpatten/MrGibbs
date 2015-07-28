@@ -23,6 +23,7 @@ namespace PovertySail.Models
         public double? MagneticCourseMadeGood { get; set; }
         public double? TrueCourseMadeGood { get; set; }
         public double? MagneticDeviation { get; set; }
+        public double? AltitudeInMeters { get; set; }
         
         //accel provided data
         public Vector3 Accel { get; set; }

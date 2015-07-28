@@ -26,15 +26,15 @@ namespace PovertySail.Calculators
         public void Calculate(State state)
         {
             double[] fields=new double[6];
-            if (!state.MagneticDeviation.HasValue && state.Location!=null)
+            if (state.Location!=null && state.Location.Latitude!=null && state.Location.Longitude!=null && state.AltitudeInMeters.HasValue)
             {
                 double julianDate = JulianDate.JD(state.BestTime);
                 long jd = (long) julianDate;
 
                 state.MagneticDeviation = _magVar.SGMagVar(state.Location.Latitude.Value, state.Location.Longitude.Value,
-                    state.Location.HeightAboveGeoID, jd, 1, fields);
+                    state.AltitudeInMeters.Value, jd, 10, fields);
 
-                _logger.Debug("Calculated Magnetic Deviation as "+state.MagneticDeviation);
+                _logger.Info("Calculated Magnetic Deviation as " + state.MagneticDeviation + " for " + state.Location.Latitude.Value + "," + state.Location.Longitude.Value + " altitude " + state.AltitudeInMeters.Value);
             }
         }
 
