@@ -202,9 +202,14 @@ namespace PovertySail.Pebble
                 //bearing
                 int pebbleBearing = ((AppMessageInt32)bearingTuple).Value;
                 //convert to double
-                double bearing=0;
-                //TODO convert from pebble triangle to double degrees
-                _queueCommand((s, r) => r.SetMarkBearing(mark, bearing, true));
+                double bearingToNorth = ((double)pebbleBearing/65536.0)*360.0;
+
+                //pebble reports bearing to NORTH, we need to figure out what we're pointed at
+                double bearingToMark = 360 - bearingToNorth;
+
+                
+
+                _queueCommand((s, r) => r.SetMarkBearing(mark, bearingToMark, true));
             }
             else
             {

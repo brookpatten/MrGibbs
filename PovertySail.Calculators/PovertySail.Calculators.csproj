@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="CalculatorPlugin.cs" />
     <Compile Include="DistanceToMarkCalculator.cs" />
+    <Compile Include="MagneticVariationCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

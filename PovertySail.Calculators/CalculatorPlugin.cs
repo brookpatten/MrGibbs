@@ -29,6 +29,10 @@ namespace PovertySail.Calculators
             _components.Add(distanceCalc);
             configuration.Calculators.Add(distanceCalc);
 
+            var magvarCalc = new MagneticVariationCalculator(_logger, this);
+            _components.Add(magvarCalc);
+            configuration.Calculators.Add(magvarCalc);
+
             _initialized = true;
         }
 
