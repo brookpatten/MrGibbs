@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PovertySail.HMC5883
+namespace PovertySail.Models
 {
     //from http://www.oplopanax.ca/Downloads/MagVar.cs
     //http://www.bluetoque.ca/2013/01/magnetic-declination-in-c-sharp/
@@ -81,7 +81,7 @@ namespace PovertySail.HMC5883
     ** Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
     **
     */
-    class MagVar
+    public class MagVar
     {
 
         #region statics

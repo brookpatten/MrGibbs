@@ -19,13 +19,15 @@ namespace PovertySail.Calculators
             _logger = logger;
         }
 
-        public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
+        public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _components = new List<IPluginComponent>();
         
             _initialized = false;
-            
-            //do init here
+
+            var distanceCalc = new DistanceToMarkCalculator(_logger, this);
+            _components.Add(distanceCalc);
+            configuration.Calculators.Add(distanceCalc);
 
             _initialized = true;
         }

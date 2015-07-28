@@ -10,24 +10,34 @@ using PovertySail.Models;
 
 namespace PovertySail.Console
 {
-	public class Supervisor:IDisposable
+	public class Supervisor:IDisposable,ISystemController
     {
         private ILogger _logger;
         private PluginConfiguration _configuration;
         private int _sleepTime;
+        private IRaceController _raceController;
         private State _state;
+        private IList<IPlugin> _allPlugins;
+        private bool _run;
+        private bool _restart;
+        private Queue<Action<ISystemController, IRaceController>> _commands;
 
-        public Supervisor(ILogger logger,IList<IPlugin> plugins, int sleepTime)
+        public Supervisor(ILogger logger,IList<IPlugin> plugins, int sleepTime, IRaceController raceController)
         {
+            _raceController = raceController;
             _sleepTime = sleepTime;
             _logger = logger;
-            _configuration = new PluginConfiguration();
-            _configuration.Plugins = plugins;
+            _allPlugins = plugins;
         }
 
         public void Initialize()
         {
-            _state = new State();
+            _commands = new Queue<Action<ISystemController, IRaceController>>();
+            _configuration = new PluginConfiguration();
+            _configuration.Plugins = _allPlugins.Select(x=>x).ToList();
+
+            _state = _raceController.State;
+
             var failed = new List<IPlugin>();
             foreach (var plugin in _configuration.Plugins)
             {
@@ -57,75 +67,28 @@ namespace PovertySail.Console
 
         private void InitializePlugin(IPlugin plugin)
         {
-            plugin.Initialize(_configuration, OnWatchButton, OnWatchButton, OnSpeedButton);
+            plugin.Initialize(_configuration, QueueCommand);
         }
 
-        public void OnWatchButton(object sender,EventArgs args)
+        private void QueueCommand(Action<ISystemController,IRaceController> command)
         {
-            lock(_state)
+            lock(_commands)
             {
-                if(_state.StartTime.HasValue)
-                {
-                    if(_state.StartTime > _state.BestTime)
-                    {
-                        var remaining = _state.StartTime.Value - _state.BestTime;
-
-                        if(remaining.Minutes>=4)
-                        {
-                            _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 0, remaining.Seconds, remaining.Milliseconds));
-                            _state.AddMessage(MessageCategory.System,MessagePriority.Normal,5, "Countdown synced");
-                        }
-                        else if (remaining.Minutes >= 3)
-                        {
-                            _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 1, remaining.Seconds, remaining.Milliseconds));
-                            _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown synced");
-                        }
-                        else
-                        {
-                            _state.StartTime = _state.StartTime.Value.Subtract(new TimeSpan(0, 0, 0, remaining.Seconds, remaining.Milliseconds));
-                            _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown synced");
-                        }
-                    }
-                    else
-                    {
-                        _state.StartTime = null;
-                        _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown reset");
-                    }
-                }
-                else
-                {
-                    _state.StartTime = _state.BestTime.AddMinutes(5);
-                    _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown started");
-                }
+                _commands.Enqueue(command);
             }
         }
 
-        public void OnHeadingButton(object sender, EventArgs args)
-        {
-            lock (_state)
-            {
-
-            }
-        }
-
-        public void OnSpeedButton(object sender, EventArgs args)
-        {
-            lock (_state)
-            {
-
-            }
-        }
-
-        public void Run()
+        public bool Run()
         {
             _logger.Info("Plugin Supervisor is running");
-            bool run = true;
+            _run = true;
+            _restart = false;
             int operationCount = 1;
             _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Startup Complete");
-            while (run && operationCount>0)
+            while (_run && operationCount>0)
             {
                 _state.SystemTime = DateTime.UtcNow;
-
+                
                 operationCount = 0;
                 lock (_state)
                 {
@@ -210,6 +173,19 @@ namespace PovertySail.Console
                     }
                 }
 
+                //execute any pending commands from the plugins
+                lock (_commands)
+                {
+                    lock (_state)
+                    {
+                        while (_commands.Any())
+                        {
+                            var command = _commands.Dequeue();
+                            command(this, _raceController);
+                        }
+                    }
+                }
+
                 //attempt to reinitialize any plugins that encountered errors
                 foreach (var plugin in erroredPlugins)
                 {
@@ -219,6 +195,8 @@ namespace PovertySail.Console
                 _logger.Debug("Sleeping");
                 Thread.Sleep(_sleepTime);
             }
+
+            return _restart;
         }
 
         private void EvictPlugin(PluginConfiguration configuration,IPlugin plugin,bool reinitialize)
@@ -253,5 +231,41 @@ namespace PovertySail.Console
 				_configuration.Dispose ();
 			}
 		}
+
+        public void Calibrate()
+        {
+            _logger.Info("Calibrating...");
+            lock(_state)
+            {
+                foreach(var sensor in _configuration.Sensors)
+                {
+                    _logger.Info("Calibrating " + sensor.Plugin.GetType().Name);
+                    sensor.Calibrate();
+                }
+            }
+            _logger.Info("Calibration Complete");
+        }
+
+        public void Restart()
+        {
+            _logger.Info("Restart");
+            _restart = true;
+            _run = false;
+        }
+
+        public void Reboot()
+        {
+            _logger.Info("Reboot");
+
+            _restart = false;
+            
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.EnableRaisingEvents = false;
+            proc.StartInfo.FileName = "shutdown";
+            proc.StartInfo.Arguments = "-h -t 10";
+            proc.Start();
+            
+            _run = false;
+        }
     }
 }

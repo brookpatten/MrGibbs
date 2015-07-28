@@ -87,5 +87,11 @@ namespace PovertySail.MPU6050
         {
 			_i2c.Close();
         }
+
+
+        public void Calibrate()
+        {
+            _imu.Calibrate();
+        }
     }
 }

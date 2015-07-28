@@ -20,7 +20,7 @@ namespace PovertySail.Gps
             _logger = logger;
         }
 
-        public void Initialize(PluginConfiguration configuration, EventHandler onWatchButton, EventHandler onHeadingButton, EventHandler onSpeedButton)
+        public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _components = new List<IPluginComponent>();
             _initialized = false;

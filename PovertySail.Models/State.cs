@@ -9,6 +9,9 @@ namespace PovertySail.Models
 {
     public class State
     {
+        enum Tack : byte { Port = 0, Starboard = 1 }
+        enum Leg : byte { Windward = 0, Leeward = 1 }
+
         //provided by system clock or gps
         public DateTime SystemTime { get; set; }
         
@@ -20,8 +23,7 @@ namespace PovertySail.Models
         public double? MagneticCourseMadeGood { get; set; }
         public double? TrueCourseMadeGood { get; set; }
         public double? MagneticDeviation { get; set; }
-        public double? MagneticDeviationDirection { get; set; }
-
+        
         //accel provided data
         public Vector3 Accel { get; set; }
         public Vector3 Gyro { get; set; }
@@ -32,6 +34,8 @@ namespace PovertySail.Models
         
         //calculated values
         public double? MagneticHeading { get; set; }
+
+        public double? DistanceToTargetMarkInYards { get; set; }
 
         //race state
         public DateTime? StartTime { get; set; }

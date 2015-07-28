@@ -18,6 +18,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/compass_background.png",
+                "name": "IMAGE_COMPASS",
+                "type": "png"
+            },
+            {
                 "file": "images/i20.png",
                 "menuIcon": true,
                 "name": "IMAGE_I20",
@@ -30,10 +35,13 @@
             }
         ]
     },
-    "sdkVersion": "2",
+    "sdkVersion": "3",
     "shortName": "PovertySail",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
     "uuid": "2d3b6b60-b249-458e-85a7-75e9fa7ead84",
-    "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
         "watchface": false

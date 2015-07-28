@@ -10,7 +10,8 @@ namespace PebbleSharp.Core.NonPortable
     [DataContract]
     public class AppInfo
     {
-        [DataMember(Name = "versionCode", IsRequired = true)]
+        //does exist in sdk3
+        [DataMember(Name = "versionCode", IsRequired = false)]
         public int VersionCode { get; private set; }
 
         [DataMember(Name = "sdkVersion", IsRequired = true)]

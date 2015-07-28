@@ -10,5 +10,6 @@ namespace PovertySail.Contracts
     public interface ISensor : IPluginComponent
     {
         void Update(State state);
+        void Calibrate();
     }
 }

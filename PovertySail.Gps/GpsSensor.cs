@@ -88,7 +88,6 @@ namespace PovertySail.Gps
                 double trueCourseMadeGood = double.MinValue;
 
                 double magneticDeviation = double.MinValue;
-                double magneticDeviationDirection = double.MinValue;
                 DateTime? date = null;
 
                 while (_buffer.Count > 0)
@@ -220,10 +219,13 @@ namespace PovertySail.Gps
                                 }
 
                                 string magneticVariationString = parsed[sentence]["Magnetic Variation"];
-                                double.TryParse(magneticVariationString, out magneticDeviation);
-
-                                string magneticVariationDirectionString = parsed[sentence]["Magnetic Variation Direction"];
-                                double.TryParse(magneticVariationDirectionString, out magneticDeviationDirection);
+                                if(double.TryParse(magneticVariationString, out magneticDeviation))
+                                {
+                                    if(parsed[sentence]["Magnetic Variation Direction"].ToLower()=="w")
+                                    {
+                                        magneticDeviation = -magneticDeviation;
+                                    }
+                                }
                             }
                             else if (sentence == "Data and Time")
                             {
@@ -299,10 +301,6 @@ namespace PovertySail.Gps
                     {
                         state.MagneticDeviation = magneticDeviation;
                     }
-                    if (magneticDeviationDirection != double.MinValue)
-                    {
-                        state.MagneticDeviationDirection = magneticDeviationDirection;
-                    }
                 }
                 //update the state
             }
@@ -320,6 +318,11 @@ namespace PovertySail.Gps
             }
             _port.Dispose();
             _buffer.Clear();
+        }
+
+
+        public void Calibrate()
+        {
         }
     }
 }
