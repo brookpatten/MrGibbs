@@ -191,7 +191,10 @@ namespace PovertySail.Pebble
 
             _logger.Info("Pebble "+_pebble.PebbleID+" Has requested Dashboard Row "+line+" to show "+_lineStateMaps[map].Caption);
 
-            _lineValueIndexes[(int)line] = (int)map;
+            lock (_lineValueIndexes)
+            {
+                _lineValueIndexes[(int) line] = (int) map;
+            }
         }
 
         private void ProcessMarkCommand(ApplicationMessageResponse response)
@@ -247,7 +250,11 @@ namespace PovertySail.Pebble
 
                 for (int i = 0; i < _lineCount; i++)
                 {
-                    var map = _lineStateMaps[_lineValueIndexes[i]];
+                    LineStateMap map = null;
+                    lock (_lineValueIndexes)
+                    {
+                        map = _lineStateMaps[_lineValueIndexes[i]];
+                    }
                     message.Values.Add(new AppMessageString() {Key = (uint) message.Values.Count, Value = map.Caption});
                     message.Values.Add(new AppMessageString()
                     {
