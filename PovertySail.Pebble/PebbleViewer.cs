@@ -50,7 +50,7 @@ namespace PovertySail.Pebble
         private UUID _uuid;
         
         private int _lineCount;//number of rows shown on the pebble UI
-        private IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
+        private volatile IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
         private static IList<LineStateMap> _lineStateMaps;
 
         private static Dictionary<UICommand, Action<ApplicationMessageResponse>> _commandMaps;
@@ -248,6 +248,8 @@ namespace PovertySail.Pebble
                 message.TransactionId = _transactionId;
                 message.Command = (byte) Command.Push;
 
+                string captions = "";
+
                 for (int i = 0; i < _lineCount; i++)
                 {
                     LineStateMap map = null;
@@ -256,6 +258,7 @@ namespace PovertySail.Pebble
                         map = _lineStateMaps[_lineValueIndexes[i]];
                     }
                     message.Values.Add(new AppMessageString() {Key = (uint) message.Values.Count, Value = map.Caption});
+                    captions = captions + map.Caption + ",";
                     message.Values.Add(new AppMessageString()
                     {
                         Key = (uint) message.Values.Count,
@@ -273,7 +276,7 @@ namespace PovertySail.Pebble
                 }
 
                 _lastSend = _pebble.SendApplicationMessage(message);
-                _logger.Debug("Sent state to pebble " + _pebble.PebbleID);
+                _logger.Debug("Sent state to pebble " + _pebble.PebbleID+" ("+captions+")");
             }
             else
             {
