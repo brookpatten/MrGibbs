@@ -35,5 +35,10 @@ namespace PovertySail.BlendMicroAnemometer
         public void Dispose()
         {
         }
+
+
+        public void Calibrate()
+        {
+        }
     }
 }

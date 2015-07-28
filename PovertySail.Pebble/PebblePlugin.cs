@@ -17,14 +17,21 @@ namespace PovertySail.Pebble
         private ILogger _logger;
         private bool _initialized = false;
         private IList<IPluginComponent> _components;
+
+#if !WINDOWS
         private const string _pbwPath = "/home/pi/dev/povertysail/PovertySail.Pebble/PovertySail.pbw";
-        
+#endif
+
+#if WINDOWS
+        private const string _pbwPath = "PovertySail.pbw";
+#endif
+
         public PebblePlugin(ILogger logger)
         {
             _logger = logger;
         }
 
-        public void Initialize(PluginConfiguration configuration,EventHandler onWatchButton,EventHandler onHeadingButton, EventHandler onSpeedButton)
+        public void Initialize(PluginConfiguration configuration, ISystemController systemController, IRaceController raceController)
         {
             _components = new List<IPluginComponent>();
         
@@ -60,11 +67,8 @@ namespace PovertySail.Pebble
             {
                 try
                 {
-                    var viewer = new PebbleViewer(_logger, this, pebble,bundle);
-                    viewer.OnSpeedButton += onSpeedButton;
-                    viewer.OnWatchButton += onWatchButton;
-                    viewer.OnHeadingButton += onHeadingButton;
-
+                    var viewer = new PebbleViewer(_logger, this, pebble,bundle,systemController,raceController);
+                    
                     _components.Add(viewer);
                     configuration.DashboardViewers.Add(viewer);
                 }

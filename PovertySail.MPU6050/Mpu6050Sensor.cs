@@ -63,8 +63,8 @@ namespace PovertySail.MPU6050
 
 			    //var rpy = _imu.GetRollYawPitch ();
 
-			    //_logger.Info ("MPU-6050: Acceleration(" + string.Format ("{0:0.00}", accel.x) + "," + string.Format ("{0:0.00}", accel.y) + "," + string.Format ("{0:0.00}", accel.z) + ") Gyro(" + string.Format ("{0:0.00}", gyro.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
-			    //_logger.Info ("MPU-6050: Roll/Pitch/Yaw(" + string.Format ("{0:0.00}", rpy.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
+			    _logger.Debug ("MPU-6050: Acceleration(" + string.Format ("{0:0.00}", accel.x) + "," + string.Format ("{0:0.00}", accel.y) + "," + string.Format ("{0:0.00}", accel.z) + ") Gyro(" + string.Format ("{0:0.00}", gyro.x) + "," + string.Format ("{0:0.00}", gyro.y) + "," + string.Format ("{0:0.00}", gyro.z) + ")");
+			    //_logger.Debug ("MPU-6050: Roll/Pitch/Yaw(" + string.Format ("{0:0.00}", rpy.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
 
 
 			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
@@ -86,6 +86,12 @@ namespace PovertySail.MPU6050
         public void Dispose()
         {
 			_i2c.Close();
+        }
+
+
+        public void Calibrate()
+        {
+            _imu.Calibrate();
         }
     }
 }
