@@ -37,7 +37,7 @@ static void mark_menu_select_callback(struct MenuLayer *menu_layer, MenuIndex *c
 }
 
 static void mark_menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "Race");
+  menu_cell_basic_header_draw(ctx, cell_layer, "Acquisition Method");
 }
 
 static int16_t mark_menu_get_header_height_callback(struct MenuLayer *menu_layer, uint16_t section_index, void *context) {

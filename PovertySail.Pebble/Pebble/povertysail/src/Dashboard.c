@@ -21,6 +21,17 @@ static void dashboard_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_DOWN, dashboard_down_click_handler);
 }
 
+void dashboard_clear(void *context){
+  text_layer_set_text(c1_text_layer,"");
+  text_layer_set_text(v1_text_layer,"");
+  text_layer_set_text(c2_text_layer,"");
+  text_layer_set_text(v2_text_layer,"");
+  text_layer_set_text(c3_text_layer,"");
+  text_layer_set_text(v3_text_layer,"");
+  text_layer_set_text(m_text_layer,"");
+  text_layer_set_background_color(m_text_layer,GColorBlack);
+}
+
 void dashboard_update(DictionaryIterator *received){
   Tuple *tuple;
 	
@@ -76,6 +87,11 @@ void dashboard_update(DictionaryIterator *received){
     text_layer_set_text(m_text_layer,"");
     text_layer_set_background_color(m_text_layer,GColorBlack);
   }
+  
+  if(!app_timer_reschedule(clear_timer,5000)){
+    clear_timer = app_timer_register(5000,dashboard_clear,dashboard_window);
+  }
+  
 }
 
 void dashboard_init(void) {
@@ -160,9 +176,12 @@ void dashboard_init(void) {
   text_layer_set_text(m_text_layer, "");
   text_layer_set_text_alignment(m_text_layer,GTextAlignmentCenter);
   layer_add_child(dashboard_window_layer, text_layer_get_layer(m_text_layer));
+  
+  clear_timer = app_timer_register(5000,dashboard_clear,dashboard_window);
 }
 
 void dashboard_deinit(void) {
+  app_timer_cancel(clear_timer);
   window_destroy(dashboard_window);
 }
 

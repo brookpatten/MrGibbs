@@ -32,7 +32,8 @@ enum UICommand{
   NewRace=4,
   Calibrate=5,
   Restart=6,
-  Reboot=7
+  Reboot=7,
+  Shutdown=8
 };
 
 enum Button{ 
@@ -51,6 +52,7 @@ void message_send_new_race();
 void message_send_calibrate(void);
 void message_send_restart(void);
 void message_send_reboot(void);
+void message_send_shutdown(void);
 static void in_received_handler(DictionaryIterator *received, void *context);
 static void in_dropped_handler(AppMessageResult reason, void *context);
 static void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context);

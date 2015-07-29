@@ -23,36 +23,39 @@ static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_laye
       menu_cell_basic_draw(ctx, cell_layer, "COG", NULL, NULL);
       break;
     case 4:
-      menu_cell_basic_draw(ctx, cell_layer, "Heading", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Heading (Mag)", NULL, NULL);
       break;
     case 5:
-      menu_cell_basic_draw(ctx, cell_layer, "Heel", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Heading (True)", NULL, NULL);
       break;
     case 6:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Spd App", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Heel", NULL, NULL);
       break;
     case 7:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Spd True", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Spd App", NULL, NULL);
       break;
     case 8:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Dir App", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Spd True", NULL, NULL);
       break;
     case 9:
-      menu_cell_basic_draw(ctx, cell_layer, "Wind Dir True", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Dir App", NULL, NULL);
       break;
     case 10:
-      menu_cell_basic_draw(ctx, cell_layer, "Nominal Speed", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Wind Dir True", NULL, NULL);
       break;
     case 11:
-      menu_cell_basic_draw(ctx, cell_layer, "% Nominal Speed", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Nominal Speed", NULL, NULL);
       break;
     case 12:
-      menu_cell_basic_draw(ctx, cell_layer, "Top Speed", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "% Nominal Speed", NULL, NULL);
       break;
     case 13:
-      menu_cell_basic_draw(ctx, cell_layer, "Countdown", NULL, NULL);
+      menu_cell_basic_draw(ctx, cell_layer, "Top Speed", NULL, NULL);
       break;
     case 14:
+      menu_cell_basic_draw(ctx, cell_layer, "Countdown", NULL, NULL);
+      break;
+    case 15:
       menu_cell_basic_draw(ctx, cell_layer, "Distance to Mark", NULL, NULL);
       break;
     default:
