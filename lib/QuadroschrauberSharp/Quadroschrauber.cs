@@ -45,8 +45,8 @@ namespace QuadroschrauberSharp
                 Remote = new Spektrum();
                 Mbed = new Hardware.Mbed();
 
-                mpu = new MPU6050(I2C, 0x69);
-                imu = new IMU_MPU6050(mpu);
+                mpu = new MPU6050(I2C, 0x69,null);
+                imu = new IMU_MPU6050(mpu,null);
                 imu.Init(false);
             }
 
