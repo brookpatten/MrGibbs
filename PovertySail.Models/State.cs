@@ -37,6 +37,9 @@ namespace PovertySail.Models
         public double? MagneticDeviation { get; set; }
         public double? MagneticHeadingWithVariation { get; set; }
         public double? DistanceToTargetMarkInYards { get; set; }
+        public double? MaximumSpeedInKnots { get; set; }
+        public double? VelocityMadeGoodOnCourse { get; set; }
+        public double? VelocityMadeGood { get; set; }
 
         //race state
         public DateTime? StartTime { get; set; }

@@ -110,8 +110,8 @@ namespace PovertySail.Pebble
                     Distance to Mark*/
                 _lineStateMaps = new List<LineStateMap>();
                 _lineStateMaps.Add(new LineStateMap(s => s.SpeedInKnots.HasValue ? string.Format("{0:0.0}", s.SpeedInKnots.Value) : "", "Speed (kn)"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "VMG"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "VMC"));
+                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGood.HasValue ? string.Format("{0:0.0}", s.VelocityMadeGood.Value) : "", "VMG (kn)"));
+                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGoodOnCourse.HasValue ? string.Format("{0:0.0}", s.VelocityMadeGoodOnCourse.Value) : "", "VMC (kn)"));
                 _lineStateMaps.Add(new LineStateMap(s=>s.CourseOverGroundByLocation.HasValue ? string.Format("{0:0.0}",s.CourseOverGroundByLocation.Value):"","Course Over Ground"));
                 _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeading.HasValue ? string.Format("{0:0.0}", s.MagneticHeading.Value) : "", "Heading (Mag)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeadingWithVariation.HasValue ? string.Format("{0:0.0}", s.MagneticHeadingWithVariation.Value) : "", "Heading (True)"));
@@ -122,9 +122,9 @@ namespace PovertySail.Pebble
                 _lineStateMaps.Add(new LineStateMap(s => "", "Wind Direction (True)"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Nominal Speed"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "% Nominal Speed"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "Top Speed"));
+                _lineStateMaps.Add(new LineStateMap(s => s.MaximumSpeedInKnots.HasValue ? string.Format("{0:0.0}", s.MaximumSpeedInKnots.Value) : "", "Top Speed (kn)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown",()=>_queueCommand((s,r)=>r.CountdownAction())));
-                _lineStateMaps.Add(new LineStateMap(s => s.DistanceToTargetMarkInYards.HasValue ? string.Format("{0:0}",s.DistanceToTargetMarkInYards.Value) :"?", "Distance to Mark (yds)"));
+                _lineStateMaps.Add(new LineStateMap(s => s.DistanceToTargetMarkInYards.HasValue ? string.Format("{0}{1:0}",s.TargetMark!=null ? s.TargetMark.Abbreviation : "",s.DistanceToTargetMarkInYards.Value) :"?", "Distance to Mark (yds)"));
             }
 
             _lineValueIndexes = new List<int>();
