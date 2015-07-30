@@ -15,7 +15,7 @@ static void compass_heading_handler(CompassHeadingData heading_data) {
   static char s_heading_buf[64];
   snprintf(s_heading_buf, sizeof(s_heading_buf),
     " %ld°",
-    TRIGANGLE_TO_DEG(heading_data.magnetic_heading));
+    360-TRIGANGLE_TO_DEG(heading_data.magnetic_heading));
   
   text_layer_set_text(compass_heading_layer, s_heading_buf);
 

@@ -33,7 +33,8 @@ namespace PovertySail.Models
 
             var i = 2*Math.Asin(Math.Sqrt(Math.Sin(g/2)*Math.Sin(g/2) +
                                           Math.Cos(a)*Math.Cos(b)*Math.Sin(h/2)*Math.Sin(h/2)));
-            if (i == 0) return null;
+            if (i == 0) 
+                return null;
 
             // initial/final bearings between points
             var j = Math.Acos((Math.Sin(b) - Math.Sin(a)*Math.Cos(i))/
@@ -58,8 +59,10 @@ namespace PovertySail.Models
             var l = (e - j2 + Math.PI)%(2*Math.PI) - Math.PI; // angle 2-1-3
             var m = (k1 - f + Math.PI)%(2*Math.PI) - Math.PI; // angle 1-2-3
 
-            if (Math.Sin(l) == 0 && Math.Sin(m) == 0) return null; // infinite intersections
-            if (Math.Sin(l)*Math.Sin(m) < 0) return null; // ambiguous intersection
+            if (Math.Sin(l) == 0 && Math.Sin(m) == 0) 
+                return null; // infinite intersections
+            if (Math.Sin(l)*Math.Sin(m) < 0) 
+                return null; // ambiguous intersection
 
             //l = Math.abs(l);
             //m = Math.abs(m);

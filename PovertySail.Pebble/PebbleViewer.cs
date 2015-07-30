@@ -40,7 +40,7 @@ namespace PovertySail.Pebble
 
     public class PebbleViewer:IViewer
     {
-        private enum UICommand:byte{Button=0,Dash=1,Course=2,Mark=3,NewRace=4,Calibrate=5,Restart=6,Reboot=7}
+        private enum UICommand:byte{Button=0,Dash=1,Course=2,Mark=3,NewRace=4,Calibrate=5,Restart=6,Reboot=7,Shutdown=8}
         private enum Button : byte { Up = 0, Select = 1, Down = 2 }
 
         private ILogger _logger;
@@ -96,7 +96,8 @@ namespace PovertySail.Pebble
                     VMG
                     VMC
                     COG
-                    Heading
+                    Heading (mag)
+                    Heading (True)
                     Heel
                     Wind Speed (Apparant)
                     Wind Speed (True)
@@ -112,7 +113,8 @@ namespace PovertySail.Pebble
                 _lineStateMaps.Add(new LineStateMap(s => "", "VMG"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "VMC"));
                 _lineStateMaps.Add(new LineStateMap(s=>s.CourseOverGroundByLocation.HasValue ? string.Format("{0:0.0}",s.CourseOverGroundByLocation.Value):"","Course Over Ground"));
-                _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeading.HasValue ? string.Format("{0:0.0}", s.MagneticHeading.Value) : "", "Magnetic Heading"));
+                _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeading.HasValue ? string.Format("{0:0.0}", s.MagneticHeading.Value) : "", "Heading (Mag)"));
+                _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeadingWithVariation.HasValue ? string.Format("{0:0.0}", s.MagneticHeadingWithVariation.Value) : "", "Heading (True)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.Heel.HasValue ? string.Format("{0:0.0}", s.Heel.Value) : "", "Heel"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Wind Speed (Apparant)"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Wind Speed (True)"));
@@ -127,8 +129,8 @@ namespace PovertySail.Pebble
 
             _lineValueIndexes = new List<int>();
             _lineValueIndexes.Add(0);//speed
-            _lineValueIndexes.Add(3);//heading
-            _lineValueIndexes.Add(13);//countdown
+            _lineValueIndexes.Add(3);//cog
+            _lineValueIndexes.Add(14);//countdown
 
             if(_commandMaps==null)
             {
@@ -138,6 +140,7 @@ namespace PovertySail.Pebble
                 _commandMaps.Add(UICommand.Calibrate, m=>_queueCommand((s,r)=>s.Calibrate()));
                 _commandMaps.Add(UICommand.Restart, m => _queueCommand((s, r) => s.Restart()));
                 _commandMaps.Add(UICommand.Reboot, m => _queueCommand((s, r) => s.Reboot()));
+                _commandMaps.Add(UICommand.Shutdown, m => _queueCommand((s, r) => s.Shutdown()));
                 _commandMaps.Add(UICommand.Mark, ProcessMarkCommand);
             }
         }
