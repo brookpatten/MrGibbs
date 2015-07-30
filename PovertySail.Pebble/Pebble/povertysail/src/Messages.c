@@ -100,6 +100,16 @@ void message_send_reboot(void){
   app_message_outbox_send();
 }
 
+void message_send_shutdown(void){
+  DictionaryIterator *iter;
+	
+	app_message_outbox_begin(&iter);
+	dict_write_uint8(iter,COMMAND_KEY,Shutdown);
+	
+	dict_write_end(iter);
+  app_message_outbox_send();
+}
+
 // Called when a message is received from PebbleKitJS
 void in_received_handler(DictionaryIterator *received, void *context) {
   //TODO: check for UI command that indicates a dashboard update and not something else

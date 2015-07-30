@@ -34,9 +34,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SuperSocket.Facility">
-      <HintPath>lib\SuperWebSocket\SuperSocket.Facility.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -75,6 +72,10 @@
   </Target>
   -->
   <ItemGroup>
+    <ProjectReference Include="..\..\PovertySail.Contracts\PovertySail.Contracts.csproj">
+      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
+      <Name>PovertySail.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
       <Project>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</Project>
       <Name>QuadroschrauberSharp.Linux</Name>

@@ -3,7 +3,7 @@ function sendMessage() {
 	Pebble.sendAppMessage({"caption1": "Course over ground",
                          "value1":"130°",
                          "caption2":"Speed",
-                         "value2":"5.6 kt",
+                         "value2":(Math.random()*20).toFixed(),
                          "caption3":"Time",
                          "value3":"4:28",
                          "message":""

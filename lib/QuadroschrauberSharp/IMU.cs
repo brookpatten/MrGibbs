@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PovertySail.Contracts.Infrastructure;
 
 namespace QuadroschrauberSharp
 {
@@ -18,36 +19,47 @@ namespace QuadroschrauberSharp
         ushort fifoCount; // count of all bytes currently in FIFO
         byte[] fifoBuffer = new byte[64]; // FIFO storage buffer
 
+        private ILogger _logger;
+
         Hardware.MPU6050 mpu;
-        public IMU_MPU6050(Hardware.MPU6050 mpu)
+        public IMU_MPU6050(Hardware.MPU6050 mpu,ILogger logger)
         {
+            _logger = logger;
             this.mpu = mpu;
         }
 
         bool use_dmp;
+
         public void Init(bool dmp)
         {
             use_dmp = dmp;
-            Console.WriteLine("Initializing I2C devices...\n");
+            _logger.Info("Initializing MPU-6050");
             mpu.initialize();
 
 
             // verify connection
-            Console.WriteLine("Testing device connections...\n");
-            Console.WriteLine(mpu.testConnection() ? "MPU6050 connection successful\n" : "MPU6050 connection failed\n");
+            if (mpu.testConnection())
+            {
+                _logger.Info("MPU6050 connection successful");
+            }
+            else
+            {
+                _logger.Info("MPU6050 connection failed");
+            }
 
 
-            if (true)
+
+            if (dmp)
             {
                 // load and configure the DMP
-                Console.WriteLine("Initializing DMP...");
                 devStatus = mpu.dmpInitialize();
                 // make sure it worked (returns 0 if so)
                 if (devStatus == 0)
                 {
                     // turn on the DMP, now that it's ready
-                    Console.WriteLine("Enabling DMP...");
+                    _logger.Info("DMP Initialized");
                     mpu.setDMPEnabled(true);
+                    _logger.Info("DMP Enabled");
 
                     // enable Arduino interrupt detection
                     //Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0)..."));
@@ -55,7 +67,7 @@ namespace QuadroschrauberSharp
                     mpuIntStatus = mpu.getIntStatus();
 
                     // set our DMP Ready flag so the main loop() function knows it's okay to use it
-                    Console.WriteLine("DMP ready!");
+                    _logger.Info("DMP Ready");
                     dmpReady = true;
 
                     // get expected DMP packet size for later comparison
@@ -67,12 +79,13 @@ namespace QuadroschrauberSharp
                     // 1 = initial memory load failed
                     // 2 = DMP configuration updates failed
                     // (if it's going to break, usually the code will be 1)
-                    Console.WriteLine("DMP Initialization failed (code %d)", devStatus);
+                    _logger.Error(string.Format("DMP Initialization failed (code {0})", devStatus));
+                    throw new Exception("Failed to initialize DMP");
                 }
             }
 
-            Console.WriteLine("Full Accel Range: " + mpu.getFullScaleAccelRange());
-            Console.WriteLine("Full Gyro Range: " + mpu.getFullScaleGyroRange());
+            _logger.Info("Full Accel Range: " + mpu.getFullScaleAccelRange());
+            _logger.Info("Full Gyro Range: " + mpu.getFullScaleGyroRange());
         }
 
         public void Calibrate()
@@ -105,14 +118,13 @@ namespace QuadroschrauberSharp
                 {
                     // reset so we can continue cleanly
                     mpu.resetFIFO();
-                    Console.WriteLine("FIFO overflow!");
+                    _logger.Warn("MPU-6050 IMU FIFO overflow");
 
                     // otherwise, check for DMP data ready interrupt (this should happen frequently)
                 }
                 else if (fifoCount >= 42)
                 {
                     // read a packet from FIFO
-                    //Console.WriteLine("fifo read: " + packetSize + "/" + fifoCount);
                     mpu.getFIFOBytes(fifoBuffer, (byte)packetSize);
 
                     q = mpu.dmpGetQuaternion(fifoBuffer);

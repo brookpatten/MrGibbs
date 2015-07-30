@@ -20,11 +20,11 @@ namespace PovertySail.MPU6050
 
         private I2C _i2c;
         private QuadroschrauberSharp.Hardware.MPU6050 _mpu;
-        private QuadroschrauberSharp.IMU_MPU6050 _imu;
+        private IMU_MPU6050 _imu;
 
 		private DateTime? _lastTime;
 
-        public Mpu6050Sensor(ILogger logger, Mpu6050Plugin plugin)
+        public Mpu6050Sensor(ILogger logger, Mpu6050Plugin plugin, bool dmp)
         {
             _logger = logger;
             _plugin = plugin;
@@ -38,10 +38,10 @@ namespace PovertySail.MPU6050
 			//low=0x68 for the raw data
 			//hi=0x69 for the vologic
 			//this probably does NOT need to be configurable since it won't change
-			_mpu = new QuadroschrauberSharp.Hardware.MPU6050(_i2c, 0x69);
-            _imu = new IMU_MPU6050(_mpu);
-            
-            _imu.Init(false);
+			_mpu = new QuadroschrauberSharp.Hardware.MPU6050(_i2c, 0x69,_logger);
+            _imu = new IMU_MPU6050(_mpu,_logger);
+
+            _imu.Init(dmp);
             _logger.Info("Calibrating MPU-6050");
             _imu.Calibrate();
         }

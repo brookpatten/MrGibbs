@@ -31,6 +31,11 @@ namespace PovertySail.MagneticVariation
                 double now = TSAGeoMag.decimalYear(state.BestTime);
                 state.MagneticDeviation = _tsaGeoMag.getDeclination(state.Location.Latitude.Value, state.Location.Longitude.Value, now,state.AltitudeInMeters.Value/1000.0);
 
+                if(state.MagneticHeading.HasValue)
+                {
+                    state.MagneticHeadingWithVariation = state.MagneticHeading + state.MagneticDeviation;
+                }
+
                 _logger.Debug("Calculated Magnetic Deviation as " + state.MagneticDeviation + " for " + state.Location.Latitude.Value + "," + state.Location.Longitude.Value + " altitude " + state.AltitudeInMeters.Value);
             }
         }

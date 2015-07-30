@@ -43,7 +43,7 @@ using uint16_t = System.UInt16;
 using uint32_t = System.UInt32;
 using define = System.Byte;
 using System.Linq;
-
+using PovertySail.Contracts.Infrastructure;
 using QuadroschrauberSharp;
 
 namespace QuadroschrauberSharp.Hardware
@@ -408,13 +408,16 @@ namespace QuadroschrauberSharp.Hardware
         uint8_t[] buffer = new uint8_t[14];
         I2C i2c;
 
+        private ILogger _logger;
+
         /** Default constructor, uses default I2C address.
         * @see MPU6050_DEFAULT_ADDRESS
         */
-        public MPU6050(I2C i2c)
+        public MPU6050(I2C i2c,ILogger logger)
         {
             devAddr = MPU6050_DEFAULT_ADDRESS;
             this.i2c = i2c;
+            _logger = logger;
         }
 
         /** Specific address constructor.
@@ -423,10 +426,11 @@ namespace QuadroschrauberSharp.Hardware
         * @see MPU6050_ADDRESS_AD0_LOW
         * @see MPU6050_ADDRESS_AD0_HIGH
         */
-        public MPU6050(I2C i2c, uint8_t address)
+        public MPU6050(I2C i2c, uint8_t address, ILogger logger)
         {
             devAddr = address;
             this.i2c = i2c;
+            _logger = logger;
         }
 
 
@@ -3562,7 +3566,7 @@ namespace QuadroschrauberSharp.Hardware
                     Array.Copy(data, i, progBuffer, 0, data.Length - i);
                 }
 
-                Console.WriteLine("chunksize = " + chunkSize + " progbuffer = " + progBuffer.Select(x => x.ToString("X2")).Aggregate((a, b) => a + " " + b));
+                _logger.Debug("chunksize = " + chunkSize + " progbuffer = " + progBuffer.Select(x => x.ToString("X2")).Aggregate((a, b) => a + " " + b));
                 i2c.writeBytes(devAddr, MPU6050_RA_MEM_R_W, (byte)chunkSize, progBuffer);
 
                 // verify data if needed
@@ -3574,26 +3578,23 @@ namespace QuadroschrauberSharp.Hardware
                     if (memcmp(progBuffer, verifyBuffer, chunkSize) != 0)
                     {
                         int k;
-                        Console.WriteLine("Block write verification error, bank ");
-                        Console.WriteLine(bank);
-                        Console.WriteLine(", address ");
-                        Console.WriteLine(address);
-                        Console.WriteLine("!\nExpected:");
+                        _logger.Debug("Block write verification error, bank "+bank);
+                        _logger.Debug(", address "+address);
+                        _logger.Debug("Expected:");
                         for (k = 0; k < chunkSize; k++)
                         {
-                            Console.WriteLine(" 0x");
-                            if (progBuffer[k] < 16) Console.WriteLine("0");
-                            Console.WriteLine(progBuffer[k]);
+                            _logger.Debug(" 0x");
+                            if (progBuffer[k] < 16) _logger.Debug("0");
+                            _logger.Debug(progBuffer[k].ToString());
                         }
-                        Console.WriteLine("\nReceived:");
+                        _logger.Debug("Received:");
                         for (k = 0; k < chunkSize; k++)
                         {
-                            Console.WriteLine(" 0x");
-                            if (verifyBuffer[i + k] < 16) Console.WriteLine("0");
-                            Console.WriteLine(verifyBuffer[i + k]);
+                            _logger.Debug(" 0x");
+                            if (verifyBuffer[i + k] < 16) _logger.Debug("0");
+                            _logger.Debug(verifyBuffer[i + k].ToString());
                         }
-                        Console.WriteLine("\n");
-
+                        
                         return false; // uh oh.
                     }
                 }
@@ -3673,7 +3674,7 @@ namespace QuadroschrauberSharp.Hardware
                 }
                 else
                 {
-                    Console.WriteLine("special");
+                    _logger.Debug("special");
                     // special instruction
                     // NOTE: this kind of behavior (what and when to do certain things)
                     // is totally undocumented. This code is in here based on observed
@@ -3692,7 +3693,7 @@ namespace QuadroschrauberSharp.Hardware
         Serial.println(" found...");*/
                     if (special == 0x01)
                     {
-                        Console.WriteLine("special == 0x01");
+                        _logger.Debug("special == 0x01");
                         // enable DMP-related interrupts
 
                         //setIntZeroMotionEnabled(true);
@@ -3700,24 +3701,24 @@ namespace QuadroschrauberSharp.Hardware
                         //setIntDMPEnabled(true);
                         i2c.writeByte(devAddr, MPU6050_RA_INT_ENABLE, (byte)0x32); // single operation
 
-                        Console.WriteLine("writeDMPConfigurationSet success");
+                        _logger.Debug("writeDMPConfigurationSet success");
                         success = true;
                     }
                     else
                     {
                         // unknown special command
-                        Console.WriteLine("writeDMPConfigurationSet fail2");
+                        _logger.Debug("writeDMPConfigurationSet fail2");
                         success = false;
                     }
                 }
 
                 if (!success)
                 {
-                    Console.WriteLine("writeDMPConfigurationSet fail");
+                    _logger.Debug("writeDMPConfigurationSet fail");
                     return false; // uh oh
                 }
             }
-            Console.WriteLine("writeDMPConfigurationSet complete");
+            _logger.Debug("writeDMPConfigurationSet complete");
             return true;
         }
         bool writeProgDMPConfigurationSet(uint8_t[] data, uint16_t dataSize)

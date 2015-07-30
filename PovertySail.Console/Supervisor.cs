@@ -80,7 +80,7 @@ namespace PovertySail.Console
 
         public bool Run()
         {
-            _logger.Info("Plugin Supervisor is running");
+            _logger.Info("Supervisor is running");
             _run = true;
             _restart = false;
             int operationCount = 1;
@@ -181,7 +181,15 @@ namespace PovertySail.Console
                         while (_commands.Any())
                         {
                             var command = _commands.Dequeue();
-                            command(this, _raceController);
+                            try
+                            {
+                                command(this, _raceController);
+                            }
+                            catch(Exception ex)
+                            {
+                                _state.AddMessage(MessageCategory.System, MessagePriority.High, 5, "Command Failed");
+                                _logger.Error("Failed to execute command " + command.ToString(),ex);
+                            }
                         }
                     }
                 }
@@ -262,9 +270,24 @@ namespace PovertySail.Console
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.EnableRaisingEvents = false;
             proc.StartInfo.FileName = "shutdown";
-            proc.StartInfo.Arguments = "-h -t 10";
+            proc.StartInfo.Arguments = "-r -t 10";
             proc.Start();
             
+            _run = false;
+        }
+
+        public void Shutdown()
+        {
+            _logger.Info("Shutdown");
+
+            _restart = false;
+
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.EnableRaisingEvents = false;
+            proc.StartInfo.FileName = "shutdown";
+            proc.StartInfo.Arguments = "-h -t 10";
+            proc.Start();
+
             _run = false;
         }
     }

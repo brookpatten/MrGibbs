@@ -22,7 +22,6 @@ namespace PovertySail.Models
         public double? SpeedInKnots { get; set; }
         public double? MagneticCourseMadeGood { get; set; }
         public double? TrueCourseMadeGood { get; set; }
-        public double? MagneticDeviation { get; set; }
         public double? AltitudeInMeters { get; set; }
         
         //accel provided data
@@ -32,10 +31,11 @@ namespace PovertySail.Models
 
         //magneto provided data
         public Vector3 Magneto { get; set; }
-        
-        //calculated values
         public double? MagneticHeading { get; set; }
 
+        //calculated values
+        public double? MagneticDeviation { get; set; }
+        public double? MagneticHeadingWithVariation { get; set; }
         public double? DistanceToTargetMarkInYards { get; set; }
 
         //race state

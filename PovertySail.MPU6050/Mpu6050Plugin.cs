@@ -24,7 +24,7 @@ namespace PovertySail.MPU6050
         {
             _components = new List<IPluginComponent>();
             _initialized = false;
-            var sensor = new Mpu6050Sensor(_logger,this);
+            var sensor = new Mpu6050Sensor(_logger,this,true);
             configuration.Sensors.Add(sensor);
             _components.Add(sensor);
             _initialized = true;

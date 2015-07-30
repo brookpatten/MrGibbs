@@ -15,6 +15,7 @@ namespace PovertySail.Calculators
         private ILogger _logger;
         private IPlugin _plugin;
         private const double MetersToYards = 1.09361;
+        private readonly double _distanceCutoff = 100 * 1000;//100km
 
         public DistanceToMarkCalculator(ILogger logger, IPlugin plugin)
         {
@@ -25,8 +26,15 @@ namespace PovertySail.Calculators
         {
             if(state.Location!=null && state.TargetMark!=null && state.TargetMark.Location!=null)
             {
-                state.DistanceToTargetMarkInYards = CoordinatePoint.HaversineDistance(state.Location, state.TargetMark.Location) * MetersToYards;
-
+                double meters = CoordinatePoint.HaversineDistance(state.Location, state.TargetMark.Location);
+                if (meters < _distanceCutoff)//if the reported distance is more than this threshold, it's probably garbage data
+                {
+                    state.DistanceToTargetMarkInYards = meters * MetersToYards;
+                }
+                else
+                {
+                    state.DistanceToTargetMarkInYards = null;
+                }
             }
             else
             {

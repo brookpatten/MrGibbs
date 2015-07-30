@@ -26,5 +26,6 @@ namespace PovertySail.Contracts
         void Calibrate();
         void Restart();
         void Reboot();
+        void Shutdown();
     }
 }

@@ -5,7 +5,7 @@
 #include "Compass.h"
 
 static uint16_t system_menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
-  return 4;
+  return 5;
 }
 
 static void system_menu_draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *context) {
@@ -21,6 +21,9 @@ static void system_menu_draw_row_callback(GContext *ctx, Layer *cell_layer, Menu
       break;
     case 3:
       menu_cell_basic_draw(ctx, cell_layer, "Reboot", NULL, NULL);
+      break;
+    case 4:
+      menu_cell_basic_draw(ctx, cell_layer, "Shutdown", NULL, NULL);
       break;
     default:
       break;
@@ -45,6 +48,10 @@ static void system_menu_select_callback(struct MenuLayer *menu_layer, MenuIndex 
       break;
     case 3:
       message_send_reboot();
+      return_to_dashboard(S_FALSE);
+      break;
+    case 4:
+      message_send_shutdown();
       return_to_dashboard(S_FALSE);
       break;
     default:

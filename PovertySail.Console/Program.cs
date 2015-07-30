@@ -17,7 +17,7 @@ namespace PovertySail.Console
     {
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Starting Up...");
+            System.Console.WriteLine("Initializing Kernel...");
 
             IKernel kernel;
             try
@@ -31,11 +31,25 @@ namespace PovertySail.Console
                 return;
             }
 
+            var logger = kernel.Get<ILogger>();
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                logger.Fatal("Unhandled Application Exception", e.ExceptionObject);
+            };
+
 			using (var supervisor = kernel.Get<Supervisor> ()) {
-				supervisor.Initialize ();
-				supervisor.Run ();
-			}
+                do
+                {
+                    logger.Info("Initializing Supervisor");
+                    supervisor.Initialize();
+                }
+                while (supervisor.Run());//if run returns true then we need to restart, if false then it wants to close
+            }
+
+            logger.Info("Shutting down");
         }
+
 
         static IKernel Configure()
         {
