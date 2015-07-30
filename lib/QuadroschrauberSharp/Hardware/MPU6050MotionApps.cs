@@ -276,35 +276,36 @@ readonly prog_uchar[] dmpUpdates = {
 
         void DEBUG_PRINT(string message)
         {
-            Console.Write(message);
+
+            _logger.Debug(message);
         }
         void DEBUG_PRINT(int message)
         {
-            Console.Write(message);
+            _logger.Debug(message.ToString());
         }
         void DEBUG_PRINTLN(string message)
         {
-            Console.WriteLine(message);
+            _logger.Debug(message);
         }
         void DEBUG_PRINTLN(int message)
         {
-            Console.WriteLine(message);
+            _logger.Debug(message.ToString());
         }
         void DEBUG_PRINTLNF(string message)
         {
-            Console.WriteLine(message);
+            _logger.Debug(message);
         }
         void DEBUG_PRINTLNF(int message)
         {
-            Console.WriteLine(message);
+            _logger.Debug(message.ToString());
         }
         void printf(string message)
         {
-            Console.WriteLine(message);
+            _logger.Debug(message);
         }
         void printf(string message, int x)
         {
-            Console.WriteLine(message + x);
+            _logger.Debug(message + x);
         }
         void usleep(int us)
         {
