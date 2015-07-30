@@ -118,7 +118,7 @@ namespace QuadroschrauberSharp
                 {
                     // reset so we can continue cleanly
                     mpu.resetFIFO();
-                    _logger.Warn("MPU-6050 IMU FIFO overflow");
+                    _logger.Debug("MPU-6050 IMU FIFO overflow");
 
                     // otherwise, check for DMP data ready interrupt (this should happen frequently)
                 }

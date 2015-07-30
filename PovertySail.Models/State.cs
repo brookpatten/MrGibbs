@@ -28,6 +28,7 @@ namespace PovertySail.Models
         public Vector3 Accel { get; set; }
         public Vector3 Gyro { get; set; }
         public double? Heel { get; set; }
+        public double? Pitch { get; set; }
 
         //magneto provided data
         public Vector3 Magneto { get; set; }

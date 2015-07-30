@@ -23,9 +23,11 @@ namespace PovertySail.MPU6050
         private IMU_MPU6050 _imu;
 
 		private DateTime? _lastTime;
+        private bool _enableDmp;
 
         public Mpu6050Sensor(ILogger logger, Mpu6050Plugin plugin, bool dmp)
         {
+            _enableDmp = dmp;
             _logger = logger;
             _plugin = plugin;
 
@@ -41,9 +43,7 @@ namespace PovertySail.MPU6050
 			_mpu = new QuadroschrauberSharp.Hardware.MPU6050(_i2c, 0x69,_logger);
             _imu = new IMU_MPU6050(_mpu,_logger);
 
-            _imu.Init(dmp);
-            _logger.Info("Calibrating MPU-6050");
-            _imu.Calibrate();
+            Calibrate();
         }
 
         public void Update(State state)
@@ -68,7 +68,8 @@ namespace PovertySail.MPU6050
 
 
 			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
-			    state.Heel = accel.x*360.0;
+			    state.Heel = ((double) accel.x).ToDegrees();
+                state.Pitch = ((double)accel.y).ToDegrees();
 
 			    //if (framecounter++ == 100 && imu != null)
 			    //_imu.Calibrate ();
@@ -91,6 +92,8 @@ namespace PovertySail.MPU6050
 
         public void Calibrate()
         {
+            _imu.Init(_enableDmp);
+            _logger.Info("Calibrating MPU-6050");
             _imu.Calibrate();
         }
     }
