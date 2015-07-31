@@ -11,13 +11,19 @@ namespace PovertySail.Models
 
     public class Mark
     {
-        
-
         public CoordinatePoint Location { get; set; }
 
         public MarkCaptureMethod? CaptureMethod { get; set; }
-        public MarkType? MarkType { get; set; }
+        public MarkType MarkType { get; set; }
 
         public IList<Bearing> Bearings { get; set; }
+
+        public string Abbreviation
+        {
+            get
+            {
+                return this.MarkType.ToString().Substring(0, 1);
+            }
+        }
     }
 }
