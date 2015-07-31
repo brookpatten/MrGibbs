@@ -14,11 +14,13 @@ namespace PovertySail.Console
     {
         private State _state;
         private ILogger _logger;
+        private double? _autoRoundMarkDistanceMeters;
 
-        public RaceController(ILogger logger)
+        public RaceController(ILogger logger, double autoRoundMarkDistanceMeters)
         {
             _state = new State();
             _logger = logger;
+            _autoRoundMarkDistanceMeters = autoRoundMarkDistanceMeters;
         }
 
         public State State
@@ -175,6 +177,82 @@ namespace PovertySail.Console
         public void NewRace()
         {
             throw new NotImplementedException();
+        }
+
+        public void NextMark()
+        {
+            _state.PreviousMark = _state.TargetMark;
+            _state.TargetMark = GetNextMark(_state.TargetMark);
+        }
+
+        private Mark GetNextMark(Mark currentTargetMark)
+        {
+            if (currentTargetMark == null)
+            {
+                return _state.Marks.LastOrDefault();
+            }
+            else if (currentTargetMark.MarkType == MarkType.Line)
+            {
+                return _state.Marks.Where(x => x.MarkType == MarkType.Windward).LastOrDefault();
+            }
+            else if (currentTargetMark.MarkType == MarkType.Windward)
+            {
+                return _state.Marks.Where(x => x.MarkType == MarkType.Leeward).LastOrDefault();
+            }
+            else if (currentTargetMark.MarkType == MarkType.Leeward)
+            {
+                return _state.Marks.Where(x => x.MarkType == MarkType.Windward).LastOrDefault();
+            }
+            else
+            {
+                throw new InvalidOperationException("Unknown condition selecting next mark");
+            }
+        }
+
+        public void ProcessMarkRoundings()
+        {
+            //if the race just started, set the line
+            if (_state.StartTime.HasValue && !_state.RaceStarted && _state.BestTime > _state.StartTime)
+            {
+                _state.RaceStarted = true;
+
+                var line = _state.Marks.FirstOrDefault(x => x.MarkType == MarkType.Line);
+                if (line == null)
+                {
+                    line = new Mark()
+                    {
+                        MarkType = MarkType.Line,
+                        CaptureMethod = MarkCaptureMethod.Location,
+                        Location = _state.Location
+                    };
+                    _state.Marks.Insert(0, line);
+                }
+                _state.PreviousMark = line;
+
+                if (State.Marks.Any(x => x.MarkType == MarkType.Windward))
+                {
+                    State.TargetMark = State.Marks.Where(x => x.MarkType == MarkType.Windward).Last();
+                }
+                else
+                {
+                    State.TargetMark = null;
+                }
+            }
+            else if (_state.StartTime.HasValue && _state.BestTime > _state.StartTime && _state.TargetMark != null &&
+                     _state.TargetMark.Location != null && _autoRoundMarkDistanceMeters.HasValue)
+            {
+                var nextMark = GetNextMark(_state.TargetMark);
+                if (nextMark != null)
+                {
+                    var distanceToMark = CoordinatePoint.HaversineDistance(_state.Location, _state.TargetMark.Location);
+                    if (distanceToMark < _autoRoundMarkDistanceMeters)
+                    {
+                        _logger.Info("Distance to " + _state.TargetMark.MarkType + " is " + string.Format("{0:0.0}m") +
+                                     ", advancing to next mark");
+                        NextMark();
+                    }
+                }
+            }
         }
     }
 }

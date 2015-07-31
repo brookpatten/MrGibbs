@@ -61,7 +61,9 @@ namespace PovertySail.Console
                 new PluginModule()
             });
 
-            kernel.Bind<IRaceController>().To<RaceController>().InSingletonScope();
+            kernel.Bind<IRaceController>().To<RaceController>()
+                .InSingletonScope()
+                .WithConstructorArgument("autoRoundMarkDistanceMeters", AppConfig.AutoRoundMarkDistanceMeters);
 
             kernel.Bind<Supervisor>().ToSelf()
                 .InSingletonScope()

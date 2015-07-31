@@ -68,8 +68,8 @@ namespace PovertySail.MPU6050
 
 
 			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
-			    state.Heel = accel.x*(360.0/2.0);//((double)accel.x).ToDegrees();
-                state.Pitch = accel.y * (360.0 / 2.0);//((double)accel.y).ToDegrees();
+			    state.Heel = accel.x*(360.0/4.0);//((double)accel.x).ToDegrees();
+                state.Pitch = accel.y * (360.0 / 4.0);//((double)accel.y).ToDegrees();
 
 			    //if (framecounter++ == 100 && imu != null)
 			    //_imu.Calibrate ();

@@ -24,5 +24,10 @@ namespace PovertySail.Configuration
         {
             get { return ConfigurationHelper.ReadIntAppSetting("GpsBaud", 9600); }
         }
+
+        public static int AutoRoundMarkDistanceMeters
+        {
+            get { return ConfigurationHelper.ReadIntAppSetting("AutoRoundMarkDistanceMeters", 30); }
+        }
     }
 }

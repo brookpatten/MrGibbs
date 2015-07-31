@@ -18,6 +18,9 @@ namespace PovertySail.Contracts
         void ClearMark(int markIndex);
         void NewRace();
 
+        void ProcessMarkRoundings();
+        void NextMark();
+
         State State { get; }
     }
 
