@@ -271,8 +271,8 @@ namespace PovertySail.Console
             
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.EnableRaisingEvents = false;
-            proc.StartInfo.FileName = "shutdown";
-            proc.StartInfo.Arguments = "-r -t 10";
+            proc.StartInfo.FileName = "sudo";
+            proc.StartInfo.Arguments = "shutdown -r -t 5";
             proc.Start();
             
             _run = false;
@@ -286,8 +286,8 @@ namespace PovertySail.Console
 
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.EnableRaisingEvents = false;
-            proc.StartInfo.FileName = "shutdown";
-            proc.StartInfo.Arguments = "-h -t 10";
+            proc.StartInfo.FileName = "sudo";
+            proc.StartInfo.Arguments = "shutdown -h -t 5";
             proc.Start();
 
             _run = false;
