@@ -35,6 +35,19 @@ namespace PovertySail.Configuration
             }
         }
 
+        internal static double ReadDoubleAppSetting(string key, int defaultValue)
+        {
+            double val;
+            if (double.TryParse(ConfigurationManager.AppSettings[key], out val))
+            {
+                return val;
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
+
         internal static string ReadStringAppSetting(string key, string defaultValue)
         {
             string configuredValue = ConfigurationManager.AppSettings[key];
