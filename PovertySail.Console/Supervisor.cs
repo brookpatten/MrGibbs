@@ -191,6 +191,8 @@ namespace PovertySail.Console
                                 _logger.Error("Failed to execute command " + command.ToString(),ex);
                             }
                         }
+
+                        _raceController.ProcessMarkRoundings();
                     }
                 }
 

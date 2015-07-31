@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AngleUtilities.cs" />
     <Compile Include="Bearing.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="CoordinatePoint.cs" />

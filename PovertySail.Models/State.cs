@@ -46,6 +46,8 @@ namespace PovertySail.Models
         public DateTime? StartTime { get; set; }
         public IList<Mark> Marks { get; set; }
         private int? _targetMarkIndex;
+        private int? _previousMarkIndex;
+        public bool RaceStarted { get; set; }
 
         //system state
         private List<Message> _messages;
@@ -99,9 +101,43 @@ namespace PovertySail.Models
             }
             set
             {
-                if (Marks.Contains(value))
+                if (value == null)
+                {
+                    _targetMarkIndex = null;
+                }
+                else if (Marks.Contains(value))
                 {
                     _targetMarkIndex = Marks.IndexOf(value);
+                }
+                else
+                {
+                    throw new InvalidDataException("Unknown mark");
+                }
+            }
+        }
+
+        public Mark PreviousMark
+        {
+            get
+            {
+                if (_previousMarkIndex.HasValue)
+                {
+                    return Marks[_previousMarkIndex.Value];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (value == null)
+                {
+                    _previousMarkIndex = null;
+                }
+                else if (Marks.Contains(value))
+                {
+                    _previousMarkIndex = Marks.IndexOf(value);
                 }
                 else
                 {

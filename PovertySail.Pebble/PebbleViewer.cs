@@ -116,6 +116,7 @@ namespace PovertySail.Pebble
                 _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeading.HasValue ? string.Format("{0:0.0}", s.MagneticHeading.Value) : "", "Heading (Mag)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeadingWithVariation.HasValue ? string.Format("{0:0.0}", s.MagneticHeadingWithVariation.Value) : "", "Heading (True)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.Heel.HasValue ? string.Format("{0:0.0}", s.Heel.Value) : "", "Heel"));
+                //_lineStateMaps.Add(new LineStateMap(s => s.Pitch.HasValue ? string.Format("{0:0.0}", s.Pitch.Value) : "", "Pitch"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Wind Speed (Apparant)"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Wind Speed (True)"));
                 _lineStateMaps.Add(new LineStateMap(s => "", "Wind Direction (Aparant)"));

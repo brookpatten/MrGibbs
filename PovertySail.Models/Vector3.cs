@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace PovertySail.Models
 {
-    public class Vector3
+    public class Vector2
     {
         public float X { get; set; }
         public float Y { get; set; }
+    }
+    public class Vector3 : Vector2
+    {
         public float Z { get; set; }
     }
 }
