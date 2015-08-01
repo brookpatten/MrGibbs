@@ -49,6 +49,7 @@ namespace PovertySail.Pebble
         private byte _transactionId;
         private UUID _uuid;
         
+        
         private int _lineCount;//number of rows shown on the pebble UI
         private volatile IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
         private static IList<LineStateMap> _lineStateMaps;
@@ -57,7 +58,9 @@ namespace PovertySail.Pebble
 
         private Action<Action<ISystemController, IRaceController>> _queueCommand;
 
+        private TimeSpan _sendTimeout=new TimeSpan(0,0,0,5);
         private Task _lastSend;
+        private DateTime? _lastSendAt;
 
         public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, AppBundle bundle, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
@@ -70,7 +73,19 @@ namespace PovertySail.Pebble
             _transactionId = 255;
 
             _uuid = new UUID(bundle.AppInfo.UUID);
-            
+
+            var getAppBank = _pebble.GetAppbankContentsAsync();
+            getAppBank.Wait();
+            var bank = getAppBank.Result;
+
+            if (bank.AppUUIDs.Contains(_uuid))
+            {
+                _logger.Info("Pebble "+_pebble.PebbleID+" already has app installed, removing...");
+                var index = bank.AppUUIDs.IndexOf(_uuid);
+                var remove = _pebble.RemoveAppAsync(bank.AppBank.Apps[index]);
+                remove.Wait();
+            }
+
             var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
             var install = _pebble.InstallAppAsync(bundle,progress);
             install.Wait();
@@ -230,8 +245,11 @@ namespace PovertySail.Pebble
 
         public void Update(State state)
         {
-            //don't send anything until the last send has completed
-            if (_lastSend == null || _lastSend.IsCanceled || _lastSend.IsCompleted || _lastSend.IsFaulted)
+
+            //don't send anything until the last send has completed or errored
+            if (_lastSend == null || _lastSend.IsCanceled || _lastSend.IsCompleted || _lastSend.IsFaulted 
+                //or if it has exceeded the send timeout
+                || !_lastSendAt.HasValue || state.SystemTime - _lastSendAt.Value > _sendTimeout)
             {
 #if WINDOWS
                 //give us some smooth numbers to look at when we're testing on 'doze
@@ -280,6 +298,7 @@ namespace PovertySail.Pebble
                 }
 
                 _lastSend = _pebble.SendApplicationMessage(message);
+                _lastSendAt = state.SystemTime;
                 _logger.Debug("Sent state to pebble " + _pebble.PebbleID+" ("+captions+")");
             }
             else
