@@ -58,6 +58,9 @@ static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_laye
     case 15:
       menu_cell_basic_draw(ctx, cell_layer, "Distance to Mark", NULL, NULL);
       break;
+    case 16:
+      menu_cell_basic_draw(ctx, cell_layer, "Pitch", NULL, NULL);
+      break;
     default:
       break;
   }
