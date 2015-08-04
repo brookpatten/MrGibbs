@@ -86,6 +86,10 @@
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>PovertySail.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PovertySail.MPU9250\PovertySail.MPU9250.csproj">
+      <Project>{c03b4b43-1404-4449-8865-3afd1fd626e9}</Project>
+      <Name>PovertySail.MPU9250</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PovertySail.Pebble\PovertySail.Pebble.csproj">
       <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
       <Name>PovertySail.Pebble</Name>
@@ -93,10 +97,6 @@
     <ProjectReference Include="..\PovertySail.Persistence\PovertySail.Persistence.csproj">
       <Project>{17B81C86-A8FF-46D5-8513-048B0571FDCF}</Project>
       <Name>PovertySail.Persistence</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PovertySail.HMC5883\PovertySail.HMC5883.csproj">
-      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
-      <Name>PovertySail.HMC5883</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
