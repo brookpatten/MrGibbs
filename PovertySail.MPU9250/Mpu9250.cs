@@ -2169,12 +2169,17 @@ namespace PovertySail.MPU9250
         * @see getRotation()
         * @see MPU9250_RA_ACCEL_XOUT_H
         */
-        Motion9 getMotion9()
+        public Motion9 getMotion9()
         {
             Motion6 m6 = getMotion6();
             // TODO: magnetometer integration
             Motion9 m9 = new Motion9();
-            m9.m6 = m6;
+            m9.ax = m6.ax;
+            m9.ay = m6.ay;
+            m9.az = m6.az;
+            m9.gx = m6.gx;
+            m9.gy = m6.gy;
+            m9.gz = m6.gz;
 
             i2c.readBytes(devAddr, MPU9250_Magnet_X_H, 6, buffer);
             m9.mx = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
@@ -2185,7 +2190,7 @@ namespace PovertySail.MPU9250
             return m9;
         }
 
-        public struct Motion6
+        public class Motion6
         {
             public int16_t ax;
             public int16_t ay;
@@ -2195,9 +2200,8 @@ namespace PovertySail.MPU9250
             public int16_t gz;
         }
 
-        public struct Motion9
+        public class Motion9 : Motion6
         {
-            public Motion6 m6;
             public int16_t mx;
             public int16_t my;
             public int16_t mz;
@@ -2218,7 +2222,7 @@ namespace PovertySail.MPU9250
         */
         public Motion6 getMotion6()
         {
-            Motion6 m;
+            Motion6 m = new Motion6();
             i2c.readBytes(devAddr, MPU9250_RA_ACCEL_XOUT_H, 14, buffer);
             m.ax = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
             m.ay = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
@@ -2266,11 +2270,11 @@ namespace PovertySail.MPU9250
         */
         public Vector3 getAcceleration()
         {
-            Vector3 v;
+            Vector3 v = new Vector3();
             i2c.readBytes(devAddr, MPU9250_RA_ACCEL_XOUT_H, 6, buffer);
-            v.x = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
-            v.y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
-            v.z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
+            v.X = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
+            v.Y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
+            v.Z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
             return v;
         }
         /** Get X-axis accelerometer reading.
@@ -2352,11 +2356,11 @@ namespace PovertySail.MPU9250
         */
         public Vector3 getRotation()
         {
-            Vector3 v;
+            Vector3 v = new Vector3();
             i2c.readBytes(devAddr, MPU9250_RA_GYRO_XOUT_H, 6, buffer);
-            v.x = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
-            v.y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
-            v.z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
+            v.X = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
+            v.Y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
+            v.Z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
             return v;
         }
         /** Get X-axis gyroscope reading.

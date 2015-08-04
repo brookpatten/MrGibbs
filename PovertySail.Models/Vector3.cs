@@ -37,6 +37,9 @@ namespace PovertySail.Models
         {
             return new Vector3(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
         }
+        public Vector3()
+        {
+        }
         public Vector3(float nx, float ny, float nz)
         {
             X = nx;

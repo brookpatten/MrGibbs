@@ -58,18 +58,32 @@ namespace PovertySail.MPU9250
 				var gyro = _imu.GetGyro ();
 
                 //these probably need to be normalized to some known scale
-			    state.Accel = new Vector3() {X = accel.x, Y = accel.y, Z = accel.z};
-			    state.Gyro = new Vector3() {X = gyro.x, Y = gyro.y, Z = gyro.z};
+                state.Accel = _imu.GetAccel();
+                state.Gyro = _imu.GetGyro();
+                state.Magneto = _imu.GetMagneto();
 
 			    //var rpy = _imu.GetRollYawPitch ();
 
-			    _logger.Debug ("MPU-9250: Acceleration(" + string.Format ("{0:0.00}", accel.x) + "," + string.Format ("{0:0.00}", accel.y) + "," + string.Format ("{0:0.00}", accel.z) + ") Gyro(" + string.Format ("{0:0.00}", gyro.x) + "," + string.Format ("{0:0.00}", gyro.y) + "," + string.Format ("{0:0.00}", gyro.z) + ")");
+			    _logger.Debug ("MPU-9250: Acceleration(" + string.Format ("{0:0.00}", accel.X) + "," + string.Format ("{0:0.00}", accel.Y) + "," + string.Format ("{0:0.00}", accel.Z) + ") Gyro(" + string.Format ("{0:0.00}", gyro.X) + "," + string.Format ("{0:0.00}", gyro.Y) + "," + string.Format ("{0:0.00}", gyro.Z) + ")");
 			    //_logger.Debug ("MPU-9250: Roll/Pitch/Yaw(" + string.Format ("{0:0.00}", rpy.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
 
+                state.Heel = accel.Y * (360.0 / 4.0);
+                state.Pitch = accel.X * (360.0 / 4.0);
+                _logger.Debug("Heel:" +state.Heel+", Pitch:"+state.Pitch); 
 
-			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
-			    state.Heel = accel.x*(360.0/4.0);//((double)accel.x).ToDegrees();
-                state.Pitch = accel.y * (360.0 / 4.0);//((double)accel.y).ToDegrees();
+                double heading = Math.Atan2(state.Magneto.Y, state.Magneto.X);
+                if (heading < 0)
+                {
+                    heading += 2.0 * Math.PI;
+                }
+
+                //convert to degrees
+                heading = heading * (180.0 / Math.PI);
+                state.MagneticHeading = heading;
+                _logger.Debug("MPU-9250 Heading(" + state.Magneto.X + "," + state.Magneto.Y + "," + state.Magneto.Z + ") (" + state.MagneticHeading + ")");
+
+
+			   
 
 			    //if (framecounter++ == 100 && imu != null)
 			    //_imu.Calibrate ();
