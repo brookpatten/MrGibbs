@@ -6,6 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using QuadroschrauberSharp.Hardware;
 
+using uint8_t = System.Byte;
+using int8_t = System.SByte;
+using int16_t = System.Int16;
+using uint16_t = System.UInt16;
+using uint32_t = System.UInt32;
+using define = System.Byte;
+
 namespace PovertySail.HMC5883
 {
     //derived from arduino library of the same name
@@ -190,9 +197,14 @@ namespace PovertySail.HMC5883
                 _i2c.writeByte(_devAddr, HMC5883L_RA_MODE, (byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
             }
 
-            x = BitConverter.ToInt16(_buffer, 0);
-            y = BitConverter.ToInt16(_buffer, 4);
-            z = BitConverter.ToInt16(_buffer, 2);
+            x= (short)((((int16_t)_buffer[0]) << 8) | _buffer[1]);
+            z = (short)((((int16_t)_buffer[2]) << 8) | _buffer[3]);
+            y = (short)((((int16_t)_buffer[4]) << 8) | _buffer[5]);
+
+
+            //x = BitConverter.ToInt16(_buffer, 0);
+            //y = BitConverter.ToInt16(_buffer, 4);
+            //z = BitConverter.ToInt16(_buffer, 2);
         }
 
         public short GetHeadingX()
