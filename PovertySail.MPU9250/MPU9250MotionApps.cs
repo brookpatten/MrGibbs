@@ -648,9 +648,9 @@ VectorInt16 dmpGetLinearAccel(VectorInt16 vRaw, Vector3 gravity)
 {
     // get rid of the gravity component (+1g = +4096 in standard DMP FIFO packet)
     VectorInt16 v = new VectorInt16(); 
-    v.x = (short)(vRaw.x - gravity.x*4096);
-    v.y = (short)(vRaw.y - gravity.y*4096);
-    v.z = (short)(vRaw.z - gravity.z*4096);
+    v.x = (short)(vRaw.x - gravity.X*4096);
+    v.y = (short)(vRaw.y - gravity.Y*4096);
+    v.z = (short)(vRaw.z - gravity.Z*4096);
     return v;
 }
 // uint8_t dmpGetLinearAccelInWorld(long *data, uint8_t* packet);
@@ -672,9 +672,9 @@ VectorInt16 dmpGetLinearAccelInWorld(VectorInt16 vReal, Quaternion q)
 public Vector3 dmpGetGravity(Quaternion q)
 {
     Vector3 v = new Vector3();
-    v.x = 2 * (q.x*q.z - q.w*q.y);
-    v.y = 2 * (q.w*q.x + q.y*q.z);
-    v.z = q.w*q.w - q.x*q.x - q.y*q.y + q.z*q.z;
+    v.X = 2 * (q.x*q.z - q.w*q.y);
+    v.Y = 2 * (q.w*q.x + q.y*q.z);
+    v.Z = q.w*q.w - q.x*q.x - q.y*q.y + q.z*q.z;
     return v;
 }
 // uint8_t dmpGetUnquantizedAccel(long *data, uint8_t* packet);
@@ -692,9 +692,9 @@ public void dmpGetYawPitchRoll(float[] data, Quaternion q, Vector3 gravity)
     // yaw: (about Z axis)
     data[0] = (float)Math.Atan2(2 * q.x * q.y - 2 * q.w * q.z, 2 * q.w * q.w + 2 * q.x * q.x - 1);
     // pitch: (nose up/down, about Y axis)
-    data[1] = (float)Math.Atan(gravity.x / Math.Sqrt(gravity.y * gravity.y + gravity.z * gravity.z));
+    data[1] = (float)Math.Atan(gravity.X / Math.Sqrt(gravity.Y * gravity.Y + gravity.Z * gravity.Z));
     // roll: (tilt left/right, about X axis)
-    data[2] = (float)Math.Atan(gravity.y / Math.Sqrt(gravity.x * gravity.x + gravity.z * gravity.z));
+    data[2] = (float)Math.Atan(gravity.Y / Math.Sqrt(gravity.X * gravity.X + gravity.Z * gravity.Z));
 
 }
 
