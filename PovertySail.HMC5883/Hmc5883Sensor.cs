@@ -37,7 +37,7 @@ namespace PovertySail.HMC5883
 		{
 		    short x=0, y=0, z=0;
             _hmc5883.GetHeading(ref x,ref y,ref z);
-		    state.Magneto = new Vector3() {X = x, Y = y, Z = z};
+            state.Magneto = new Vector3(x, y, z);
 
             double heading = Math.Atan2(y, x);
             if (heading < 0)
