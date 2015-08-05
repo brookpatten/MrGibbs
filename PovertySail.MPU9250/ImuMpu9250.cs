@@ -97,7 +97,7 @@ namespace PovertySail.MPU9250
             accel_calibration = new Vector3(0, 0, 1) - GetUncalibratedAccel();
         }
 
-        Mpu9250.Motion9 motion;
+        Mpu9250.Motion9 motion = new Mpu9250.Motion9();
         Quaternion q;
         Vector3 gravity;
         float[] ypr = new float[3];

@@ -1,1 +1,1 @@
-mono PovertySail.Console/bin/Debug/PovertySail.exe
+mono --debug PovertySail.Console/bin/Debug/PovertySail.exe

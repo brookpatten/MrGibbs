@@ -114,10 +114,10 @@ namespace PovertySail.HMC5883
             _i2c.writeByte(_devAddr, HMC5883L_RA_CONFIG_A,data);
 
             // write CONFIG_B register
-            SetGain(HMC5883L_GAIN_1090);
+            SetGain(HMC5883L_GAIN_1370);
     
             // write MODE register
-            SetMode(HMC5883L_MODE_SINGLE);
+            //SetMode(HMC5883L_MODE_CONTINUOUS);
         }
 
         public bool TestConnection()

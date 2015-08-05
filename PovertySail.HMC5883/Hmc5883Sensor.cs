@@ -47,8 +47,10 @@ namespace PovertySail.HMC5883
 
             //convert to degrees
             heading = heading * (180.0 / Math.PI);
+		
+	    heading = 360-heading;
 
-            _logger.Debug("HMC5883L Heading(" + x + "," + y + "," + z + ") (" + heading + ")");
+            _logger.Info("HMC5883L Heading(" + x + "," + y + "," + z + ") (" + heading + ")");
             state.MagneticHeading = heading;
 		}
 
