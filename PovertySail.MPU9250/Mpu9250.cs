@@ -2191,9 +2191,9 @@ namespace PovertySail.MPU9250
             System.Threading.Thread.Sleep(10);
             i2c.readBytes(MPU9150_RA_MAG_ADDRESS, MPU9150_RA_MAG_XOUT_L, 6, buffer);
             
-            m9.mx = (short)((((int16_t)buffer[1]) << 8) | buffer[0]);
-            m9.my = (short)((((int16_t)buffer[3]) << 8) | buffer[2]);
-            m9.mz = (short)((((int16_t)buffer[5]) << 8) | buffer[4]);
+            m9.mx = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
+            m9.my = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
+            m9.mz = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
 
 
             return m9;
@@ -3248,6 +3248,7 @@ namespace PovertySail.MPU9250
         */
         public uint8_t getDeviceID()
         {
+            
             return i2c.readBits(devAddr, MPU9250_RA_WHO_AM_I, MPU9250_WHO_AM_I_BIT, MPU9250_WHO_AM_I_LENGTH);
         }
         /** Set Device ID.

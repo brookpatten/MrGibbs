@@ -54,26 +54,25 @@ namespace PovertySail.MPU9250
 				float dtime = (float)difference.TotalMilliseconds / 1000000.0f;
 				_imu.Update (dtime);
 
-                var accel = _imu.GetAccel ();
-				var gyro = _imu.GetGyro ();
+                
 
                 //these probably need to be normalized to some known scale
                 state.Accel = _imu.GetAccel();
                 state.Gyro = _imu.GetGyro();
                 state.Magneto = _imu.GetMagneto();
-
+                
 			    //var rpy = _imu.GetRollYawPitch ();
 
-			    _logger.Debug ("MPU-9250: Acceleration(" + string.Format ("{0:0.00}", accel.X) + "," + string.Format ("{0:0.00}", accel.Y) + "," + string.Format ("{0:0.00}", accel.Z) + ") Gyro(" + string.Format ("{0:0.00}", gyro.X) + "," + string.Format ("{0:0.00}", gyro.Y) + "," + string.Format ("{0:0.00}", gyro.Z) + ")");
+                _logger.Debug("MPU-9250: Acceleration(" + string.Format("{0:0.00}", state.Accel.X) + "," + string.Format("{0:0.00}", state.Accel.Y) + "," + string.Format("{0:0.00}", state.Accel.Z) + ") Gyro(" + string.Format("{0:0.00}", state.Gyro.X) + "," + string.Format("{0:0.00}", state.Gyro.Y) + "," + string.Format("{0:0.00}", state.Gyro.Z) + ")");
 			    //_logger.Debug ("MPU-9250: Roll/Pitch/Yaw(" + string.Format ("{0:0.00}", rpy.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
 
-                state.Heel = accel.Y * (360.0 / 4.0);
-                state.Pitch = accel.X * (360.0 / 4.0);
+                state.Heel = state.Accel.Y * (360.0 / 4.0);
+                state.Pitch = state.Accel.X * (360.0 / 4.0);
                 _logger.Info("Heel:" +state.Heel+", Pitch:"+state.Pitch);
 
 
 
-                double heading = Math.Atan2(state.Magneto.Y, state.Magneto.X);
+                double heading = Math.Atan2(state.Magneto.X, state.Magneto.Y);
                 if (heading < 0)
                 {
                     heading += 2.0 * Math.PI;
