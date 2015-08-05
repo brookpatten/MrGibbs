@@ -166,7 +166,7 @@ namespace PovertySail.MPU9250
 
         public Vector3 GetMagneto()
         {
-            return GetUncalibratedGyro() + gyro_calibration;
+            return new Vector3(motion.mx, motion.my, motion.mz);
         }
 
         public Quaternion GetQuaternion()
