@@ -407,12 +407,15 @@ namespace PovertySail.MPU9250
         const int MPU9250_DMP_MEMORY_BANK_SIZE = 256;
         const int MPU9250_DMP_MEMORY_CHUNK_SIZE = 16;
         
-        const define MPU9250_Magnet_X_H = 0x3;
-        const define MPU9250_Magnet_X_L = 0x4;
-        const define MPU9250_Magnet_Y_H = 0x5;
-        const define MPU9250_Magnet_Y_L = 0x6;
-        const define MPU9250_Magnet_Z_H = 0x7;
-        const define MPU9250_Magnet_Z_L = 0x8;
+        //Magnetometer Registers
+        const define MPU9150_RA_INT_PIN_CFG = 0x37;
+        const define MPU9150_RA_MAG_ADDRESS	=	0x0C;
+        const define MPU9150_RA_MAG_XOUT_L=		0x03;
+        const define MPU9150_RA_MAG_XOUT_H =	0x04;
+        const define MPU9150_RA_MAG_YOUT_L	=	0x05;
+        const define MPU9150_RA_MAG_YOUT_H	=	0x06;
+        const define MPU9150_RA_MAG_ZOUT_L	=	0x07;
+        const define MPU9150_RA_MAG_ZOUT_H	=	0x08;
         
 
         uint8_t devAddr;
@@ -2181,7 +2184,13 @@ namespace PovertySail.MPU9250
             m9.gy = m6.gy;
             m9.gz = m6.gz;
 
-            i2c.readBytes(devAddr, MPU9250_Magnet_X_H, 6, buffer);
+            //read mag
+            i2c.writeByte(devAddr, MPU9150_RA_INT_PIN_CFG, (byte)0x02); //set i2c bypass enable pin to true to access magnetometer
+            System.Threading.Thread.Sleep(10);
+            i2c.writeByte(MPU9150_RA_MAG_ADDRESS, 0x0A, (byte)0x01); //enable the magnetometer
+            System.Threading.Thread.Sleep(10);
+            i2c.readBytes(MPU9150_RA_MAG_ADDRESS, MPU9150_RA_MAG_XOUT_L, 6, buffer);
+            
             m9.mx = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
             m9.my = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
             m9.mz = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
