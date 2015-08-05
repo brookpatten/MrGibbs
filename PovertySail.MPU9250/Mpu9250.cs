@@ -3248,6 +3248,7 @@ namespace PovertySail.MPU9250
         */
         public uint8_t getDeviceID()
         {
+            
             return i2c.readBits(devAddr, MPU9250_RA_WHO_AM_I, MPU9250_WHO_AM_I_BIT, MPU9250_WHO_AM_I_LENGTH);
         }
         /** Set Device ID.

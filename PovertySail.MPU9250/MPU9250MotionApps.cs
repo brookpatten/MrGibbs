@@ -317,6 +317,7 @@ readonly prog_uchar[] dmpUpdates = {
         {
             return message;
         }
+
 public uint8_t dmpInitialize() {
     // reset device
     DEBUG_PRINTLN(F("\n\nResetting MPU9250..."));
