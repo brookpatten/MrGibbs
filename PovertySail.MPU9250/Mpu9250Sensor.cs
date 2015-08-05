@@ -69,22 +69,23 @@ namespace PovertySail.MPU9250
 
                 state.Heel = accel.Y * (360.0 / 4.0);
                 state.Pitch = accel.X * (360.0 / 4.0);
-                _logger.Info("Heel:" +state.Heel+", Pitch:"+state.Pitch); 
+                _logger.Info("Heel:" +state.Heel+", Pitch:"+state.Pitch);
 
 
 
-                //double heading = Math.Atan2(state.Magneto.Y, state.Magneto.X);
-                //if (heading < 0)
-                //{
-                //    heading += 2.0 * Math.PI;
-                //}
+                double heading = Math.Atan2(state.Magneto.Y, state.Magneto.X);
+                if (heading < 0)
+                {
+                    heading += 2.0 * Math.PI;
+                }
 
-                ////convert to degrees
-                //heading = heading * (180.0 / Math.PI);
-                //state.MagneticHeading = 360-heading;
-                //
-                float N = 256;
-                state.MagneticHeading = state.Magneto.X * state.Magneto.X / N + state.Magneto.Y * state.Magneto.Y / N + state.Magneto.Z * state.Magneto.Z / N;
+                //convert to degrees
+                heading = heading * (180.0 / Math.PI);
+                state.MagneticHeading = 360 - heading;
+                
+                
+                //float N = 256;
+                //state.MagneticHeading = state.Magneto.X * state.Magneto.X / N + state.Magneto.Y * state.Magneto.Y / N + state.Magneto.Z * state.Magneto.Z / N;
                 
                 _logger.Info("MPU-9250 Heading(" + state.Magneto.X + "," + state.Magneto.Y + "," + state.Magneto.Z + ") (" + state.MagneticHeading + ")");
 
