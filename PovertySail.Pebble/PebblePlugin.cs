@@ -52,7 +52,7 @@ namespace PovertySail.Pebble
                             bundle = new AppBundle();
                             stream.Position = 0;
                             bundle.Load(stream, zip);
-
+                            _logger.Info("Loaded Pebble Application " + bundle.AppInfo.UUID.ToString());
                         }
                     }
                 }
