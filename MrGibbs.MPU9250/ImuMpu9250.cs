@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MrGibbs.Models;
 using MrGibbs.Contracts.Infrastructure;
+using QuadroschrauberSharp;
 
-namespace QuadroschrauberSharp
+namespace MrGibbs.MPU9250
 {
-    public class IMU_MPU6050
+    public class ImuMpu9250
     {
-        VectorFloat accel_calibration = new VectorFloat();
-        VectorFloat gyro_calibration = new VectorFloat();
+
+        Vector3 accel_calibration = new Vector3();
+        Vector3 gyro_calibration = new Vector3();
 
         bool dmpReady = false; // set true if DMP init was successful
         byte mpuIntStatus; // holds actual interrupt status byte from MPU
@@ -21,8 +24,8 @@ namespace QuadroschrauberSharp
 
         private ILogger _logger;
 
-        Hardware.MPU6050 mpu;
-        public IMU_MPU6050(Hardware.MPU6050 mpu,ILogger logger)
+        Mpu9250 mpu;
+        public ImuMpu9250(Mpu9250 mpu, ILogger logger)
         {
             _logger = logger;
             this.mpu = mpu;
@@ -33,18 +36,18 @@ namespace QuadroschrauberSharp
         public void Init(bool dmp)
         {
             use_dmp = dmp;
-            _logger.Info("Initializing MPU-6050");
+            _logger.Info("Initializing MPU-9250");
             mpu.initialize();
 
 
             // verify connection
             if (mpu.testConnection())
             {
-                _logger.Info("MPU6050 connection successful");
+                _logger.Info("MPU-9250 connection successful");
             }
             else
             {
-                _logger.Info("MPU6050 connection failed");
+                _logger.Info("MPU-9250 connection failed");
             }
 
 
@@ -91,17 +94,17 @@ namespace QuadroschrauberSharp
         public void Calibrate()
         {
             gyro_calibration = GetUncalibratedGyro() * -1;
-            accel_calibration = new VectorFloat(0, 0, 1) - GetUncalibratedAccel();
+            accel_calibration = new Vector3(0, 0, 1) - GetUncalibratedAccel();
         }
 
-        Hardware.MPU6050.Motion6 motion;
+        Mpu9250.Motion9 motion = new Mpu9250.Motion9();
         Quaternion q;
-        VectorFloat gravity;
+        Vector3 gravity;
         float[] ypr = new float[3];
 
         public void Update(float dtime)
         {
-            motion = mpu.getMotion6();
+            motion = mpu.getMotion9();
             // these methods (and a few others) are also available
             //accelgyro.getAcceleration(&ax, &ay, &az);
             //accelgyro.getRotation(&gx, &gy, &gz);
@@ -118,7 +121,7 @@ namespace QuadroschrauberSharp
                 {
                     // reset so we can continue cleanly
                     mpu.resetFIFO();
-                    _logger.Debug("MPU-6050 IMU FIFO overflow");
+                    _logger.Debug("MPU-9250 IMU FIFO overflow");
 
                     // otherwise, check for DMP data ready interrupt (this should happen frequently)
                 }
@@ -139,26 +142,31 @@ namespace QuadroschrauberSharp
             }
         }
 
-        VectorFloat GetUncalibratedAccel()
+        Vector3 GetUncalibratedAccel()
         {
             const float accel_factor = 1.0f / 16384.0f;
-            return new VectorFloat(motion.ax, motion.ay, -motion.az) * accel_factor;
+            return new Vector3(motion.ax, motion.ay, -motion.az) * accel_factor;
         }
 
-        public VectorFloat GetAccel()
+        public Vector3 GetAccel()
         {
             return GetUncalibratedAccel() + accel_calibration;
         }
 
-        VectorFloat GetUncalibratedGyro()
+        Vector3 GetUncalibratedGyro()
         {
             const float gyro_factor = -(1.0f / 32768.0f * 2000.0f / 180.0f * (float)Math.PI);
-            return new VectorFloat(motion.gx, motion.gy, -motion.gz) * gyro_factor;
+            return new Vector3(motion.gx, motion.gy, -motion.gz) * gyro_factor;
         }
 
-        public VectorFloat GetGyro()
+        public Vector3 GetGyro()
         {
             return GetUncalibratedGyro() + gyro_calibration;
+        }
+
+        public Vector3 GetMagneto()
+        {
+            return new Vector3(motion.mx, motion.my, motion.mz);
         }
 
         public Quaternion GetQuaternion()
@@ -169,12 +177,12 @@ namespace QuadroschrauberSharp
             return q;
         }
 
-        public VectorFloat GetRollYawPitch()
+        public Vector3 GetRollYawPitch()
         {
             if (!(use_dmp && dmpReady))
                 throw new Exception("dmp not ready!");
             //TODO: fix orientation
-            return new VectorFloat(ypr[2], ypr[0], ypr[1]);
+            return new Vector3(ypr[2], ypr[0], ypr[1]);
         }
     }
 }

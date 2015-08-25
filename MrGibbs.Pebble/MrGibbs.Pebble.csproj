@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6C5550E5-299E-43C8-8E03-825E024DB764}</ProjectGuid>
+    <ProjectGuid>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuadroschrauberSharp</RootNamespace>
-    <AssemblyName>QuadroSchrauberController</AssemblyName>
+    <RootNamespace>MrGibbs.Pebble</RootNamespace>
+    <AssemblyName>MrGibbs.Pebble</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,21 +20,17 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -44,24 +39,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller.cs" />
-    <Compile Include="Filter.cs" />
-    <Compile Include="Hardware\I2C.cs" />
-    <Compile Include="Hardware\I2CWindows.cs" />
-    <Compile Include="Hardware\Mbed.cs" />
-    <Compile Include="Hardware\Motor.cs" />
-    <Compile Include="Hardware\MotorServoBlaster.cs" />
-    <Compile Include="Hardware\MPU6050.cs" />
-    <Compile Include="Hardware\Spektrum.cs" />
-    <Compile Include="IMU.cs" />
-    <Compile Include="Math.cs" />
-    <Compile Include="Hardware\MPU6050MotionApps.cs" />
-    <Compile Include="PID.cs" />
+    <Compile Include="PebbleViewer.cs" />
+    <Compile Include="PebblePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Quadroschrauber.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <ProjectReference Include="..\InTheHand.Net.Personal\InTheHand.Net.Personal.FX2.csproj">
+      <Project>{98BDDE14-8F8C-40CC-9E45-5BAC73573EF4}</Project>
+      <Name>InTheHand.Net.Personal.FX2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj">
+      <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
+      <Name>PebbleSharp.Core.NonPortable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PebbleSharp.Net45\PebbleSharp.Net45.csproj">
+      <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
+      <Name>PebbleSharp.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
+      <Name>MrGibbs.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
+      <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
+      <Name>MrGibbs.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MrGibbs.pbw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -71,14 +78,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
-      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
-      <Name>PovertySail.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
-      <Project>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</Project>
-      <Name>QuadroschrauberSharp.Linux</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

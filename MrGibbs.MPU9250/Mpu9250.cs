@@ -1,4 +1,4 @@
-// I2Cdev library collection - MPU6050 I2C device class
+// I2Cdev library collection - MPU9250 I2C device class
 // Based on InvenSense MPU-6050 register map document rev. 2.0, 5/19/2011 (RM-MPU-6000A-00)
 // 8/24/2011 by Jeff Rowberg <jeff@rowberg.net>
 // Updates should (hopefully) always be available at https://github.com/jrowberg/i2cdevlib
@@ -45,388 +45,404 @@ using define = System.Byte;
 using System.Linq;
 using MrGibbs.Contracts.Infrastructure;
 using QuadroschrauberSharp;
+using QuadroschrauberSharp.Linux;
+using QuadroschrauberSharp.Hardware;
+using MrGibbs.Models;
 
-namespace QuadroschrauberSharp.Hardware
+namespace MrGibbs.MPU9250
 {
-    public partial class MPU6050
+    public partial class Mpu9250
     {
-        const define MPU6050_ADDRESS_AD0_LOW = 0x68; // address pin low (GND), default for InvenSense evaluation board
-        const define MPU6050_ADDRESS_AD0_HIGH = 0x69; // address pin high (VCC)
-        const define MPU6050_DEFAULT_ADDRESS = 0x68;
+        const define MPU9250_ADDRESS_AD0_LOW = 0x68; // address pin low (GND), default for InvenSense evaluation board
+        const define MPU9250_ADDRESS_AD0_HIGH = 0x69; // address pin high (VCC)
+        const define MPU9250_DEFAULT_ADDRESS = 0x68;
 
-        const define MPU6050_RA_XG_OFFS_TC = 0x00; //[7] PWR_MODE, [6:1] XG_OFFS_TC, [0] OTP_BNK_VLD
-        const define MPU6050_RA_YG_OFFS_TC = 0x01; //[7] PWR_MODE, [6:1] YG_OFFS_TC, [0] OTP_BNK_VLD
-        const define MPU6050_RA_ZG_OFFS_TC = 0x02; //[7] PWR_MODE, [6:1] ZG_OFFS_TC, [0] OTP_BNK_VLD
-        const define MPU6050_RA_X_FINE_GAIN = 0x03; //[7:0] X_FINE_GAIN
-        const define MPU6050_RA_Y_FINE_GAIN = 0x04; //[7:0] Y_FINE_GAIN
-        const define MPU6050_RA_Z_FINE_GAIN = 0x05; //[7:0] Z_FINE_GAIN
-        const define MPU6050_RA_XA_OFFS_H = 0x06; //[15:0] XA_OFFS
-        const define MPU6050_RA_XA_OFFS_L_TC = 0x07;
-        const define MPU6050_RA_YA_OFFS_H = 0x08; //[15:0] YA_OFFS
-        const define MPU6050_RA_YA_OFFS_L_TC = 0x09;
-        const define MPU6050_RA_ZA_OFFS_H = 0x0A; //[15:0] ZA_OFFS
-        const define MPU6050_RA_ZA_OFFS_L_TC = 0x0B;
-        const define MPU6050_RA_XG_OFFS_USRH = 0x13; //[15:0] XG_OFFS_USR
-        const define MPU6050_RA_XG_OFFS_USRL = 0x14;
-        const define MPU6050_RA_YG_OFFS_USRH = 0x15; //[15:0] YG_OFFS_USR
-        const define MPU6050_RA_YG_OFFS_USRL = 0x16;
-        const define MPU6050_RA_ZG_OFFS_USRH = 0x17; //[15:0] ZG_OFFS_USR
-        const define MPU6050_RA_ZG_OFFS_USRL = 0x18;
-        const define MPU6050_RA_SMPLRT_DIV = 0x19;
-        const define MPU6050_RA_CONFIG = 0x1A;
-        const define MPU6050_RA_GYRO_CONFIG = 0x1B;
-        const define MPU6050_RA_ACCEL_CONFIG = 0x1C;
-        const define MPU6050_RA_FF_THR = 0x1D;
-        const define MPU6050_RA_FF_DUR = 0x1E;
-        const define MPU6050_RA_MOT_THR = 0x1F;
-        const define MPU6050_RA_MOT_DUR = 0x20;
-        const define MPU6050_RA_ZRMOT_THR = 0x21;
-        const define MPU6050_RA_ZRMOT_DUR = 0x22;
-        const define MPU6050_RA_FIFO_EN = 0x23;
-        const define MPU6050_RA_I2C_MST_CTRL = 0x24;
-        const define MPU6050_RA_I2C_SLV0_ADDR = 0x25;
-        const define MPU6050_RA_I2C_SLV0_REG = 0x26;
-        const define MPU6050_RA_I2C_SLV0_CTRL = 0x27;
-        const define MPU6050_RA_I2C_SLV1_ADDR = 0x28;
-        const define MPU6050_RA_I2C_SLV1_REG = 0x29;
-        const define MPU6050_RA_I2C_SLV1_CTRL = 0x2A;
-        const define MPU6050_RA_I2C_SLV2_ADDR = 0x2B;
-        const define MPU6050_RA_I2C_SLV2_REG = 0x2C;
-        const define MPU6050_RA_I2C_SLV2_CTRL = 0x2D;
-        const define MPU6050_RA_I2C_SLV3_ADDR = 0x2E;
-        const define MPU6050_RA_I2C_SLV3_REG = 0x2F;
-        const define MPU6050_RA_I2C_SLV3_CTRL = 0x30;
-        const define MPU6050_RA_I2C_SLV4_ADDR = 0x31;
-        const define MPU6050_RA_I2C_SLV4_REG = 0x32;
-        const define MPU6050_RA_I2C_SLV4_DO = 0x33;
-        const define MPU6050_RA_I2C_SLV4_CTRL = 0x34;
-        const define MPU6050_RA_I2C_SLV4_DI = 0x35;
-        const define MPU6050_RA_I2C_MST_STATUS = 0x36;
-        const define MPU6050_RA_INT_PIN_CFG = 0x37;
-        const define MPU6050_RA_INT_ENABLE = 0x38;
-        const define MPU6050_RA_DMP_INT_STATUS = 0x39;
-        const define MPU6050_RA_INT_STATUS = 0x3A;
-        const define MPU6050_RA_ACCEL_XOUT_H = 0x3B;
-        const define MPU6050_RA_ACCEL_XOUT_L = 0x3C;
-        const define MPU6050_RA_ACCEL_YOUT_H = 0x3D;
-        const define MPU6050_RA_ACCEL_YOUT_L = 0x3E;
-        const define MPU6050_RA_ACCEL_ZOUT_H = 0x3F;
-        const define MPU6050_RA_ACCEL_ZOUT_L = 0x40;
-        const define MPU6050_RA_TEMP_OUT_H = 0x41;
-        const define MPU6050_RA_TEMP_OUT_L = 0x42;
-        const define MPU6050_RA_GYRO_XOUT_H = 0x43;
-        const define MPU6050_RA_GYRO_XOUT_L = 0x44;
-        const define MPU6050_RA_GYRO_YOUT_H = 0x45;
-        const define MPU6050_RA_GYRO_YOUT_L = 0x46;
-        const define MPU6050_RA_GYRO_ZOUT_H = 0x47;
-        const define MPU6050_RA_GYRO_ZOUT_L = 0x48;
-        const define MPU6050_RA_EXT_SENS_DATA_00 = 0x49;
-        const define MPU6050_RA_EXT_SENS_DATA_01 = 0x4A;
-        const define MPU6050_RA_EXT_SENS_DATA_02 = 0x4B;
-        const define MPU6050_RA_EXT_SENS_DATA_03 = 0x4C;
-        const define MPU6050_RA_EXT_SENS_DATA_04 = 0x4D;
-        const define MPU6050_RA_EXT_SENS_DATA_05 = 0x4E;
-        const define MPU6050_RA_EXT_SENS_DATA_06 = 0x4F;
-        const define MPU6050_RA_EXT_SENS_DATA_07 = 0x50;
-        const define MPU6050_RA_EXT_SENS_DATA_08 = 0x51;
-        const define MPU6050_RA_EXT_SENS_DATA_09 = 0x52;
-        const define MPU6050_RA_EXT_SENS_DATA_10 = 0x53;
-        const define MPU6050_RA_EXT_SENS_DATA_11 = 0x54;
-        const define MPU6050_RA_EXT_SENS_DATA_12 = 0x55;
-        const define MPU6050_RA_EXT_SENS_DATA_13 = 0x56;
-        const define MPU6050_RA_EXT_SENS_DATA_14 = 0x57;
-        const define MPU6050_RA_EXT_SENS_DATA_15 = 0x58;
-        const define MPU6050_RA_EXT_SENS_DATA_16 = 0x59;
-        const define MPU6050_RA_EXT_SENS_DATA_17 = 0x5A;
-        const define MPU6050_RA_EXT_SENS_DATA_18 = 0x5B;
-        const define MPU6050_RA_EXT_SENS_DATA_19 = 0x5C;
-        const define MPU6050_RA_EXT_SENS_DATA_20 = 0x5D;
-        const define MPU6050_RA_EXT_SENS_DATA_21 = 0x5E;
-        const define MPU6050_RA_EXT_SENS_DATA_22 = 0x5F;
-        const define MPU6050_RA_EXT_SENS_DATA_23 = 0x60;
-        const define MPU6050_RA_MOT_DETECT_STATUS = 0x61;
-        const define MPU6050_RA_I2C_SLV0_DO = 0x63;
-        const define MPU6050_RA_I2C_SLV1_DO = 0x64;
-        const define MPU6050_RA_I2C_SLV2_DO = 0x65;
-        const define MPU6050_RA_I2C_SLV3_DO = 0x66;
-        const define MPU6050_RA_I2C_MST_DELAY_CTRL = 0x67;
-        const define MPU6050_RA_SIGNAL_PATH_RESET = 0x68;
-        const define MPU6050_RA_MOT_DETECT_CTRL = 0x69;
-        const define MPU6050_RA_USER_CTRL = 0x6A;
-        const define MPU6050_RA_PWR_MGMT_1 = 0x6B;
-        const define MPU6050_RA_PWR_MGMT_2 = 0x6C;
-        const define MPU6050_RA_BANK_SEL = 0x6D;
-        const define MPU6050_RA_MEM_START_ADDR = 0x6E;
-        const define MPU6050_RA_MEM_R_W = 0x6F;
-        const define MPU6050_RA_DMP_CFG_1 = 0x70;
-        const define MPU6050_RA_DMP_CFG_2 = 0x71;
-        const define MPU6050_RA_FIFO_COUNTH = 0x72;
-        const define MPU6050_RA_FIFO_COUNTL = 0x73;
-        const define MPU6050_RA_FIFO_R_W = 0x74;
-        const define MPU6050_RA_WHO_AM_I = 0x75;
+        const define MPU9250_RA_XG_OFFS_TC = 0x00; //[7] PWR_MODE, [6:1] XG_OFFS_TC, [0] OTP_BNK_VLD
+        const define MPU9250_RA_YG_OFFS_TC = 0x01; //[7] PWR_MODE, [6:1] YG_OFFS_TC, [0] OTP_BNK_VLD
+        const define MPU9250_RA_ZG_OFFS_TC = 0x02; //[7] PWR_MODE, [6:1] ZG_OFFS_TC, [0] OTP_BNK_VLD
+        const define MPU9250_RA_X_FINE_GAIN = 0x03; //[7:0] X_FINE_GAIN
+        const define MPU9250_RA_Y_FINE_GAIN = 0x04; //[7:0] Y_FINE_GAIN
+        const define MPU9250_RA_Z_FINE_GAIN = 0x05; //[7:0] Z_FINE_GAIN
+        const define MPU9250_RA_XA_OFFS_H = 0x06; //[15:0] XA_OFFS
+        const define MPU9250_RA_XA_OFFS_L_TC = 0x07;
+        const define MPU9250_RA_YA_OFFS_H = 0x08; //[15:0] YA_OFFS
+        const define MPU9250_RA_YA_OFFS_L_TC = 0x09;
+        const define MPU9250_RA_ZA_OFFS_H = 0x0A; //[15:0] ZA_OFFS
+        const define MPU9250_RA_ZA_OFFS_L_TC = 0x0B;
+        const define MPU9250_RA_XG_OFFS_USRH = 0x13; //[15:0] XG_OFFS_USR
+        const define MPU9250_RA_XG_OFFS_USRL = 0x14;
+        const define MPU9250_RA_YG_OFFS_USRH = 0x15; //[15:0] YG_OFFS_USR
+        const define MPU9250_RA_YG_OFFS_USRL = 0x16;
+        const define MPU9250_RA_ZG_OFFS_USRH = 0x17; //[15:0] ZG_OFFS_USR
+        const define MPU9250_RA_ZG_OFFS_USRL = 0x18;
+        const define MPU9250_RA_SMPLRT_DIV = 0x19;
+        const define MPU9250_RA_CONFIG = 0x1A;
+        const define MPU9250_RA_GYRO_CONFIG = 0x1B;
+        const define MPU9250_RA_ACCEL_CONFIG = 0x1C;
+        const define MPU9250_RA_FF_THR = 0x1D;
+        const define MPU9250_RA_FF_DUR = 0x1E;
+        const define MPU9250_RA_MOT_THR = 0x1F;
+        const define MPU9250_RA_MOT_DUR = 0x20;
+        const define MPU9250_RA_ZRMOT_THR = 0x21;
+        const define MPU9250_RA_ZRMOT_DUR = 0x22;
+        const define MPU9250_RA_FIFO_EN = 0x23;
+        const define MPU9250_RA_I2C_MST_CTRL = 0x24;
+        const define MPU9250_RA_I2C_SLV0_ADDR = 0x25;
+        const define MPU9250_RA_I2C_SLV0_REG = 0x26;
+        const define MPU9250_RA_I2C_SLV0_CTRL = 0x27;
+        const define MPU9250_RA_I2C_SLV1_ADDR = 0x28;
+        const define MPU9250_RA_I2C_SLV1_REG = 0x29;
+        const define MPU9250_RA_I2C_SLV1_CTRL = 0x2A;
+        const define MPU9250_RA_I2C_SLV2_ADDR = 0x2B;
+        const define MPU9250_RA_I2C_SLV2_REG = 0x2C;
+        const define MPU9250_RA_I2C_SLV2_CTRL = 0x2D;
+        const define MPU9250_RA_I2C_SLV3_ADDR = 0x2E;
+        const define MPU9250_RA_I2C_SLV3_REG = 0x2F;
+        const define MPU9250_RA_I2C_SLV3_CTRL = 0x30;
+        const define MPU9250_RA_I2C_SLV4_ADDR = 0x31;
+        const define MPU9250_RA_I2C_SLV4_REG = 0x32;
+        const define MPU9250_RA_I2C_SLV4_DO = 0x33;
+        const define MPU9250_RA_I2C_SLV4_CTRL = 0x34;
+        const define MPU9250_RA_I2C_SLV4_DI = 0x35;
+        const define MPU9250_RA_I2C_MST_STATUS = 0x36;
+        const define MPU9250_RA_INT_PIN_CFG = 0x37;
+        const define MPU9250_RA_INT_ENABLE = 0x38;
+        const define MPU9250_RA_DMP_INT_STATUS = 0x39;
+        const define MPU9250_RA_INT_STATUS = 0x3A;
+        const define MPU9250_RA_ACCEL_XOUT_H = 0x3B;
+        const define MPU9250_RA_ACCEL_XOUT_L = 0x3C;
+        const define MPU9250_RA_ACCEL_YOUT_H = 0x3D;
+        const define MPU9250_RA_ACCEL_YOUT_L = 0x3E;
+        const define MPU9250_RA_ACCEL_ZOUT_H = 0x3F;
+        const define MPU9250_RA_ACCEL_ZOUT_L = 0x40;
+        const define MPU9250_RA_TEMP_OUT_H = 0x41;
+        const define MPU9250_RA_TEMP_OUT_L = 0x42;
+        const define MPU9250_RA_GYRO_XOUT_H = 0x43;
+        const define MPU9250_RA_GYRO_XOUT_L = 0x44;
+        const define MPU9250_RA_GYRO_YOUT_H = 0x45;
+        const define MPU9250_RA_GYRO_YOUT_L = 0x46;
+        const define MPU9250_RA_GYRO_ZOUT_H = 0x47;
+        const define MPU9250_RA_GYRO_ZOUT_L = 0x48;
+        const define MPU9250_RA_EXT_SENS_DATA_00 = 0x49;
+        const define MPU9250_RA_EXT_SENS_DATA_01 = 0x4A;
+        const define MPU9250_RA_EXT_SENS_DATA_02 = 0x4B;
+        const define MPU9250_RA_EXT_SENS_DATA_03 = 0x4C;
+        const define MPU9250_RA_EXT_SENS_DATA_04 = 0x4D;
+        const define MPU9250_RA_EXT_SENS_DATA_05 = 0x4E;
+        const define MPU9250_RA_EXT_SENS_DATA_06 = 0x4F;
+        const define MPU9250_RA_EXT_SENS_DATA_07 = 0x50;
+        const define MPU9250_RA_EXT_SENS_DATA_08 = 0x51;
+        const define MPU9250_RA_EXT_SENS_DATA_09 = 0x52;
+        const define MPU9250_RA_EXT_SENS_DATA_10 = 0x53;
+        const define MPU9250_RA_EXT_SENS_DATA_11 = 0x54;
+        const define MPU9250_RA_EXT_SENS_DATA_12 = 0x55;
+        const define MPU9250_RA_EXT_SENS_DATA_13 = 0x56;
+        const define MPU9250_RA_EXT_SENS_DATA_14 = 0x57;
+        const define MPU9250_RA_EXT_SENS_DATA_15 = 0x58;
+        const define MPU9250_RA_EXT_SENS_DATA_16 = 0x59;
+        const define MPU9250_RA_EXT_SENS_DATA_17 = 0x5A;
+        const define MPU9250_RA_EXT_SENS_DATA_18 = 0x5B;
+        const define MPU9250_RA_EXT_SENS_DATA_19 = 0x5C;
+        const define MPU9250_RA_EXT_SENS_DATA_20 = 0x5D;
+        const define MPU9250_RA_EXT_SENS_DATA_21 = 0x5E;
+        const define MPU9250_RA_EXT_SENS_DATA_22 = 0x5F;
+        const define MPU9250_RA_EXT_SENS_DATA_23 = 0x60;
+        const define MPU9250_RA_MOT_DETECT_STATUS = 0x61;
+        const define MPU9250_RA_I2C_SLV0_DO = 0x63;
+        const define MPU9250_RA_I2C_SLV1_DO = 0x64;
+        const define MPU9250_RA_I2C_SLV2_DO = 0x65;
+        const define MPU9250_RA_I2C_SLV3_DO = 0x66;
+        const define MPU9250_RA_I2C_MST_DELAY_CTRL = 0x67;
+        const define MPU9250_RA_SIGNAL_PATH_RESET = 0x68;
+        const define MPU9250_RA_MOT_DETECT_CTRL = 0x69;
+        const define MPU9250_RA_USER_CTRL = 0x6A;
+        const define MPU9250_RA_PWR_MGMT_1 = 0x6B;
+        const define MPU9250_RA_PWR_MGMT_2 = 0x6C;
+        const define MPU9250_RA_BANK_SEL = 0x6D;
+        const define MPU9250_RA_MEM_START_ADDR = 0x6E;
+        const define MPU9250_RA_MEM_R_W = 0x6F;
+        const define MPU9250_RA_DMP_CFG_1 = 0x70;
+        const define MPU9250_RA_DMP_CFG_2 = 0x71;
+        const define MPU9250_RA_FIFO_COUNTH = 0x72;
+        const define MPU9250_RA_FIFO_COUNTL = 0x73;
+        const define MPU9250_RA_FIFO_R_W = 0x74;
+        const define MPU9250_RA_WHO_AM_I = 0x75;
 
-        const define MPU6050_TC_PWR_MODE_BIT = 7;
-        const define MPU6050_TC_OFFSET_BIT = 6;
-        const define MPU6050_TC_OFFSET_LENGTH = 6;
-        const define MPU6050_TC_OTP_BNK_VLD_BIT = 0;
+        const define MPU9250_TC_PWR_MODE_BIT = 7;
+        const define MPU9250_TC_OFFSET_BIT = 6;
+        const define MPU9250_TC_OFFSET_LENGTH = 6;
+        const define MPU9250_TC_OTP_BNK_VLD_BIT = 0;
 
-        const define MPU6050_VDDIO_LEVEL_VLOGIC = 0;
-        const define MPU6050_VDDIO_LEVEL_VDD = 1;
+        const define MPU9250_VDDIO_LEVEL_VLOGIC = 0;
+        const define MPU9250_VDDIO_LEVEL_VDD = 1;
 
-        const define MPU6050_CFG_EXT_SYNC_SET_BIT = 5;
-        const define MPU6050_CFG_EXT_SYNC_SET_LENGTH = 3;
-        const define MPU6050_CFG_DLPF_CFG_BIT = 2;
-        const define MPU6050_CFG_DLPF_CFG_LENGTH = 3;
+        const define MPU9250_CFG_EXT_SYNC_SET_BIT = 5;
+        const define MPU9250_CFG_EXT_SYNC_SET_LENGTH = 3;
+        const define MPU9250_CFG_DLPF_CFG_BIT = 2;
+        const define MPU9250_CFG_DLPF_CFG_LENGTH = 3;
 
-        const define MPU6050_EXT_SYNC_DISABLED = 0x0;
-        const define MPU6050_EXT_SYNC_TEMP_OUT_L = 0x1;
-        const define MPU6050_EXT_SYNC_GYRO_XOUT_L = 0x2;
-        const define MPU6050_EXT_SYNC_GYRO_YOUT_L = 0x3;
-        const define MPU6050_EXT_SYNC_GYRO_ZOUT_L = 0x4;
-        const define MPU6050_EXT_SYNC_ACCEL_XOUT_L = 0x5;
-        const define MPU6050_EXT_SYNC_ACCEL_YOUT_L = 0x6;
-        const define MPU6050_EXT_SYNC_ACCEL_ZOUT_L = 0x7;
+        const define MPU9250_EXT_SYNC_DISABLED = 0x0;
+        const define MPU9250_EXT_SYNC_TEMP_OUT_L = 0x1;
+        const define MPU9250_EXT_SYNC_GYRO_XOUT_L = 0x2;
+        const define MPU9250_EXT_SYNC_GYRO_YOUT_L = 0x3;
+        const define MPU9250_EXT_SYNC_GYRO_ZOUT_L = 0x4;
+        const define MPU9250_EXT_SYNC_ACCEL_XOUT_L = 0x5;
+        const define MPU9250_EXT_SYNC_ACCEL_YOUT_L = 0x6;
+        const define MPU9250_EXT_SYNC_ACCEL_ZOUT_L = 0x7;
 
-        const define MPU6050_DLPF_BW_256 = 0x00;
-        const define MPU6050_DLPF_BW_188 = 0x01;
-        const define MPU6050_DLPF_BW_98 = 0x02;
-        const define MPU6050_DLPF_BW_42 = 0x03;
-        const define MPU6050_DLPF_BW_20 = 0x04;
-        const define MPU6050_DLPF_BW_10 = 0x05;
-        const define MPU6050_DLPF_BW_5 = 0x06;
+        const define MPU9250_DLPF_BW_256 = 0x00;
+        const define MPU9250_DLPF_BW_188 = 0x01;
+        const define MPU9250_DLPF_BW_98 = 0x02;
+        const define MPU9250_DLPF_BW_42 = 0x03;
+        const define MPU9250_DLPF_BW_20 = 0x04;
+        const define MPU9250_DLPF_BW_10 = 0x05;
+        const define MPU9250_DLPF_BW_5 = 0x06;
 
-        const define MPU6050_GCONFIG_FS_SEL_BIT = 4;
-        const define MPU6050_GCONFIG_FS_SEL_LENGTH = 2;
+        const define MPU9250_GCONFIG_FS_SEL_BIT = 4;
+        const define MPU9250_GCONFIG_FS_SEL_LENGTH = 2;
 
-        const define MPU6050_GYRO_FS_250 = 0x00;
-        const define MPU6050_GYRO_FS_500 = 0x01;
-        const define MPU6050_GYRO_FS_1000 = 0x02;
-        const define MPU6050_GYRO_FS_2000 = 0x03;
+        const define MPU9250_GYRO_FS_250 = 0x00;
+        const define MPU9250_GYRO_FS_500 = 0x01;
+        const define MPU9250_GYRO_FS_1000 = 0x02;
+        const define MPU9250_GYRO_FS_2000 = 0x03;
 
-        const define MPU6050_ACONFIG_XA_ST_BIT = 7;
-        const define MPU6050_ACONFIG_YA_ST_BIT = 6;
-        const define MPU6050_ACONFIG_ZA_ST_BIT = 5;
-        const define MPU6050_ACONFIG_AFS_SEL_BIT = 4;
-        const define MPU6050_ACONFIG_AFS_SEL_LENGTH = 2;
-        const define MPU6050_ACONFIG_ACCEL_HPF_BIT = 2;
-        const define MPU6050_ACONFIG_ACCEL_HPF_LENGTH = 3;
+        const define MPU9250_ACONFIG_XA_ST_BIT = 7;
+        const define MPU9250_ACONFIG_YA_ST_BIT = 6;
+        const define MPU9250_ACONFIG_ZA_ST_BIT = 5;
+        const define MPU9250_ACONFIG_AFS_SEL_BIT = 4;
+        const define MPU9250_ACONFIG_AFS_SEL_LENGTH = 2;
+        const define MPU9250_ACONFIG_ACCEL_HPF_BIT = 2;
+        const define MPU9250_ACONFIG_ACCEL_HPF_LENGTH = 3;
 
-        const define MPU6050_ACCEL_FS_2 = 0x00;
-        const define MPU6050_ACCEL_FS_4 = 0x01;
-        const define MPU6050_ACCEL_FS_8 = 0x02;
-        const define MPU6050_ACCEL_FS_16 = 0x03;
+        const define MPU9250_ACCEL_FS_2 = 0x00;
+        const define MPU9250_ACCEL_FS_4 = 0x01;
+        const define MPU9250_ACCEL_FS_8 = 0x02;
+        const define MPU9250_ACCEL_FS_16 = 0x03;
 
-        const define MPU6050_DHPF_RESET = 0x00;
-        const define MPU6050_DHPF_5 = 0x01;
-        const define MPU6050_DHPF_2P5 = 0x02;
-        const define MPU6050_DHPF_1P25 = 0x03;
-        const define MPU6050_DHPF_0P63 = 0x04;
-        const define MPU6050_DHPF_HOLD = 0x07;
+        const define MPU9250_DHPF_RESET = 0x00;
+        const define MPU9250_DHPF_5 = 0x01;
+        const define MPU9250_DHPF_2P5 = 0x02;
+        const define MPU9250_DHPF_1P25 = 0x03;
+        const define MPU9250_DHPF_0P63 = 0x04;
+        const define MPU9250_DHPF_HOLD = 0x07;
 
-        const define MPU6050_TEMP_FIFO_EN_BIT = 7;
-        const define MPU6050_XG_FIFO_EN_BIT = 6;
-        const define MPU6050_YG_FIFO_EN_BIT = 5;
-        const define MPU6050_ZG_FIFO_EN_BIT = 4;
-        const define MPU6050_ACCEL_FIFO_EN_BIT = 3;
-        const define MPU6050_SLV2_FIFO_EN_BIT = 2;
-        const define MPU6050_SLV1_FIFO_EN_BIT = 1;
-        const define MPU6050_SLV0_FIFO_EN_BIT = 0;
+        const define MPU9250_TEMP_FIFO_EN_BIT = 7;
+        const define MPU9250_XG_FIFO_EN_BIT = 6;
+        const define MPU9250_YG_FIFO_EN_BIT = 5;
+        const define MPU9250_ZG_FIFO_EN_BIT = 4;
+        const define MPU9250_ACCEL_FIFO_EN_BIT = 3;
+        const define MPU9250_SLV2_FIFO_EN_BIT = 2;
+        const define MPU9250_SLV1_FIFO_EN_BIT = 1;
+        const define MPU9250_SLV0_FIFO_EN_BIT = 0;
 
-        const define MPU6050_MULT_MST_EN_BIT = 7;
-        const define MPU6050_WAIT_FOR_ES_BIT = 6;
-        const define MPU6050_SLV_3_FIFO_EN_BIT = 5;
-        const define MPU6050_I2C_MST_P_NSR_BIT = 4;
-        const define MPU6050_I2C_MST_CLK_BIT = 3;
-        const define MPU6050_I2C_MST_CLK_LENGTH = 4;
+        const define MPU9250_MULT_MST_EN_BIT = 7;
+        const define MPU9250_WAIT_FOR_ES_BIT = 6;
+        const define MPU9250_SLV_3_FIFO_EN_BIT = 5;
+        const define MPU9250_I2C_MST_P_NSR_BIT = 4;
+        const define MPU9250_I2C_MST_CLK_BIT = 3;
+        const define MPU9250_I2C_MST_CLK_LENGTH = 4;
 
-        const define MPU6050_CLOCK_DIV_348 = 0x0;
-        const define MPU6050_CLOCK_DIV_333 = 0x1;
-        const define MPU6050_CLOCK_DIV_320 = 0x2;
-        const define MPU6050_CLOCK_DIV_308 = 0x3;
-        const define MPU6050_CLOCK_DIV_296 = 0x4;
-        const define MPU6050_CLOCK_DIV_286 = 0x5;
-        const define MPU6050_CLOCK_DIV_276 = 0x6;
-        const define MPU6050_CLOCK_DIV_267 = 0x7;
-        const define MPU6050_CLOCK_DIV_258 = 0x8;
-        const define MPU6050_CLOCK_DIV_500 = 0x9;
-        const define MPU6050_CLOCK_DIV_471 = 0xA;
-        const define MPU6050_CLOCK_DIV_444 = 0xB;
-        const define MPU6050_CLOCK_DIV_421 = 0xC;
-        const define MPU6050_CLOCK_DIV_400 = 0xD;
-        const define MPU6050_CLOCK_DIV_381 = 0xE;
-        const define MPU6050_CLOCK_DIV_364 = 0xF;
+        const define MPU9250_CLOCK_DIV_348 = 0x0;
+        const define MPU9250_CLOCK_DIV_333 = 0x1;
+        const define MPU9250_CLOCK_DIV_320 = 0x2;
+        const define MPU9250_CLOCK_DIV_308 = 0x3;
+        const define MPU9250_CLOCK_DIV_296 = 0x4;
+        const define MPU9250_CLOCK_DIV_286 = 0x5;
+        const define MPU9250_CLOCK_DIV_276 = 0x6;
+        const define MPU9250_CLOCK_DIV_267 = 0x7;
+        const define MPU9250_CLOCK_DIV_258 = 0x8;
+        const define MPU9250_CLOCK_DIV_500 = 0x9;
+        const define MPU9250_CLOCK_DIV_471 = 0xA;
+        const define MPU9250_CLOCK_DIV_444 = 0xB;
+        const define MPU9250_CLOCK_DIV_421 = 0xC;
+        const define MPU9250_CLOCK_DIV_400 = 0xD;
+        const define MPU9250_CLOCK_DIV_381 = 0xE;
+        const define MPU9250_CLOCK_DIV_364 = 0xF;
 
-        const define MPU6050_I2C_SLV_RW_BIT = 7;
-        const define MPU6050_I2C_SLV_ADDR_BIT = 6;
-        const define MPU6050_I2C_SLV_ADDR_LENGTH = 7;
-        const define MPU6050_I2C_SLV_EN_BIT = 7;
-        const define MPU6050_I2C_SLV_BYTE_SW_BIT = 6;
-        const define MPU6050_I2C_SLV_REG_DIS_BIT = 5;
-        const define MPU6050_I2C_SLV_GRP_BIT = 4;
-        const define MPU6050_I2C_SLV_LEN_BIT = 3;
-        const define MPU6050_I2C_SLV_LEN_LENGTH = 4;
+        const define MPU9250_I2C_SLV_RW_BIT = 7;
+        const define MPU9250_I2C_SLV_ADDR_BIT = 6;
+        const define MPU9250_I2C_SLV_ADDR_LENGTH = 7;
+        const define MPU9250_I2C_SLV_EN_BIT = 7;
+        const define MPU9250_I2C_SLV_BYTE_SW_BIT = 6;
+        const define MPU9250_I2C_SLV_REG_DIS_BIT = 5;
+        const define MPU9250_I2C_SLV_GRP_BIT = 4;
+        const define MPU9250_I2C_SLV_LEN_BIT = 3;
+        const define MPU9250_I2C_SLV_LEN_LENGTH = 4;
 
-        const define MPU6050_I2C_SLV4_RW_BIT = 7;
-        const define MPU6050_I2C_SLV4_ADDR_BIT = 6;
-        const define MPU6050_I2C_SLV4_ADDR_LENGTH = 7;
-        const define MPU6050_I2C_SLV4_EN_BIT = 7;
-        const define MPU6050_I2C_SLV4_INT_EN_BIT = 6;
-        const define MPU6050_I2C_SLV4_REG_DIS_BIT = 5;
-        const define MPU6050_I2C_SLV4_MST_DLY_BIT = 4;
-        const define MPU6050_I2C_SLV4_MST_DLY_LENGTH = 5;
+        const define MPU9250_I2C_SLV4_RW_BIT = 7;
+        const define MPU9250_I2C_SLV4_ADDR_BIT = 6;
+        const define MPU9250_I2C_SLV4_ADDR_LENGTH = 7;
+        const define MPU9250_I2C_SLV4_EN_BIT = 7;
+        const define MPU9250_I2C_SLV4_INT_EN_BIT = 6;
+        const define MPU9250_I2C_SLV4_REG_DIS_BIT = 5;
+        const define MPU9250_I2C_SLV4_MST_DLY_BIT = 4;
+        const define MPU9250_I2C_SLV4_MST_DLY_LENGTH = 5;
 
-        const define MPU6050_MST_PASS_THROUGH_BIT = 7;
-        const define MPU6050_MST_I2C_SLV4_DONE_BIT = 6;
-        const define MPU6050_MST_I2C_LOST_ARB_BIT = 5;
-        const define MPU6050_MST_I2C_SLV4_NACK_BIT = 4;
-        const define MPU6050_MST_I2C_SLV3_NACK_BIT = 3;
-        const define MPU6050_MST_I2C_SLV2_NACK_BIT = 2;
-        const define MPU6050_MST_I2C_SLV1_NACK_BIT = 1;
-        const define MPU6050_MST_I2C_SLV0_NACK_BIT = 0;
+        const define MPU9250_MST_PASS_THROUGH_BIT = 7;
+        const define MPU9250_MST_I2C_SLV4_DONE_BIT = 6;
+        const define MPU9250_MST_I2C_LOST_ARB_BIT = 5;
+        const define MPU9250_MST_I2C_SLV4_NACK_BIT = 4;
+        const define MPU9250_MST_I2C_SLV3_NACK_BIT = 3;
+        const define MPU9250_MST_I2C_SLV2_NACK_BIT = 2;
+        const define MPU9250_MST_I2C_SLV1_NACK_BIT = 1;
+        const define MPU9250_MST_I2C_SLV0_NACK_BIT = 0;
 
-        const define MPU6050_INTCFG_INT_LEVEL_BIT = 7;
-        const define MPU6050_INTCFG_INT_OPEN_BIT = 6;
-        const define MPU6050_INTCFG_LATCH_INT_EN_BIT = 5;
-        const define MPU6050_INTCFG_INT_RD_CLEAR_BIT = 4;
-        const define MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT = 3;
-        const define MPU6050_INTCFG_FSYNC_INT_EN_BIT = 2;
-        const define MPU6050_INTCFG_I2C_BYPASS_EN_BIT = 1;
-        const define MPU6050_INTCFG_CLKOUT_EN_BIT = 0;
+        const define MPU9250_INTCFG_INT_LEVEL_BIT = 7;
+        const define MPU9250_INTCFG_INT_OPEN_BIT = 6;
+        const define MPU9250_INTCFG_LATCH_INT_EN_BIT = 5;
+        const define MPU9250_INTCFG_INT_RD_CLEAR_BIT = 4;
+        const define MPU9250_INTCFG_FSYNC_INT_LEVEL_BIT = 3;
+        const define MPU9250_INTCFG_FSYNC_INT_EN_BIT = 2;
+        const define MPU9250_INTCFG_I2C_BYPASS_EN_BIT = 1;
+        const define MPU9250_INTCFG_CLKOUT_EN_BIT = 0;
 
-        const define MPU6050_INTMODE_ACTIVEHIGH = 0x00;
-        const define MPU6050_INTMODE_ACTIVELOW = 0x01;
+        const define MPU9250_INTMODE_ACTIVEHIGH = 0x00;
+        const define MPU9250_INTMODE_ACTIVELOW = 0x01;
 
-        const define MPU6050_INTDRV_PUSHPULL = 0x00;
-        const define MPU6050_INTDRV_OPENDRAIN = 0x01;
+        const define MPU9250_INTDRV_PUSHPULL = 0x00;
+        const define MPU9250_INTDRV_OPENDRAIN = 0x01;
 
-        const define MPU6050_INTLATCH_50USPULSE = 0x00;
-        const define MPU6050_INTLATCH_WAITCLEAR = 0x01;
+        const define MPU9250_INTLATCH_50USPULSE = 0x00;
+        const define MPU9250_INTLATCH_WAITCLEAR = 0x01;
 
-        const define MPU6050_INTCLEAR_STATUSREAD = 0x00;
-        const define MPU6050_INTCLEAR_ANYREAD = 0x01;
+        const define MPU9250_INTCLEAR_STATUSREAD = 0x00;
+        const define MPU9250_INTCLEAR_ANYREAD = 0x01;
 
-        const define MPU6050_INTERRUPT_FF_BIT = 7;
-        const define MPU6050_INTERRUPT_MOT_BIT = 6;
-        const define MPU6050_INTERRUPT_ZMOT_BIT = 5;
-        const define MPU6050_INTERRUPT_FIFO_OFLOW_BIT = 4;
-        const define MPU6050_INTERRUPT_I2C_MST_INT_BIT = 3;
-        const define MPU6050_INTERRUPT_PLL_RDY_INT_BIT = 2;
-        const define MPU6050_INTERRUPT_DMP_INT_BIT = 1;
-        const define MPU6050_INTERRUPT_DATA_RDY_BIT = 0;
+        const define MPU9250_INTERRUPT_FF_BIT = 7;
+        const define MPU9250_INTERRUPT_MOT_BIT = 6;
+        const define MPU9250_INTERRUPT_ZMOT_BIT = 5;
+        const define MPU9250_INTERRUPT_FIFO_OFLOW_BIT = 4;
+        const define MPU9250_INTERRUPT_I2C_MST_INT_BIT = 3;
+        const define MPU9250_INTERRUPT_PLL_RDY_INT_BIT = 2;
+        const define MPU9250_INTERRUPT_DMP_INT_BIT = 1;
+        const define MPU9250_INTERRUPT_DATA_RDY_BIT = 0;
 
         // TODO: figure out what these actually do
         // UMPL source code is not very obivous
-        const define MPU6050_DMPINT_5_BIT = 5;
-        const define MPU6050_DMPINT_4_BIT = 4;
-        const define MPU6050_DMPINT_3_BIT = 3;
-        const define MPU6050_DMPINT_2_BIT = 2;
-        const define MPU6050_DMPINT_1_BIT = 1;
-        const define MPU6050_DMPINT_0_BIT = 0;
+        const define MPU9250_DMPINT_5_BIT = 5;
+        const define MPU9250_DMPINT_4_BIT = 4;
+        const define MPU9250_DMPINT_3_BIT = 3;
+        const define MPU9250_DMPINT_2_BIT = 2;
+        const define MPU9250_DMPINT_1_BIT = 1;
+        const define MPU9250_DMPINT_0_BIT = 0;
 
-        const define MPU6050_MOTION_MOT_XNEG_BIT = 7;
-        const define MPU6050_MOTION_MOT_XPOS_BIT = 6;
-        const define MPU6050_MOTION_MOT_YNEG_BIT = 5;
-        const define MPU6050_MOTION_MOT_YPOS_BIT = 4;
-        const define MPU6050_MOTION_MOT_ZNEG_BIT = 3;
-        const define MPU6050_MOTION_MOT_ZPOS_BIT = 2;
-        const define MPU6050_MOTION_MOT_ZRMOT_BIT = 0;
+        const define MPU9250_MOTION_MOT_XNEG_BIT = 7;
+        const define MPU9250_MOTION_MOT_XPOS_BIT = 6;
+        const define MPU9250_MOTION_MOT_YNEG_BIT = 5;
+        const define MPU9250_MOTION_MOT_YPOS_BIT = 4;
+        const define MPU9250_MOTION_MOT_ZNEG_BIT = 3;
+        const define MPU9250_MOTION_MOT_ZPOS_BIT = 2;
+        const define MPU9250_MOTION_MOT_ZRMOT_BIT = 0;
 
-        const define MPU6050_DELAYCTRL_DELAY_ES_SHADOW_BIT = 7;
-        const define MPU6050_DELAYCTRL_I2C_SLV4_DLY_EN_BIT = 4;
-        const define MPU6050_DELAYCTRL_I2C_SLV3_DLY_EN_BIT = 3;
-        const define MPU6050_DELAYCTRL_I2C_SLV2_DLY_EN_BIT = 2;
-        const define MPU6050_DELAYCTRL_I2C_SLV1_DLY_EN_BIT = 1;
-        const define MPU6050_DELAYCTRL_I2C_SLV0_DLY_EN_BIT = 0;
+        const define MPU9250_DELAYCTRL_DELAY_ES_SHADOW_BIT = 7;
+        const define MPU9250_DELAYCTRL_I2C_SLV4_DLY_EN_BIT = 4;
+        const define MPU9250_DELAYCTRL_I2C_SLV3_DLY_EN_BIT = 3;
+        const define MPU9250_DELAYCTRL_I2C_SLV2_DLY_EN_BIT = 2;
+        const define MPU9250_DELAYCTRL_I2C_SLV1_DLY_EN_BIT = 1;
+        const define MPU9250_DELAYCTRL_I2C_SLV0_DLY_EN_BIT = 0;
 
-        const define MPU6050_PATHRESET_GYRO_RESET_BIT = 2;
-        const define MPU6050_PATHRESET_ACCEL_RESET_BIT = 1;
-        const define MPU6050_PATHRESET_TEMP_RESET_BIT = 0;
+        const define MPU9250_PATHRESET_GYRO_RESET_BIT = 2;
+        const define MPU9250_PATHRESET_ACCEL_RESET_BIT = 1;
+        const define MPU9250_PATHRESET_TEMP_RESET_BIT = 0;
 
-        const define MPU6050_DETECT_ACCEL_ON_DELAY_BIT = 5;
-        const define MPU6050_DETECT_ACCEL_ON_DELAY_LENGTH = 2;
-        const define MPU6050_DETECT_FF_COUNT_BIT = 3;
-        const define MPU6050_DETECT_FF_COUNT_LENGTH = 2;
-        const define MPU6050_DETECT_MOT_COUNT_BIT = 1;
-        const define MPU6050_DETECT_MOT_COUNT_LENGTH = 2;
+        const define MPU9250_DETECT_ACCEL_ON_DELAY_BIT = 5;
+        const define MPU9250_DETECT_ACCEL_ON_DELAY_LENGTH = 2;
+        const define MPU9250_DETECT_FF_COUNT_BIT = 3;
+        const define MPU9250_DETECT_FF_COUNT_LENGTH = 2;
+        const define MPU9250_DETECT_MOT_COUNT_BIT = 1;
+        const define MPU9250_DETECT_MOT_COUNT_LENGTH = 2;
 
-        const define MPU6050_DETECT_DECREMENT_RESET = 0x0;
-        const define MPU6050_DETECT_DECREMENT_1 = 0x1;
-        const define MPU6050_DETECT_DECREMENT_2 = 0x2;
-        const define MPU6050_DETECT_DECREMENT_4 = 0x3;
+        const define MPU9250_DETECT_DECREMENT_RESET = 0x0;
+        const define MPU9250_DETECT_DECREMENT_1 = 0x1;
+        const define MPU9250_DETECT_DECREMENT_2 = 0x2;
+        const define MPU9250_DETECT_DECREMENT_4 = 0x3;
 
-        const define MPU6050_USERCTRL_DMP_EN_BIT = 7;
-        const define MPU6050_USERCTRL_FIFO_EN_BIT = 6;
-        const define MPU6050_USERCTRL_I2C_MST_EN_BIT = 5;
-        const define MPU6050_USERCTRL_I2C_IF_DIS_BIT = 4;
-        const define MPU6050_USERCTRL_DMP_RESET_BIT = 3;
-        const define MPU6050_USERCTRL_FIFO_RESET_BIT = 2;
-        const define MPU6050_USERCTRL_I2C_MST_RESET_BIT = 1;
-        const define MPU6050_USERCTRL_SIG_COND_RESET_BIT = 0;
+        const define MPU9250_USERCTRL_DMP_EN_BIT = 7;
+        const define MPU9250_USERCTRL_FIFO_EN_BIT = 6;
+        const define MPU9250_USERCTRL_I2C_MST_EN_BIT = 5;
+        const define MPU9250_USERCTRL_I2C_IF_DIS_BIT = 4;
+        const define MPU9250_USERCTRL_DMP_RESET_BIT = 3;
+        const define MPU9250_USERCTRL_FIFO_RESET_BIT = 2;
+        const define MPU9250_USERCTRL_I2C_MST_RESET_BIT = 1;
+        const define MPU9250_USERCTRL_SIG_COND_RESET_BIT = 0;
 
-        const define MPU6050_PWR1_DEVICE_RESET_BIT = 7;
-        const define MPU6050_PWR1_SLEEP_BIT = 6;
-        const define MPU6050_PWR1_CYCLE_BIT = 5;
-        const define MPU6050_PWR1_TEMP_DIS_BIT = 3;
-        const define MPU6050_PWR1_CLKSEL_BIT = 2;
-        const define MPU6050_PWR1_CLKSEL_LENGTH = 3;
+        const define MPU9250_PWR1_DEVICE_RESET_BIT = 7;
+        const define MPU9250_PWR1_SLEEP_BIT = 6;
+        const define MPU9250_PWR1_CYCLE_BIT = 5;
+        const define MPU9250_PWR1_TEMP_DIS_BIT = 3;
+        const define MPU9250_PWR1_CLKSEL_BIT = 2;
+        const define MPU9250_PWR1_CLKSEL_LENGTH = 3;
 
-        const define MPU6050_CLOCK_INTERNAL = 0x00;
-        const define MPU6050_CLOCK_PLL_XGYRO = 0x01;
-        const define MPU6050_CLOCK_PLL_YGYRO = 0x02;
-        const define MPU6050_CLOCK_PLL_ZGYRO = 0x03;
-        const define MPU6050_CLOCK_PLL_EXT32K = 0x04;
-        const define MPU6050_CLOCK_PLL_EXT19M = 0x05;
-        const define MPU6050_CLOCK_KEEP_RESET = 0x07;
+        const define MPU9250_CLOCK_INTERNAL = 0x00;
+        const define MPU9250_CLOCK_PLL_XGYRO = 0x01;
+        const define MPU9250_CLOCK_PLL_YGYRO = 0x02;
+        const define MPU9250_CLOCK_PLL_ZGYRO = 0x03;
+        const define MPU9250_CLOCK_PLL_EXT32K = 0x04;
+        const define MPU9250_CLOCK_PLL_EXT19M = 0x05;
+        const define MPU9250_CLOCK_KEEP_RESET = 0x07;
 
-        const define MPU6050_PWR2_LP_WAKE_CTRL_BIT = 7;
-        const define MPU6050_PWR2_LP_WAKE_CTRL_LENGTH = 2;
-        const define MPU6050_PWR2_STBY_XA_BIT = 5;
-        const define MPU6050_PWR2_STBY_YA_BIT = 4;
-        const define MPU6050_PWR2_STBY_ZA_BIT = 3;
-        const define MPU6050_PWR2_STBY_XG_BIT = 2;
-        const define MPU6050_PWR2_STBY_YG_BIT = 1;
-        const define MPU6050_PWR2_STBY_ZG_BIT = 0;
+        const define MPU9250_PWR2_LP_WAKE_CTRL_BIT = 7;
+        const define MPU9250_PWR2_LP_WAKE_CTRL_LENGTH = 2;
+        const define MPU9250_PWR2_STBY_XA_BIT = 5;
+        const define MPU9250_PWR2_STBY_YA_BIT = 4;
+        const define MPU9250_PWR2_STBY_ZA_BIT = 3;
+        const define MPU9250_PWR2_STBY_XG_BIT = 2;
+        const define MPU9250_PWR2_STBY_YG_BIT = 1;
+        const define MPU9250_PWR2_STBY_ZG_BIT = 0;
 
-        const define MPU6050_WAKE_FREQ_1P25 = 0x0;
-        const define MPU6050_WAKE_FREQ_2P5 = 0x1;
-        const define MPU6050_WAKE_FREQ_5 = 0x2;
-        const define MPU6050_WAKE_FREQ_10 = 0x3;
+        const define MPU9250_WAKE_FREQ_1P25 = 0x0;
+        const define MPU9250_WAKE_FREQ_2P5 = 0x1;
+        const define MPU9250_WAKE_FREQ_5 = 0x2;
+        const define MPU9250_WAKE_FREQ_10 = 0x3;
 
-        const define MPU6050_BANKSEL_PRFTCH_EN_BIT = 6;
-        const define MPU6050_BANKSEL_CFG_USER_BANK_BIT = 5;
-        const define MPU6050_BANKSEL_MEM_SEL_BIT = 4;
-        const define MPU6050_BANKSEL_MEM_SEL_LENGTH = 5;
+        const define MPU9250_BANKSEL_PRFTCH_EN_BIT = 6;
+        const define MPU9250_BANKSEL_CFG_USER_BANK_BIT = 5;
+        const define MPU9250_BANKSEL_MEM_SEL_BIT = 4;
+        const define MPU9250_BANKSEL_MEM_SEL_LENGTH = 5;
 
-        const define MPU6050_WHO_AM_I_BIT = 6;
-        const define MPU6050_WHO_AM_I_LENGTH = 6;
+        const define MPU9250_WHO_AM_I_BIT = 6;
+        const define MPU9250_WHO_AM_I_LENGTH = 6;
 
-        const int MPU6050_DMP_MEMORY_BANKS = 8;
-        const int MPU6050_DMP_MEMORY_BANK_SIZE = 256;
-        const int MPU6050_DMP_MEMORY_CHUNK_SIZE = 16;
+        const int MPU9250_DMP_MEMORY_BANKS = 8;
+        const int MPU9250_DMP_MEMORY_BANK_SIZE = 256;
+        const int MPU9250_DMP_MEMORY_CHUNK_SIZE = 16;
+        
+        //Magnetometer Registers
+        const define MPU9150_RA_INT_PIN_CFG = 0x37;
+        const define MPU9150_RA_MAG_ADDRESS	=	0x0C;
+        const define MPU9150_RA_MAG_XOUT_L=		0x03;
+        const define MPU9150_RA_MAG_XOUT_H =	0x04;
+        const define MPU9150_RA_MAG_YOUT_L	=	0x05;
+        const define MPU9150_RA_MAG_YOUT_H	=	0x06;
+        const define MPU9150_RA_MAG_ZOUT_L	=	0x07;
+        const define MPU9150_RA_MAG_ZOUT_H	=	0x08;
+        
 
         uint8_t devAddr;
         uint8_t[] buffer = new uint8_t[14];
+        
         I2C i2c;
+        
 
         private ILogger _logger;
 
         /** Default constructor, uses default I2C address.
-        * @see MPU6050_DEFAULT_ADDRESS
+        * @see MPU9250_DEFAULT_ADDRESS
         */
-        public MPU6050(I2C i2c,ILogger logger)
+        public Mpu9250(I2C i2c,ILogger logger)
         {
-            devAddr = MPU6050_DEFAULT_ADDRESS;
+            devAddr = MPU9250_DEFAULT_ADDRESS;
             this.i2c = i2c;
             _logger = logger;
         }
 
         /** Specific address constructor.
         * @param address I2C address
-        * @see MPU6050_DEFAULT_ADDRESS
-        * @see MPU6050_ADDRESS_AD0_LOW
-        * @see MPU6050_ADDRESS_AD0_HIGH
+        * @see MPU9250_DEFAULT_ADDRESS
+        * @see MPU9250_ADDRESS_AD0_LOW
+        * @see MPU9250_ADDRESS_AD0_HIGH
         */
-        public MPU6050(I2C i2c, uint8_t address, ILogger logger)
+        public Mpu9250(I2C i2c, uint8_t address, ILogger logger)
         {
             devAddr = address;
             this.i2c = i2c;
@@ -443,9 +459,9 @@ namespace QuadroschrauberSharp.Hardware
         */
         public void initialize()
         {
-            setClockSource(MPU6050_CLOCK_PLL_XGYRO);
-            setFullScaleGyroRange(MPU6050_GYRO_FS_250);
-            setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
+            setClockSource(MPU9250_CLOCK_PLL_XGYRO);
+            setFullScaleGyroRange(MPU9250_GYRO_FS_250);
+            setFullScaleAccelRange(MPU9250_ACCEL_FS_2);
             setSleepEnabled(false); // thanks to Jack Elston for pointing this one out!
         }
 
@@ -468,7 +484,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         public uint8_t getAuxVDDIOLevel()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_YG_OFFS_TC, MPU6050_TC_PWR_MODE_BIT);
+            return i2c.readBit(devAddr, MPU9250_RA_YG_OFFS_TC, MPU9250_TC_PWR_MODE_BIT);
         }
         /** Set the auxiliary I2C supply voltage level.
         * When set to 1, the auxiliary I2C bus high logic level is VDD. When cleared to
@@ -478,7 +494,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         public void setAuxVDDIOLevel(uint8_t level)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_YG_OFFS_TC, MPU6050_TC_PWR_MODE_BIT, level);
+            i2c.writeBit(devAddr, MPU9250_RA_YG_OFFS_TC, MPU9250_TC_PWR_MODE_BIT, level);
         }
 
         // SMPLRT_DIV register
@@ -502,20 +518,20 @@ namespace QuadroschrauberSharp.Hardware
         * of the MPU-6000/MPU-6050 Product Specification document.
         *
         * @return Current sample rate
-        * @see MPU6050_RA_SMPLRT_DIV
+        * @see MPU9250_RA_SMPLRT_DIV
         */
         public uint8_t getRate()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_SMPLRT_DIV);
+            return i2c.readByte(devAddr, MPU9250_RA_SMPLRT_DIV);
         }
         /** Set gyroscope sample rate divider.
         * @param rate New sample rate divider
         * @see getRate()
-        * @see MPU6050_RA_SMPLRT_DIV
+        * @see MPU9250_RA_SMPLRT_DIV
         */
         public void setRate(uint8_t rate)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_SMPLRT_DIV, rate);
+            i2c.writeByte(devAddr, MPU9250_RA_SMPLRT_DIV, rate);
         }
 
         // CONFIG register
@@ -549,16 +565,16 @@ namespace QuadroschrauberSharp.Hardware
         */
         public uint8_t getExternalFrameSync()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT, MPU6050_CFG_EXT_SYNC_SET_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_CONFIG, MPU9250_CFG_EXT_SYNC_SET_BIT, MPU9250_CFG_EXT_SYNC_SET_LENGTH);
         }
         /** Set external FSYNC configuration.
         * @see getExternalFrameSync()
-        * @see MPU6050_RA_CONFIG
+        * @see MPU9250_RA_CONFIG
         * @param sync New FSYNC configuration value
         */
         public void setExternalFrameSync(uint8_t sync)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT, MPU6050_CFG_EXT_SYNC_SET_LENGTH, sync);
+            i2c.writeBits(devAddr, MPU9250_RA_CONFIG, MPU9250_CFG_EXT_SYNC_SET_BIT, MPU9250_CFG_EXT_SYNC_SET_LENGTH, sync);
         }
         /** Get digital low-pass filter configuration.
         * The DLPF_CFG parameter sets the digital low pass filter configuration. It
@@ -584,25 +600,25 @@ namespace QuadroschrauberSharp.Hardware
         * </pre>
         *
         * @return DLFP configuration
-        * @see MPU6050_RA_CONFIG
-        * @see MPU6050_CFG_DLPF_CFG_BIT
-        * @see MPU6050_CFG_DLPF_CFG_LENGTH
+        * @see MPU9250_RA_CONFIG
+        * @see MPU9250_CFG_DLPF_CFG_BIT
+        * @see MPU9250_CFG_DLPF_CFG_LENGTH
         */
         public uint8_t getDLPFMode()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_CONFIG, MPU9250_CFG_DLPF_CFG_BIT, MPU9250_CFG_DLPF_CFG_LENGTH);
         }
         /** Set digital low-pass filter configuration.
         * @param mode New DLFP configuration setting
         * @see getDLPFBandwidth()
-        * @see MPU6050_DLPF_BW_256
-        * @see MPU6050_RA_CONFIG
-        * @see MPU6050_CFG_DLPF_CFG_BIT
-        * @see MPU6050_CFG_DLPF_CFG_LENGTH
+        * @see MPU9250_DLPF_BW_256
+        * @see MPU9250_RA_CONFIG
+        * @see MPU9250_CFG_DLPF_CFG_BIT
+        * @see MPU9250_CFG_DLPF_CFG_LENGTH
         */
         public void setDLPFMode(uint8_t mode)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH, mode);
+            i2c.writeBits(devAddr, MPU9250_RA_CONFIG, MPU9250_CFG_DLPF_CFG_BIT, MPU9250_CFG_DLPF_CFG_LENGTH, mode);
         }
 
         // GYRO_CONFIG register
@@ -619,77 +635,77 @@ namespace QuadroschrauberSharp.Hardware
         * </pre>
         *
         * @return Current full-scale gyroscope range setting
-        * @see MPU6050_GYRO_FS_250
-        * @see MPU6050_RA_GYRO_CONFIG
-        * @see MPU6050_GCONFIG_FS_SEL_BIT
-        * @see MPU6050_GCONFIG_FS_SEL_LENGTH
+        * @see MPU9250_GYRO_FS_250
+        * @see MPU9250_RA_GYRO_CONFIG
+        * @see MPU9250_GCONFIG_FS_SEL_BIT
+        * @see MPU9250_GCONFIG_FS_SEL_LENGTH
         */
         public uint8_t getFullScaleGyroRange()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_GYRO_CONFIG, MPU9250_GCONFIG_FS_SEL_BIT, MPU9250_GCONFIG_FS_SEL_LENGTH);
         }
         /** Set full-scale gyroscope range.
         * @param range New full-scale gyroscope range value
         * @see getFullScaleRange()
-        * @see MPU6050_GYRO_FS_250
-        * @see MPU6050_RA_GYRO_CONFIG
-        * @see MPU6050_GCONFIG_FS_SEL_BIT
-        * @see MPU6050_GCONFIG_FS_SEL_LENGTH
+        * @see MPU9250_GYRO_FS_250
+        * @see MPU9250_RA_GYRO_CONFIG
+        * @see MPU9250_GCONFIG_FS_SEL_BIT
+        * @see MPU9250_GCONFIG_FS_SEL_LENGTH
         */
         public void setFullScaleGyroRange(uint8_t range)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, range);
+            i2c.writeBits(devAddr, MPU9250_RA_GYRO_CONFIG, MPU9250_GCONFIG_FS_SEL_BIT, MPU9250_GCONFIG_FS_SEL_LENGTH, range);
         }
 
         // ACCEL_CONFIG register
 
         /** Get self-test enabled setting for accelerometer X axis.
         * @return Self-test enabled value
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public bool getAccelXSelfTest()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_XA_ST_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_XA_ST_BIT) != 0;
         }
         /** Get self-test enabled setting for accelerometer X axis.
         * @param enabled Self-test enabled value
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public void setAccelXSelfTest(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_XA_ST_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_XA_ST_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get self-test enabled value for accelerometer Y axis.
         * @return Self-test enabled value
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public bool getAccelYSelfTest()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_YA_ST_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_YA_ST_BIT) != 0;
         }
         /** Get self-test enabled value for accelerometer Y axis.
         * @param enabled Self-test enabled value
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public void setAccelYSelfTest(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_YA_ST_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_YA_ST_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get self-test enabled value for accelerometer Z axis.
         * @return Self-test enabled value
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public bool getAccelZSelfTest()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_ZA_ST_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_ZA_ST_BIT) != 0;
         }
         /** Set self-test enabled value for accelerometer Z axis.
         * @param enabled Self-test enabled value
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public void setAccelZSelfTest(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_ZA_ST_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_ZA_ST_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get full-scale accelerometer range.
         * The FS_SEL parameter allows setting the full-scale range of the accelerometer
@@ -703,14 +719,14 @@ namespace QuadroschrauberSharp.Hardware
         * </pre>
         *
         * @return Current full-scale accelerometer range setting
-        * @see MPU6050_ACCEL_FS_2
-        * @see MPU6050_RA_ACCEL_CONFIG
-        * @see MPU6050_ACONFIG_AFS_SEL_BIT
-        * @see MPU6050_ACONFIG_AFS_SEL_LENGTH
+        * @see MPU9250_ACCEL_FS_2
+        * @see MPU9250_RA_ACCEL_CONFIG
+        * @see MPU9250_ACONFIG_AFS_SEL_BIT
+        * @see MPU9250_ACONFIG_AFS_SEL_LENGTH
         */
         public uint8_t getFullScaleAccelRange()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_AFS_SEL_BIT, MPU9250_ACONFIG_AFS_SEL_LENGTH);
         }
         /** Set full-scale accelerometer range.
         * @param range New full-scale accelerometer range setting
@@ -718,7 +734,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         public void setFullScaleAccelRange(uint8_t range)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH, range);
+            i2c.writeBits(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_AFS_SEL_BIT, MPU9250_ACONFIG_AFS_SEL_LENGTH, range);
         }
         /** Get the high-pass filter configuration.
         * The DHPF is a filter module in the path leading to motion detectors (Free
@@ -752,22 +768,22 @@ namespace QuadroschrauberSharp.Hardware
         * </pre>
         *
         * @return Current high-pass filter configuration
-        * @see MPU6050_DHPF_RESET
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_DHPF_RESET
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public uint8_t getDHPFMode()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_ACCEL_HPF_BIT, MPU6050_ACONFIG_ACCEL_HPF_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_ACCEL_HPF_BIT, MPU9250_ACONFIG_ACCEL_HPF_LENGTH);
         }
         /** Set the high-pass filter configuration.
         * @param bandwidth New high-pass filter configuration
         * @see setDHPFMode()
-        * @see MPU6050_DHPF_RESET
-        * @see MPU6050_RA_ACCEL_CONFIG
+        * @see MPU9250_DHPF_RESET
+        * @see MPU9250_RA_ACCEL_CONFIG
         */
         public void setDHPFMode(uint8_t bandwidth)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_ACCEL_HPF_BIT, MPU6050_ACONFIG_ACCEL_HPF_LENGTH, bandwidth);
+            i2c.writeBits(devAddr, MPU9250_RA_ACCEL_CONFIG, MPU9250_ACONFIG_ACCEL_HPF_BIT, MPU9250_ACONFIG_ACCEL_HPF_LENGTH, bandwidth);
         }
 
         // FF_THR register
@@ -785,20 +801,20 @@ namespace QuadroschrauberSharp.Hardware
         * 58 of this document.
         *
         * @return Current free-fall acceleration threshold value (LSB = 2mg)
-        * @see MPU6050_RA_FF_THR
+        * @see MPU9250_RA_FF_THR
         */
         public uint8_t getFreefallDetectionThreshold()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_FF_THR);
+            return i2c.readByte(devAddr, MPU9250_RA_FF_THR);
         }
         /** Get free-fall event acceleration threshold.
         * @param threshold New free-fall acceleration threshold value (LSB = 2mg)
         * @see getFreefallDetectionThreshold()
-        * @see MPU6050_RA_FF_THR
+        * @see MPU9250_RA_FF_THR
         */
         public void setFreefallDetectionThreshold(uint8_t threshold)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_FF_THR, threshold);
+            i2c.writeByte(devAddr, MPU9250_RA_FF_THR, threshold);
         }
 
         // FF_DUR register
@@ -818,20 +834,20 @@ namespace QuadroschrauberSharp.Hardware
         * and 58 of this document.
         *
         * @return Current free-fall duration threshold value (LSB = 1ms)
-        * @see MPU6050_RA_FF_DUR
+        * @see MPU9250_RA_FF_DUR
         */
         public uint8_t getFreefallDetectionDuration()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_FF_DUR);
+            return i2c.readByte(devAddr, MPU9250_RA_FF_DUR);
         }
         /** Get free-fall event duration threshold.
         * @param duration New free-fall duration threshold value (LSB = 1ms)
         * @see getFreefallDetectionDuration()
-        * @see MPU6050_RA_FF_DUR
+        * @see MPU9250_RA_FF_DUR
         */
         public void setFreefallDetectionDuration(uint8_t duration)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_FF_DUR, duration);
+            i2c.writeByte(devAddr, MPU9250_RA_FF_DUR, duration);
         }
 
         // MOT_THR register
@@ -853,20 +869,20 @@ namespace QuadroschrauberSharp.Hardware
         * 58 of this document.
         *
         * @return Current motion detection acceleration threshold value (LSB = 2mg)
-        * @see MPU6050_RA_MOT_THR
+        * @see MPU9250_RA_MOT_THR
         */
         public uint8_t getMotionDetectionThreshold()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_MOT_THR);
+            return i2c.readByte(devAddr, MPU9250_RA_MOT_THR);
         }
         /** Set free-fall event acceleration threshold.
         * @param threshold New motion detection acceleration threshold value (LSB = 2mg)
         * @see getMotionDetectionThreshold()
-        * @see MPU6050_RA_MOT_THR
+        * @see MPU9250_RA_MOT_THR
         */
         public void setMotionDetectionThreshold(uint8_t threshold)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_MOT_THR, threshold);
+            i2c.writeByte(devAddr, MPU9250_RA_MOT_THR, threshold);
         }
 
         // MOT_DUR register
@@ -884,20 +900,20 @@ namespace QuadroschrauberSharp.Hardware
         * MPU-6000/MPU-6050 Product Specification document.
         *
         * @return Current motion detection duration threshold value (LSB = 1ms)
-        * @see MPU6050_RA_MOT_DUR
+        * @see MPU9250_RA_MOT_DUR
         */
         public uint8_t getMotionDetectionDuration()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_MOT_DUR);
+            return i2c.readByte(devAddr, MPU9250_RA_MOT_DUR);
         }
         /** Set motion detection event duration threshold.
         * @param duration New motion detection duration threshold value (LSB = 1ms)
         * @see getMotionDetectionDuration()
-        * @see MPU6050_RA_MOT_DUR
+        * @see MPU9250_RA_MOT_DUR
         */
         public void setMotionDetectionDuration(uint8_t duration)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_MOT_DUR, duration);
+            i2c.writeByte(devAddr, MPU9250_RA_MOT_DUR, duration);
         }
 
         // ZRMOT_THR register
@@ -925,20 +941,20 @@ namespace QuadroschrauberSharp.Hardware
         * and 58 of this document.
         *
         * @return Current zero motion detection acceleration threshold value (LSB = 2mg)
-        * @see MPU6050_RA_ZRMOT_THR
+        * @see MPU9250_RA_ZRMOT_THR
         */
         public uint8_t getZeroMotionDetectionThreshold()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_ZRMOT_THR);
+            return i2c.readByte(devAddr, MPU9250_RA_ZRMOT_THR);
         }
         /** Set zero motion detection event acceleration threshold.
         * @param threshold New zero motion detection acceleration threshold value (LSB = 2mg)
         * @see getZeroMotionDetectionThreshold()
-        * @see MPU6050_RA_ZRMOT_THR
+        * @see MPU9250_RA_ZRMOT_THR
         */
         public void setZeroMotionDetectionThreshold(uint8_t threshold)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_ZRMOT_THR, threshold);
+            i2c.writeByte(devAddr, MPU9250_RA_ZRMOT_THR, threshold);
         }
 
         // ZRMOT_DUR register
@@ -957,20 +973,20 @@ namespace QuadroschrauberSharp.Hardware
         * and 58 of this document.
         *
         * @return Current zero motion detection duration threshold value (LSB = 64ms)
-        * @see MPU6050_RA_ZRMOT_DUR
+        * @see MPU9250_RA_ZRMOT_DUR
         */
         public uint8_t getZeroMotionDetectionDuration()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_ZRMOT_DUR);
+            return i2c.readByte(devAddr, MPU9250_RA_ZRMOT_DUR);
         }
         /** Set zero motion detection event duration threshold.
         * @param duration New zero motion detection duration threshold value (LSB = 1ms)
         * @see getZeroMotionDetectionDuration()
-        * @see MPU6050_RA_ZRMOT_DUR
+        * @see MPU9250_RA_ZRMOT_DUR
         */
         public void setZeroMotionDetectionDuration(uint8_t duration)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_ZRMOT_DUR, duration);
+            i2c.writeByte(devAddr, MPU9250_RA_ZRMOT_DUR, duration);
         }
 
         // FIFO_EN register
@@ -979,154 +995,154 @@ namespace QuadroschrauberSharp.Hardware
         * When set to 1, this bit enables TEMP_OUT_H and TEMP_OUT_L (Registers 65 and
         * 66) to be written into the FIFO buffer.
         * @return Current temperature FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getTempFIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_TEMP_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_TEMP_FIFO_EN_BIT) != 0;
         }
         /** Set temperature FIFO enabled value.
         * @param enabled New temperature FIFO enabled value
         * @see getTempFIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setTempFIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_TEMP_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_TEMP_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get gyroscope X-axis FIFO enabled value.
         * When set to 1, this bit enables GYRO_XOUT_H and GYRO_XOUT_L (Registers 67 and
         * 68) to be written into the FIFO buffer.
         * @return Current gyroscope X-axis FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getXGyroFIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_XG_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_XG_FIFO_EN_BIT) != 0;
         }
         /** Set gyroscope X-axis FIFO enabled value.
         * @param enabled New gyroscope X-axis FIFO enabled value
         * @see getXGyroFIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setXGyroFIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_XG_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_XG_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get gyroscope Y-axis FIFO enabled value.
         * When set to 1, this bit enables GYRO_YOUT_H and GYRO_YOUT_L (Registers 69 and
         * 70) to be written into the FIFO buffer.
         * @return Current gyroscope Y-axis FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getYGyroFIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_YG_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_YG_FIFO_EN_BIT) != 0;
         }
         /** Set gyroscope Y-axis FIFO enabled value.
         * @param enabled New gyroscope Y-axis FIFO enabled value
         * @see getYGyroFIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setYGyroFIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_YG_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_YG_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get gyroscope Z-axis FIFO enabled value.
         * When set to 1, this bit enables GYRO_ZOUT_H and GYRO_ZOUT_L (Registers 71 and
         * 72) to be written into the FIFO buffer.
         * @return Current gyroscope Z-axis FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getZGyroFIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_ZG_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_ZG_FIFO_EN_BIT) != 0;
         }
         /** Set gyroscope Z-axis FIFO enabled value.
         * @param enabled New gyroscope Z-axis FIFO enabled value
         * @see getZGyroFIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setZGyroFIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_ZG_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_ZG_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get accelerometer FIFO enabled value.
         * When set to 1, this bit enables ACCEL_XOUT_H, ACCEL_XOUT_L, ACCEL_YOUT_H,
         * ACCEL_YOUT_L, ACCEL_ZOUT_H, and ACCEL_ZOUT_L (Registers 59 to 64) to be
         * written into the FIFO buffer.
         * @return Current accelerometer FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getAccelFIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_ACCEL_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_ACCEL_FIFO_EN_BIT) != 0;
         }
         /** Set accelerometer FIFO enabled value.
         * @param enabled New accelerometer FIFO enabled value
         * @see getAccelFIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setAccelFIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_ACCEL_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_ACCEL_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get Slave 2 FIFO enabled value.
         * When set to 1, this bit enables EXT_SENS_DATA registers (Registers 73 to 96)
         * associated with Slave 2 to be written into the FIFO buffer.
         * @return Current Slave 2 FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getSlave2FIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_SLV2_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_SLV2_FIFO_EN_BIT) != 0;
         }
         /** Set Slave 2 FIFO enabled value.
         * @param enabled New Slave 2 FIFO enabled value
         * @see getSlave2FIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setSlave2FIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_SLV2_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_SLV2_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get Slave 1 FIFO enabled value.
         * When set to 1, this bit enables EXT_SENS_DATA registers (Registers 73 to 96)
         * associated with Slave 1 to be written into the FIFO buffer.
         * @return Current Slave 1 FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getSlave1FIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_SLV1_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_SLV1_FIFO_EN_BIT) != 0;
         }
         /** Set Slave 1 FIFO enabled value.
         * @param enabled New Slave 1 FIFO enabled value
         * @see getSlave1FIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setSlave1FIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_SLV1_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_SLV1_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get Slave 0 FIFO enabled value.
         * When set to 1, this bit enables EXT_SENS_DATA registers (Registers 73 to 96)
         * associated with Slave 0 to be written into the FIFO buffer.
         * @return Current Slave 0 FIFO enabled value
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public bool getSlave0FIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_SLV0_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_SLV0_FIFO_EN_BIT) != 0;
         }
         /** Set Slave 0 FIFO enabled value.
         * @param enabled New Slave 0 FIFO enabled value
         * @see getSlave0FIFOEnabled()
-        * @see MPU6050_RA_FIFO_EN
+        * @see MPU9250_RA_FIFO_EN
         */
         public void setSlave0FIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_FIFO_EN, MPU6050_SLV0_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_FIFO_EN, MPU9250_SLV0_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
 
         // I2C_MST_CTRL register
@@ -1144,20 +1160,20 @@ namespace QuadroschrauberSharp.Hardware
         * detect when the bus is available.
         *
         * @return Current multi-master enabled value
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public bool getMultiMasterEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_MULT_MST_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_MULT_MST_EN_BIT) != 0;
         }
         /** Set multi-master enabled value.
         * @param enabled New multi-master enabled value
         * @see getMultiMasterEnabled()
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public void setMultiMasterEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_MULT_MST_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_MULT_MST_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get wait-for-external-sensor-data enabled value.
         * When the WAIT_FOR_ES bit is set to 1, the Data Ready interrupt will be
@@ -1168,39 +1184,39 @@ namespace QuadroschrauberSharp.Hardware
         * interrupt is triggered.
         *
         * @return Current wait-for-external-sensor-data enabled value
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public bool getWaitForExternalSensorEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_WAIT_FOR_ES_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_WAIT_FOR_ES_BIT) != 0;
         }
         /** Set wait-for-external-sensor-data enabled value.
         * @param enabled New wait-for-external-sensor-data enabled value
         * @see getWaitForExternalSensorEnabled()
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public void setWaitForExternalSensorEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_WAIT_FOR_ES_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_WAIT_FOR_ES_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get Slave 3 FIFO enabled value.
         * When set to 1, this bit enables EXT_SENS_DATA registers (Registers 73 to 96)
         * associated with Slave 3 to be written into the FIFO buffer.
         * @return Current Slave 3 FIFO enabled value
-        * @see MPU6050_RA_MST_CTRL
+        * @see MPU9250_RA_MST_CTRL
         */
         public bool getSlave3FIFOEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_SLV_3_FIFO_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_SLV_3_FIFO_EN_BIT) != 0;
         }
         /** Set Slave 3 FIFO enabled value.
         * @param enabled New Slave 3 FIFO enabled value
         * @see getSlave3FIFOEnabled()
-        * @see MPU6050_RA_MST_CTRL
+        * @see MPU9250_RA_MST_CTRL
         */
         public void setSlave3FIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_SLV_3_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_SLV_3_FIFO_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get slave read/write transition enabled value.
         * The I2C_MST_P_NSR bit configures the I2C Master's transition from one slave
@@ -1210,20 +1226,20 @@ namespace QuadroschrauberSharp.Hardware
         * the stop followed by a start of the successive write will be always used.
         *
         * @return Current slave read/write transition enabled value
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public bool getSlaveReadWriteTransitionEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_I2C_MST_P_NSR_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_I2C_MST_P_NSR_BIT) != 0;
         }
         /** Set slave read/write transition enabled value.
         * @param enabled New slave read/write transition enabled value
         * @see getSlaveReadWriteTransitionEnabled()
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public void setSlaveReadWriteTransitionEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_I2C_MST_P_NSR_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_I2C_MST_P_NSR_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get I2C master clock speed.
         * I2C_MST_CLK is a 4 bit unsigned value which configures a divider on the
@@ -1252,19 +1268,19 @@ namespace QuadroschrauberSharp.Hardware
         * </pre>
         *
         * @return Current I2C master clock speed
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public uint8_t getMasterClockSpeed()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_I2C_MST_CLK_BIT, MPU6050_I2C_MST_CLK_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_I2C_MST_CLK_BIT, MPU9250_I2C_MST_CLK_LENGTH);
         }
         /** Set I2C master clock speed.
         * @reparam speed Current I2C master clock speed
-        * @see MPU6050_RA_I2C_MST_CTRL
+        * @see MPU9250_RA_I2C_MST_CTRL
         */
         public void setMasterClockSpeed(uint8_t speed)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_I2C_MST_CTRL, MPU6050_I2C_MST_CLK_BIT, MPU6050_I2C_MST_CLK_LENGTH, speed);
+            i2c.writeBits(devAddr, MPU9250_RA_I2C_MST_CTRL, MPU9250_I2C_MST_CLK_BIT, MPU9250_I2C_MST_CLK_LENGTH, speed);
         }
 
         // I2C_SLV* registers (Slave 0-3)
@@ -1308,23 +1324,23 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param num Slave number (0-3)
         * @return Current address for specified slave
-        * @see MPU6050_RA_I2C_SLV0_ADDR
+        * @see MPU9250_RA_I2C_SLV0_ADDR
         */
         public uint8_t getSlaveAddress(uint8_t num)
         {
             if (num > 3) return 0;
-            return i2c.readByte(devAddr, (byte)(MPU6050_RA_I2C_SLV0_ADDR + num * 3));
+            return i2c.readByte(devAddr, (byte)(MPU9250_RA_I2C_SLV0_ADDR + num * 3));
         }
         /** Set the I2C address of the specified slave (0-3).
         * @param num Slave number (0-3)
         * @param address New address for specified slave
         * @see getSlaveAddress()
-        * @see MPU6050_RA_I2C_SLV0_ADDR
+        * @see MPU9250_RA_I2C_SLV0_ADDR
         */
         public void setSlaveAddress(uint8_t num, uint8_t address)
         {
             if (num > 3) return;
-            i2c.writeByte(devAddr, (byte)(MPU6050_RA_I2C_SLV0_ADDR + num * 3), address);
+            i2c.writeByte(devAddr, (byte)(MPU9250_RA_I2C_SLV0_ADDR + num * 3), address);
         }
         /** Get the active internal register for the specified slave (0-3).
         * Read/write operations for this slave will be done to whatever internal
@@ -1335,46 +1351,46 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param num Slave number (0-3)
         * @return Current active register for specified slave
-        * @see MPU6050_RA_I2C_SLV0_REG
+        * @see MPU9250_RA_I2C_SLV0_REG
         */
         public uint8_t getSlaveRegister(uint8_t num)
         {
             if (num > 3) return 0;
-            return i2c.readByte(devAddr, (byte)(MPU6050_RA_I2C_SLV0_REG + num * 3));
+            return i2c.readByte(devAddr, (byte)(MPU9250_RA_I2C_SLV0_REG + num * 3));
         }
         /** Set the active internal register for the specified slave (0-3).
         * @param num Slave number (0-3)
         * @param reg New active register for specified slave
         * @see getSlaveRegister()
-        * @see MPU6050_RA_I2C_SLV0_REG
+        * @see MPU9250_RA_I2C_SLV0_REG
         */
         public void setSlaveRegister(uint8_t num, uint8_t reg)
         {
             if (num > 3) return;
-            i2c.writeByte(devAddr, (byte)(MPU6050_RA_I2C_SLV0_REG + num * 3), reg);
+            i2c.writeByte(devAddr, (byte)(MPU9250_RA_I2C_SLV0_REG + num * 3), reg);
         }
         /** Get the enabled value for the specified slave (0-3).
         * When set to 1, this bit enables Slave 0 for data transfer operations. When
         * cleared to 0, this bit disables Slave 0 from data transfer operations.
         * @param num Slave number (0-3)
         * @return Current enabled value for specified slave
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public bool getSlaveEnabled(uint8_t num)
         {
             if (num > 3) return false;
-            return i2c.readBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_EN_BIT) != 0;
+            return i2c.readBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_EN_BIT) != 0;
         }
         /** Set the enabled value for the specified slave (0-3).
         * @param num Slave number (0-3)
         * @param enabled New enabled value for specified slave
         * @see getSlaveEnabled()
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public void setSlaveEnabled(uint8_t num, bool enabled)
         {
             if (num > 3) return;
-            i2c.writeBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get word pair byte-swapping enabled for the specified slave (0-3).
         * When set to 1, this bit enables byte swapping. When byte swapping is enabled,
@@ -1385,23 +1401,23 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param num Slave number (0-3)
         * @return Current word pair byte-swapping enabled value for specified slave
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public bool getSlaveWordByteSwap(uint8_t num)
         {
             if (num > 3) return false;
-            return i2c.readBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_BYTE_SW_BIT) != 0;
+            return i2c.readBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_BYTE_SW_BIT) != 0;
         }
         /** Set word pair byte-swapping enabled for the specified slave (0-3).
         * @param num Slave number (0-3)
         * @param enabled New word pair byte-swapping enabled value for specified slave
         * @see getSlaveWordByteSwap()
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public void setSlaveWordByteSwap(uint8_t num, bool enabled)
         {
             if (num > 3) return;
-            i2c.writeBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_BYTE_SW_BIT, enabled);
+            i2c.writeBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_BYTE_SW_BIT, enabled);
         }
         /** Get write mode for the specified slave (0-3).
         * When set to 1, the transaction will read or write data only. When cleared to
@@ -1411,23 +1427,23 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param num Slave number (0-3)
         * @return Current write mode for specified slave (0 = register address + data, 1 = data only)
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public bool getSlaveWriteMode(uint8_t num)
         {
             if (num > 3) return false;
-            return i2c.readBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_REG_DIS_BIT) != 0;
+            return i2c.readBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_REG_DIS_BIT) != 0;
         }
         /** Set write mode for the specified slave (0-3).
         * @param num Slave number (0-3)
         * @param mode New write mode for specified slave (0 = register address + data, 1 = data only)
         * @see getSlaveWriteMode()
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public void setSlaveWriteMode(uint8_t num, bool mode)
         {
             if (num > 3) return;
-            i2c.writeBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_REG_DIS_BIT, mode);
+            i2c.writeBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_REG_DIS_BIT, mode);
         }
         /** Get word pair grouping order offset for the specified slave (0-3).
         * This sets specifies the grouping order of word pairs received from registers.
@@ -1438,46 +1454,46 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param num Slave number (0-3)
         * @return Current word pair grouping order offset for specified slave
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public bool getSlaveWordGroupOffset(uint8_t num)
         {
             if (num > 3) return false;
-            return i2c.readBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_GRP_BIT) != 0;
+            return i2c.readBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_GRP_BIT) != 0;
         }
         /** Set word pair grouping order offset for the specified slave (0-3).
         * @param num Slave number (0-3)
         * @param enabled New word pair grouping order offset for specified slave
         * @see getSlaveWordGroupOffset()
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public void setSlaveWordGroupOffset(uint8_t num, bool enabled)
         {
             if (num > 3) return;
-            i2c.writeBit(devAddr, (byte)(MPU6050_RA_I2C_SLV0_CTRL + num * 3), MPU6050_I2C_SLV_GRP_BIT, enabled);
+            i2c.writeBit(devAddr, (byte)(MPU9250_RA_I2C_SLV0_CTRL + num * 3), MPU9250_I2C_SLV_GRP_BIT, enabled);
         }
         /** Get number of bytes to read for the specified slave (0-3).
         * Specifies the number of bytes transferred to and from Slave 0. Clearing this
         * bit to 0 is equivalent to disabling the register by writing 0 to I2C_SLV0_EN.
         * @param num Slave number (0-3)
         * @return Number of bytes to read for specified slave
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public uint8_t getSlaveDataLength(uint8_t num)
         {
             if (num > 3) return 0;
-            return i2c.readBits(devAddr, MPU6050_RA_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_LEN_BIT, MPU6050_I2C_SLV_LEN_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_I2C_SLV0_CTRL + num * 3, MPU9250_I2C_SLV_LEN_BIT, MPU9250_I2C_SLV_LEN_LENGTH);
         }
         /** Set number of bytes to read for the specified slave (0-3).
         * @param num Slave number (0-3)
         * @param length Number of bytes to read for specified slave
         * @see getSlaveDataLength()
-        * @see MPU6050_RA_I2C_SLV0_CTRL
+        * @see MPU9250_RA_I2C_SLV0_CTRL
         */
         public void setSlaveDataLength(uint8_t num, uint8_t length)
         {
             if (num > 3) return;
-            i2c.writeBits(devAddr, MPU6050_RA_I2C_SLV0_CTRL + num * 3, MPU6050_I2C_SLV_LEN_BIT, MPU6050_I2C_SLV_LEN_LENGTH, length);
+            i2c.writeBits(devAddr, MPU9250_RA_I2C_SLV0_CTRL + num * 3, MPU9250_I2C_SLV_LEN_BIT, MPU9250_I2C_SLV_LEN_LENGTH, length);
         }
 
         // I2C_SLV* registers (Slave 4)
@@ -1489,69 +1505,69 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @return Current address for Slave 4
         * @see getSlaveAddress()
-        * @see MPU6050_RA_I2C_SLV4_ADDR
+        * @see MPU9250_RA_I2C_SLV4_ADDR
         */
         public uint8_t getSlave4Address()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_I2C_SLV4_ADDR);
+            return i2c.readByte(devAddr, MPU9250_RA_I2C_SLV4_ADDR);
         }
         /** Set the I2C address of Slave 4.
         * @param address New address for Slave 4
         * @see getSlave4Address()
-        * @see MPU6050_RA_I2C_SLV4_ADDR
+        * @see MPU9250_RA_I2C_SLV4_ADDR
         */
         public void setSlave4Address(uint8_t address)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_I2C_SLV4_ADDR, address);
+            i2c.writeByte(devAddr, MPU9250_RA_I2C_SLV4_ADDR, address);
         }
         /** Get the active internal register for the Slave 4.
         * Read/write operations for this slave will be done to whatever internal
         * register address is stored in this MPU register.
         *
         * @return Current active register for Slave 4
-        * @see MPU6050_RA_I2C_SLV4_REG
+        * @see MPU9250_RA_I2C_SLV4_REG
         */
         public uint8_t getSlave4Register()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_I2C_SLV4_REG);
+            return i2c.readByte(devAddr, MPU9250_RA_I2C_SLV4_REG);
         }
         /** Set the active internal register for Slave 4.
         * @param reg New active register for Slave 4
         * @see getSlave4Register()
-        * @see MPU6050_RA_I2C_SLV4_REG
+        * @see MPU9250_RA_I2C_SLV4_REG
         */
         public void setSlave4Register(uint8_t reg)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_I2C_SLV4_REG, reg);
+            i2c.writeByte(devAddr, MPU9250_RA_I2C_SLV4_REG, reg);
         }
         /** Set new byte to write to Slave 4.
         * This register stores the data to be written into the Slave 4. If I2C_SLV4_RW
         * is set 1 (set to read), this register has no effect.
         * @param data New byte to write to Slave 4
-        * @see MPU6050_RA_I2C_SLV4_DO
+        * @see MPU9250_RA_I2C_SLV4_DO
         */
         public void setSlave4OutputByte(uint8_t data)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_I2C_SLV4_DO, data);
+            i2c.writeByte(devAddr, MPU9250_RA_I2C_SLV4_DO, data);
         }
         /** Get the enabled value for the Slave 4.
         * When set to 1, this bit enables Slave 4 for data transfer operations. When
         * cleared to 0, this bit disables Slave 4 from data transfer operations.
         * @return Current enabled value for Slave 4
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public bool getSlave4Enabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_EN_BIT) != 0;
         }
         /** Set the enabled value for Slave 4.
         * @param enabled New enabled value for Slave 4
         * @see getSlave4Enabled()
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public void setSlave4Enabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_EN_BIT, enabled ? (byte)1 : (byte)0);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_EN_BIT, enabled ? (byte)1 : (byte)0);
         }
         /** Get the enabled value for Slave 4 transaction interrupts.
         * When set to 1, this bit enables the generation of an interrupt signal upon
@@ -1560,20 +1576,20 @@ namespace QuadroschrauberSharp.Hardware
         * The interrupt status can be observed in Register 54.
         *
         * @return Current enabled value for Slave 4 transaction interrupts.
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public bool getSlave4InterruptEnabled()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_INT_EN_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_INT_EN_BIT) != 0;
         }
         /** Set the enabled value for Slave 4 transaction interrupts.
         * @param enabled New enabled value for Slave 4 transaction interrupts.
         * @see getSlave4InterruptEnabled()
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public void setSlave4InterruptEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_INT_EN_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_INT_EN_BIT, enabled);
         }
         /** Get write mode for Slave 4.
         * When set to 1, the transaction will read or write data only. When cleared to
@@ -1582,20 +1598,20 @@ namespace QuadroschrauberSharp.Hardware
         * Slave device to/from which the ensuing data transaction will take place.
         *
         * @return Current write mode for Slave 4 (0 = register address + data, 1 = data only)
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public bool getSlave4WriteMode()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_REG_DIS_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_REG_DIS_BIT) != 0;
         }
         /** Set write mode for the Slave 4.
         * @param mode New write mode for Slave 4 (0 = register address + data, 1 = data only)
         * @see getSlave4WriteMode()
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public void setSlave4WriteMode(bool mode)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_REG_DIS_BIT, mode);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_REG_DIS_BIT, mode);
         }
         /** Get Slave 4 master delay value.
         * This configures the reduced access rate of I2C slaves relative to the Sample
@@ -1610,30 +1626,30 @@ namespace QuadroschrauberSharp.Hardware
         * further information regarding the Sample Rate, please refer to register 25.
         *
         * @return Current Slave 4 master delay value
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public uint8_t getSlave4MasterDelay()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_MST_DLY_BIT, MPU6050_I2C_SLV4_MST_DLY_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_MST_DLY_BIT, MPU9250_I2C_SLV4_MST_DLY_LENGTH);
         }
         /** Set Slave 4 master delay value.
         * @param delay New Slave 4 master delay value
         * @see getSlave4MasterDelay()
-        * @see MPU6050_RA_I2C_SLV4_CTRL
+        * @see MPU9250_RA_I2C_SLV4_CTRL
         */
         public void setSlave4MasterDelay(uint8_t delay)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_I2C_SLV4_CTRL, MPU6050_I2C_SLV4_MST_DLY_BIT, MPU6050_I2C_SLV4_MST_DLY_LENGTH, delay);
+            i2c.writeBits(devAddr, MPU9250_RA_I2C_SLV4_CTRL, MPU9250_I2C_SLV4_MST_DLY_BIT, MPU9250_I2C_SLV4_MST_DLY_LENGTH, delay);
         }
         /** Get last available byte read from Slave 4.
         * This register stores the data read from Slave 4. This field is populated
         * after a read transaction.
         * @return Last available byte read from to Slave 4
-        * @see MPU6050_RA_I2C_SLV4_DI
+        * @see MPU9250_RA_I2C_SLV4_DI
         */
         public uint8_t getSlate4InputByte()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_I2C_SLV4_DI);
+            return i2c.readByte(devAddr, MPU9250_RA_I2C_SLV4_DI);
         }
 
         // I2C_MST_STATUS register
@@ -1645,11 +1661,11 @@ namespace QuadroschrauberSharp.Hardware
         * bit will cause an interrupt if FSYNC_INT_EN is asserted in INT_PIN_CFG
         * (Register 55).
         * @return FSYNC interrupt status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getPassthroughStatus()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_PASS_THROUGH_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_PASS_THROUGH_BIT) != 0;
         }
         /** Get Slave 4 transaction done status.
         * Automatically sets to 1 when a Slave 4 transaction has completed. This
@@ -1657,77 +1673,77 @@ namespace QuadroschrauberSharp.Hardware
         * (Register 56) is asserted and if the SLV_4_DONE_INT bit is asserted in the
         * I2C_SLV4_CTRL register (Register 52).
         * @return Slave 4 transaction done status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getSlave4IsDone()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_I2C_SLV4_DONE_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_I2C_SLV4_DONE_BIT) != 0;
         }
         /** Get master arbitration lost status.
         * This bit automatically sets to 1 when the I2C Master has lost arbitration of
         * the auxiliary I2C bus (an error condition). This triggers an interrupt if the
         * I2C_MST_INT_EN bit in the INT_ENABLE register (Register 56) is asserted.
         * @return Master arbitration lost status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getLostArbitration()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_I2C_LOST_ARB_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_I2C_LOST_ARB_BIT) != 0;
         }
         /** Get Slave 4 NACK status.
         * This bit automatically sets to 1 when the I2C Master receives a NACK in a
         * transaction with Slave 4. This triggers an interrupt if the I2C_MST_INT_EN
         * bit in the INT_ENABLE register (Register 56) is asserted.
         * @return Slave 4 NACK interrupt status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getSlave4Nack()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_I2C_SLV4_NACK_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_I2C_SLV4_NACK_BIT) != 0;
         }
         /** Get Slave 3 NACK status.
         * This bit automatically sets to 1 when the I2C Master receives a NACK in a
         * transaction with Slave 3. This triggers an interrupt if the I2C_MST_INT_EN
         * bit in the INT_ENABLE register (Register 56) is asserted.
         * @return Slave 3 NACK interrupt status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getSlave3Nack()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_I2C_SLV3_NACK_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_I2C_SLV3_NACK_BIT);
         }
         /** Get Slave 2 NACK status.
         * This bit automatically sets to 1 when the I2C Master receives a NACK in a
         * transaction with Slave 2. This triggers an interrupt if the I2C_MST_INT_EN
         * bit in the INT_ENABLE register (Register 56) is asserted.
         * @return Slave 2 NACK interrupt status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getSlave2Nack()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_I2C_SLV2_NACK_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_I2C_SLV2_NACK_BIT);
         }
         /** Get Slave 1 NACK status.
         * This bit automatically sets to 1 when the I2C Master receives a NACK in a
         * transaction with Slave 1. This triggers an interrupt if the I2C_MST_INT_EN
         * bit in the INT_ENABLE register (Register 56) is asserted.
         * @return Slave 1 NACK interrupt status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getSlave1Nack()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_I2C_SLV1_NACK_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_I2C_SLV1_NACK_BIT);
         }
         /** Get Slave 0 NACK status.
         * This bit automatically sets to 1 when the I2C Master receives a NACK in a
         * transaction with Slave 0. This triggers an interrupt if the I2C_MST_INT_EN
         * bit in the INT_ENABLE register (Register 56) is asserted.
         * @return Slave 0 NACK interrupt status
-        * @see MPU6050_RA_I2C_MST_STATUS
+        * @see MPU9250_RA_I2C_MST_STATUS
         */
         public bool getSlave0Nack()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_I2C_MST_STATUS, MPU6050_MST_I2C_SLV0_NACK_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_I2C_MST_STATUS, MPU9250_MST_I2C_SLV0_NACK_BIT);
         }
 
         // INT_PIN_CFG register
@@ -1735,122 +1751,122 @@ namespace QuadroschrauberSharp.Hardware
         /** Get interrupt logic level mode.
         * Will be set 0 for active-high, 1 for active-low.
         * @return Current interrupt mode (0=active-high, 1=active-low)
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_INT_LEVEL_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_INT_LEVEL_BIT
         */
         public bool getInterruptMode()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_LEVEL_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_INT_LEVEL_BIT);
         }
         /** Set interrupt logic level mode.
         * @param mode New interrupt mode (0=active-high, 1=active-low)
         * @see getInterruptMode()
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_INT_LEVEL_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_INT_LEVEL_BIT
         */
         public void setInterruptMode(bool mode)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_LEVEL_BIT, mode);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_INT_LEVEL_BIT, mode);
         }
         /** Get interrupt drive mode.
         * Will be set 0 for push-pull, 1 for open-drain.
         * @return Current interrupt drive mode (0=push-pull, 1=open-drain)
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_INT_OPEN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_INT_OPEN_BIT
         */
         public bool getInterruptDrive()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_OPEN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_INT_OPEN_BIT);
         }
         /** Set interrupt drive mode.
         * @param drive New interrupt drive mode (0=push-pull, 1=open-drain)
         * @see getInterruptDrive()
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_INT_OPEN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_INT_OPEN_BIT
         */
         public void setInterruptDrive(bool drive)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_OPEN_BIT, drive);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_INT_OPEN_BIT, drive);
         }
         /** Get interrupt latch mode.
         * Will be set 0 for 50us-pulse, 1 for latch-until-int-cleared.
         * @return Current latch mode (0=50us-pulse, 1=latch-until-int-cleared)
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_LATCH_INT_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_LATCH_INT_EN_BIT
         */
         public bool getInterruptLatch()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_LATCH_INT_EN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_LATCH_INT_EN_BIT);
         }
         /** Set interrupt latch mode.
         * @param latch New latch mode (0=50us-pulse, 1=latch-until-int-cleared)
         * @see getInterruptLatch()
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_LATCH_INT_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_LATCH_INT_EN_BIT
         */
         public void setInterruptLatch(bool latch)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_LATCH_INT_EN_BIT, latch);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_LATCH_INT_EN_BIT, latch);
         }
         /** Get interrupt latch clear mode.
         * Will be set 0 for status-read-only, 1 for any-register-read.
         * @return Current latch clear mode (0=status-read-only, 1=any-register-read)
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_INT_RD_CLEAR_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_INT_RD_CLEAR_BIT
         */
         public bool getInterruptLatchClear()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_RD_CLEAR_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_INT_RD_CLEAR_BIT);
         }
         /** Set interrupt latch clear mode.
         * @param clear New latch clear mode (0=status-read-only, 1=any-register-read)
         * @see getInterruptLatchClear()
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_INT_RD_CLEAR_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_INT_RD_CLEAR_BIT
         */
         public void setInterruptLatchClear(bool clear)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_INT_RD_CLEAR_BIT, clear);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_INT_RD_CLEAR_BIT, clear);
         }
         /** Get FSYNC interrupt logic level mode.
         * @return Current FSYNC interrupt mode (0=active-high, 1=active-low)
         * @see getFSyncInterruptMode()
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_FSYNC_INT_LEVEL_BIT
         */
         public bool getFSyncInterruptLevel()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_FSYNC_INT_LEVEL_BIT);
         }
         /** Set FSYNC interrupt logic level mode.
         * @param mode New FSYNC interrupt mode (0=active-high, 1=active-low)
         * @see getFSyncInterruptMode()
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_FSYNC_INT_LEVEL_BIT
         */
         public void setFSyncInterruptLevel(bool level)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_FSYNC_INT_LEVEL_BIT, level);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_FSYNC_INT_LEVEL_BIT, level);
         }
         /** Get FSYNC pin interrupt enabled setting.
         * Will be set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled setting
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_FSYNC_INT_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_FSYNC_INT_EN_BIT
         */
         public bool getFSyncInterruptEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_FSYNC_INT_EN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_FSYNC_INT_EN_BIT);
         }
         /** Set FSYNC pin interrupt enabled setting.
         * @param enabled New FSYNC pin interrupt enabled setting
         * @see getFSyncInterruptEnabled()
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_FSYNC_INT_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_FSYNC_INT_EN_BIT
         */
         public void setFSyncInterruptEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_FSYNC_INT_EN_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_FSYNC_INT_EN_BIT, enabled);
         }
         /** Get I2C bypass enabled status.
         * When this bit is equal to 1 and I2C_MST_EN (Register 106 bit[5]) is equal to
@@ -1860,12 +1876,12 @@ namespace QuadroschrauberSharp.Hardware
         * bus of the MPU-60X0 regardless of the state of I2C_MST_EN (Register 106
         * bit[5]).
         * @return Current I2C bypass enabled status
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_I2C_BYPASS_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_I2C_BYPASS_EN_BIT
         */
         public bool getI2CBypassEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_I2C_BYPASS_EN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_I2C_BYPASS_EN_BIT);
         }
         /** Set I2C bypass enabled status.
         * When this bit is equal to 1 and I2C_MST_EN (Register 106 bit[5]) is equal to
@@ -1875,12 +1891,12 @@ namespace QuadroschrauberSharp.Hardware
         * bus of the MPU-60X0 regardless of the state of I2C_MST_EN (Register 106
         * bit[5]).
         * @param enabled New I2C bypass enabled status
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_I2C_BYPASS_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_I2C_BYPASS_EN_BIT
         */
         public void setI2CBypassEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_I2C_BYPASS_EN_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_I2C_BYPASS_EN_BIT, enabled);
         }
         /** Get reference clock output enabled status.
         * When this bit is equal to 1, a reference clock output is provided at the
@@ -1888,12 +1904,12 @@ namespace QuadroschrauberSharp.Hardware
         * further information regarding CLKOUT, please refer to the MPU-60X0 Product
         * Specification document.
         * @return Current reference clock output enabled status
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_CLKOUT_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_CLKOUT_EN_BIT
         */
         public bool getClockOutputEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_CLKOUT_EN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_CLKOUT_EN_BIT);
         }
         /** Set reference clock output enabled status.
         * When this bit is equal to 1, a reference clock output is provided at the
@@ -1901,12 +1917,12 @@ namespace QuadroschrauberSharp.Hardware
         * further information regarding CLKOUT, please refer to the MPU-60X0 Product
         * Specification document.
         * @param enabled New reference clock output enabled status
-        * @see MPU6050_RA_INT_PIN_CFG
-        * @see MPU6050_INTCFG_CLKOUT_EN_BIT
+        * @see MPU9250_RA_INT_PIN_CFG
+        * @see MPU9250_INTCFG_CLKOUT_EN_BIT
         */
         public void setClockOutputEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_CLKOUT_EN_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_PIN_CFG, MPU9250_INTCFG_CLKOUT_EN_BIT, enabled);
         }
 
         // INT_ENABLE register
@@ -1915,146 +1931,146 @@ namespace QuadroschrauberSharp.Hardware
         * Full register byte for all interrupts, for quick reading. Each bit will be
         * set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled status
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_FF_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_FF_BIT
         **/
         public uint8_t getIntEnabled()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_INT_ENABLE);
+            return i2c.readByte(devAddr, MPU9250_RA_INT_ENABLE);
         }
         /** Set full interrupt enabled status.
         * Full register byte for all interrupts, for quick reading. Each bit should be
         * set 0 for disabled, 1 for enabled.
         * @param enabled New interrupt enabled status
         * @see getIntFreefallEnabled()
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_FF_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_FF_BIT
         **/
         public void setIntEnabled(uint8_t enabled)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_INT_ENABLE, enabled);
+            i2c.writeByte(devAddr, MPU9250_RA_INT_ENABLE, enabled);
         }
         /** Get Free Fall interrupt enabled status.
         * Will be set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled status
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_FF_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_FF_BIT
         **/
         public bool getIntFreefallEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_FF_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_FF_BIT);
         }
         /** Set Free Fall interrupt enabled status.
         * @param enabled New interrupt enabled status
         * @see getIntFreefallEnabled()
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_FF_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_FF_BIT
         **/
         public void setIntFreefallEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_FF_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_FF_BIT, enabled);
         }
         /** Get Motion Detection interrupt enabled status.
         * Will be set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled status
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_MOT_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_MOT_BIT
         **/
         public bool getIntMotionEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_MOT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_MOT_BIT);
         }
         /** Set Motion Detection interrupt enabled status.
         * @param enabled New interrupt enabled status
         * @see getIntMotionEnabled()
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_MOT_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_MOT_BIT
         **/
         public void setIntMotionEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_MOT_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_MOT_BIT, enabled);
         }
         /** Get Zero Motion Detection interrupt enabled status.
         * Will be set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled status
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_ZMOT_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_ZMOT_BIT
         **/
         public bool getIntZeroMotionEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_ZMOT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_ZMOT_BIT);
         }
         /** Set Zero Motion Detection interrupt enabled status.
         * @param enabled New interrupt enabled status
         * @see getIntZeroMotionEnabled()
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_ZMOT_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_ZMOT_BIT
         **/
         public void setIntZeroMotionEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_ZMOT_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_ZMOT_BIT, enabled);
         }
         /** Get FIFO Buffer Overflow interrupt enabled status.
         * Will be set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled status
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_FIFO_OFLOW_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_FIFO_OFLOW_BIT
         **/
         public bool getIntFIFOBufferOverflowEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_FIFO_OFLOW_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_FIFO_OFLOW_BIT);
         }
         /** Set FIFO Buffer Overflow interrupt enabled status.
         * @param enabled New interrupt enabled status
         * @see getIntFIFOBufferOverflowEnabled()
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_FIFO_OFLOW_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_FIFO_OFLOW_BIT
         **/
         public void setIntFIFOBufferOverflowEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_FIFO_OFLOW_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_FIFO_OFLOW_BIT, enabled);
         }
         /** Get I2C Master interrupt enabled status.
         * This enables any of the I2C Master interrupt sources to generate an
         * interrupt. Will be set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled status
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_I2C_MST_INT_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_I2C_MST_INT_BIT
         **/
         public bool getIntI2CMasterEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_I2C_MST_INT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_I2C_MST_INT_BIT);
         }
         /** Set I2C Master interrupt enabled status.
         * @param enabled New interrupt enabled status
         * @see getIntI2CMasterEnabled()
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_I2C_MST_INT_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_I2C_MST_INT_BIT
         **/
         public void setIntI2CMasterEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_I2C_MST_INT_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_I2C_MST_INT_BIT, enabled);
         }
         /** Get Data Ready interrupt enabled setting.
         * This event occurs each time a write operation to all of the sensor registers
         * has been completed. Will be set 0 for disabled, 1 for enabled.
         * @return Current interrupt enabled status
-        * @see MPU6050_RA_INT_ENABLE
-        * @see MPU6050_INTERRUPT_DATA_RDY_BIT
+        * @see MPU9250_RA_INT_ENABLE
+        * @see MPU9250_INTERRUPT_DATA_RDY_BIT
         */
         public bool getIntDataReadyEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_DATA_RDY_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_DATA_RDY_BIT);
         }
         /** Set Data Ready interrupt enabled status.
         * @param enabled New interrupt enabled status
         * @see getIntDataReadyEnabled()
-        * @see MPU6050_RA_INT_CFG
-        * @see MPU6050_INTERRUPT_DATA_RDY_BIT
+        * @see MPU9250_RA_INT_CFG
+        * @see MPU9250_INTERRUPT_DATA_RDY_BIT
         */
         public void setIntDataReadyEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_DATA_RDY_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_DATA_RDY_BIT, enabled);
         }
 
         // INT_STATUS register
@@ -2064,78 +2080,78 @@ namespace QuadroschrauberSharp.Hardware
         * for getting multiple INT statuses, since each single bit read clears
         * all of them because it has to read the whole byte.
         * @return Current interrupt status
-        * @see MPU6050_RA_INT_STATUS
+        * @see MPU9250_RA_INT_STATUS
         */
         public uint8_t getIntStatus()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_INT_STATUS);
+            return i2c.readByte(devAddr, MPU9250_RA_INT_STATUS);
         }
         /** Get Free Fall interrupt status.
         * This bit automatically sets to 1 when a Free Fall interrupt has been
         * generated. The bit clears to 0 after the register has been read.
         * @return Current interrupt status
-        * @see MPU6050_RA_INT_STATUS
-        * @see MPU6050_INTERRUPT_FF_BIT
+        * @see MPU9250_RA_INT_STATUS
+        * @see MPU9250_INTERRUPT_FF_BIT
         */
         public bool getIntFreefallStatus()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_FF_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_FF_BIT);
         }
         /** Get Motion Detection interrupt status.
         * This bit automatically sets to 1 when a Motion Detection interrupt has been
         * generated. The bit clears to 0 after the register has been read.
         * @return Current interrupt status
-        * @see MPU6050_RA_INT_STATUS
-        * @see MPU6050_INTERRUPT_MOT_BIT
+        * @see MPU9250_RA_INT_STATUS
+        * @see MPU9250_INTERRUPT_MOT_BIT
         */
         public bool getIntMotionStatus()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_MOT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_MOT_BIT);
         }
         /** Get Zero Motion Detection interrupt status.
         * This bit automatically sets to 1 when a Zero Motion Detection interrupt has
         * been generated. The bit clears to 0 after the register has been read.
         * @return Current interrupt status
-        * @see MPU6050_RA_INT_STATUS
-        * @see MPU6050_INTERRUPT_ZMOT_BIT
+        * @see MPU9250_RA_INT_STATUS
+        * @see MPU9250_INTERRUPT_ZMOT_BIT
         */
         public bool getIntZeroMotionStatus()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_ZMOT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_ZMOT_BIT);
         }
         /** Get FIFO Buffer Overflow interrupt status.
         * This bit automatically sets to 1 when a Free Fall interrupt has been
         * generated. The bit clears to 0 after the register has been read.
         * @return Current interrupt status
-        * @see MPU6050_RA_INT_STATUS
-        * @see MPU6050_INTERRUPT_FIFO_OFLOW_BIT
+        * @see MPU9250_RA_INT_STATUS
+        * @see MPU9250_INTERRUPT_FIFO_OFLOW_BIT
         */
         public bool getIntFIFOBufferOverflowStatus()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_FIFO_OFLOW_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_FIFO_OFLOW_BIT) != 0;
         }
         /** Get I2C Master interrupt status.
         * This bit automatically sets to 1 when an I2C Master interrupt has been
         * generated. For a list of I2C Master interrupts, please refer to Register 54.
         * The bit clears to 0 after the register has been read.
         * @return Current interrupt status
-        * @see MPU6050_RA_INT_STATUS
-        * @see MPU6050_INTERRUPT_I2C_MST_INT_BIT
+        * @see MPU9250_RA_INT_STATUS
+        * @see MPU9250_INTERRUPT_I2C_MST_INT_BIT
         */
         public bool getIntI2CMasterStatus()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_I2C_MST_INT_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_I2C_MST_INT_BIT) != 0;
         }
         /** Get Data Ready interrupt status.
         * This bit automatically sets to 1 when a Data Ready interrupt has been
         * generated. The bit clears to 0 after the register has been read.
         * @return Current interrupt status
-        * @see MPU6050_RA_INT_STATUS
-        * @see MPU6050_INTERRUPT_DATA_RDY_BIT
+        * @see MPU9250_RA_INT_STATUS
+        * @see MPU9250_INTERRUPT_DATA_RDY_BIT
         */
         public bool getIntDataReadyStatus()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_DATA_RDY_BIT) != 0;
+            return i2c.readBit(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_DATA_RDY_BIT) != 0;
         }
 
         // ACCEL_*OUT_* registers
@@ -2154,18 +2170,36 @@ namespace QuadroschrauberSharp.Hardware
         * @see getMotion6()
         * @see getAcceleration()
         * @see getRotation()
-        * @see MPU6050_RA_ACCEL_XOUT_H
+        * @see MPU9250_RA_ACCEL_XOUT_H
         */
-        Motion9 getMotion9()
+        public Motion9 getMotion9()
         {
             Motion6 m6 = getMotion6();
             // TODO: magnetometer integration
             Motion9 m9 = new Motion9();
-            m9.m6 = m6;
+            m9.ax = m6.ax;
+            m9.ay = m6.ay;
+            m9.az = m6.az;
+            m9.gx = m6.gx;
+            m9.gy = m6.gy;
+            m9.gz = m6.gz;
+
+            //read mag
+            i2c.writeByte(devAddr, MPU9150_RA_INT_PIN_CFG, (byte)0x02); //set i2c bypass enable pin to true to access magnetometer
+            System.Threading.Thread.Sleep(10);
+            i2c.writeByte(MPU9150_RA_MAG_ADDRESS, 0x0A, (byte)0x01); //enable the magnetometer
+            System.Threading.Thread.Sleep(10);
+            i2c.readBytes(MPU9150_RA_MAG_ADDRESS, MPU9150_RA_MAG_XOUT_L, 6, buffer);
+            
+            m9.mx = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
+            m9.my = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
+            m9.mz = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
+
+
             return m9;
         }
 
-        public struct Motion6
+        public class Motion6
         {
             public int16_t ax;
             public int16_t ay;
@@ -2175,20 +2209,14 @@ namespace QuadroschrauberSharp.Hardware
             public int16_t gz;
         }
 
-        public struct Motion9
+        public class Motion9 : Motion6
         {
-            public Motion6 m6;
             public int16_t mx;
             public int16_t my;
             public int16_t mz;
         }
 
-        public struct Vector3
-        {
-            public int16_t x;
-            public int16_t y;
-            public int16_t z;
-        }
+        
         /** Get raw 6-axis motion sensor readings (accel/gyro).
         * Retrieves all currently available motion sensor values.
         * @param ax 16-bit signed integer container for accelerometer X-axis value
@@ -2199,12 +2227,12 @@ namespace QuadroschrauberSharp.Hardware
         * @param gz 16-bit signed integer container for gyroscope Z-axis value
         * @see getAcceleration()
         * @see getRotation()
-        * @see MPU6050_RA_ACCEL_XOUT_H
+        * @see MPU9250_RA_ACCEL_XOUT_H
         */
         public Motion6 getMotion6()
         {
-            Motion6 m;
-            i2c.readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 14, buffer);
+            Motion6 m = new Motion6();
+            i2c.readBytes(devAddr, MPU9250_RA_ACCEL_XOUT_H, 14, buffer);
             m.ax = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
             m.ay = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
             m.az = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
@@ -2247,45 +2275,45 @@ namespace QuadroschrauberSharp.Hardware
         * @param x 16-bit signed integer container for X-axis acceleration
         * @param y 16-bit signed integer container for Y-axis acceleration
         * @param z 16-bit signed integer container for Z-axis acceleration
-        * @see MPU6050_RA_GYRO_XOUT_H
+        * @see MPU9250_RA_GYRO_XOUT_H
         */
         public Vector3 getAcceleration()
         {
-            Vector3 v;
-            i2c.readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 6, buffer);
-            v.x = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
-            v.y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
-            v.z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
+            Vector3 v = new Vector3();
+            i2c.readBytes(devAddr, MPU9250_RA_ACCEL_XOUT_H, 6, buffer);
+            v.X = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
+            v.Y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
+            v.Z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
             return v;
         }
         /** Get X-axis accelerometer reading.
         * @return X-axis acceleration measurement in 16-bit 2's complement format
         * @see getMotion6()
-        * @see MPU6050_RA_ACCEL_XOUT_H
+        * @see MPU9250_RA_ACCEL_XOUT_H
         */
         public int16_t getAccelerationX()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_ACCEL_XOUT_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         /** Get Y-axis accelerometer reading.
         * @return Y-axis acceleration measurement in 16-bit 2's complement format
         * @see getMotion6()
-        * @see MPU6050_RA_ACCEL_YOUT_H
+        * @see MPU9250_RA_ACCEL_YOUT_H
         */
         public int16_t getAccelerationY()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_ACCEL_YOUT_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_ACCEL_YOUT_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         /** Get Z-axis accelerometer reading.
         * @return Z-axis acceleration measurement in 16-bit 2's complement format
         * @see getMotion6()
-        * @see MPU6050_RA_ACCEL_ZOUT_H
+        * @see MPU9250_RA_ACCEL_ZOUT_H
         */
         public int16_t getAccelerationZ()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_ACCEL_ZOUT_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_ACCEL_ZOUT_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
 
@@ -2293,11 +2321,11 @@ namespace QuadroschrauberSharp.Hardware
 
         /** Get current internal temperature.
         * @return Temperature reading in 16-bit 2's complement format
-        * @see MPU6050_RA_TEMP_OUT_H
+        * @see MPU9250_RA_TEMP_OUT_H
         */
         public int16_t getTemperature()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_TEMP_OUT_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_TEMP_OUT_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
 
@@ -2333,45 +2361,45 @@ namespace QuadroschrauberSharp.Hardware
         * @param y 16-bit signed integer container for Y-axis rotation
         * @param z 16-bit signed integer container for Z-axis rotation
         * @see getMotion6()
-        * @see MPU6050_RA_GYRO_XOUT_H
+        * @see MPU9250_RA_GYRO_XOUT_H
         */
         public Vector3 getRotation()
         {
-            Vector3 v;
-            i2c.readBytes(devAddr, MPU6050_RA_GYRO_XOUT_H, 6, buffer);
-            v.x = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
-            v.y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
-            v.z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
+            Vector3 v = new Vector3();
+            i2c.readBytes(devAddr, MPU9250_RA_GYRO_XOUT_H, 6, buffer);
+            v.X = (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
+            v.Y = (short)((((int16_t)buffer[2]) << 8) | buffer[3]);
+            v.Z = (short)((((int16_t)buffer[4]) << 8) | buffer[5]);
             return v;
         }
         /** Get X-axis gyroscope reading.
         * @return X-axis rotation measurement in 16-bit 2's complement format
         * @see getMotion6()
-        * @see MPU6050_RA_GYRO_XOUT_H
+        * @see MPU9250_RA_GYRO_XOUT_H
         */
         public int16_t getRotationX()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_GYRO_XOUT_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_GYRO_XOUT_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         /** Get Y-axis gyroscope reading.
         * @return Y-axis rotation measurement in 16-bit 2's complement format
         * @see getMotion6()
-        * @see MPU6050_RA_GYRO_YOUT_H
+        * @see MPU9250_RA_GYRO_YOUT_H
         */
         public int16_t getRotationY()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_GYRO_YOUT_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_GYRO_YOUT_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         /** Get Z-axis gyroscope reading.
         * @return Z-axis rotation measurement in 16-bit 2's complement format
         * @see getMotion6()
-        * @see MPU6050_RA_GYRO_ZOUT_H
+        * @see MPU9250_RA_GYRO_ZOUT_H
         */
         public int16_t getRotationZ()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_GYRO_ZOUT_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_GYRO_ZOUT_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
 
@@ -2453,7 +2481,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         public uint8_t getExternalSensorByte(int position)
         {
-            return i2c.readByte(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position);
+            return i2c.readByte(devAddr, MPU9250_RA_EXT_SENS_DATA_00 + position);
         }
         /** Read word (2 bytes) from external sensor data registers.
         * @param position Starting position (0-21)
@@ -2462,7 +2490,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         public uint16_t getExternalSensorWord(int position)
         {
-            i2c.readBytes(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_EXT_SENS_DATA_00 + position, 2, buffer);
             return (uint16_t)((((uint16_t)buffer[0]) << 8) | buffer[1]);
         }
         /** Read double word (4 bytes) from external sensor data registers.
@@ -2472,7 +2500,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         public uint32_t getExternalSensorDWord(int position)
         {
-            i2c.readBytes(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, 4, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_EXT_SENS_DATA_00 + position, 4, buffer);
             return (uint32_t)((((uint32_t)buffer[0]) << 24) | (((uint32_t)buffer[1]) << 16) | (((uint16_t)buffer[2]) << 8) | buffer[3]);
         }
 
@@ -2480,66 +2508,66 @@ namespace QuadroschrauberSharp.Hardware
 
         /** Get X-axis negative motion detection interrupt status.
         * @return Motion detection status
-        * @see MPU6050_RA_MOT_DETECT_STATUS
-        * @see MPU6050_MOTION_MOT_XNEG_BIT
+        * @see MPU9250_RA_MOT_DETECT_STATUS
+        * @see MPU9250_MOTION_MOT_XNEG_BIT
         */
         public bool getXNegMotionDetected()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_XNEG_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_MOT_DETECT_STATUS, MPU9250_MOTION_MOT_XNEG_BIT);
         }
         /** Get X-axis positive motion detection interrupt status.
         * @return Motion detection status
-        * @see MPU6050_RA_MOT_DETECT_STATUS
-        * @see MPU6050_MOTION_MOT_XPOS_BIT
+        * @see MPU9250_RA_MOT_DETECT_STATUS
+        * @see MPU9250_MOTION_MOT_XPOS_BIT
         */
         public bool getXPosMotionDetected()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_XPOS_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_MOT_DETECT_STATUS, MPU9250_MOTION_MOT_XPOS_BIT);
         }
         /** Get Y-axis negative motion detection interrupt status.
         * @return Motion detection status
-        * @see MPU6050_RA_MOT_DETECT_STATUS
-        * @see MPU6050_MOTION_MOT_YNEG_BIT
+        * @see MPU9250_RA_MOT_DETECT_STATUS
+        * @see MPU9250_MOTION_MOT_YNEG_BIT
         */
         public bool getYNegMotionDetected()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_YNEG_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_MOT_DETECT_STATUS, MPU9250_MOTION_MOT_YNEG_BIT);
         }
         /** Get Y-axis positive motion detection interrupt status.
         * @return Motion detection status
-        * @see MPU6050_RA_MOT_DETECT_STATUS
-        * @see MPU6050_MOTION_MOT_YPOS_BIT
+        * @see MPU9250_RA_MOT_DETECT_STATUS
+        * @see MPU9250_MOTION_MOT_YPOS_BIT
         */
         public bool getYPosMotionDetected()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_YPOS_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_MOT_DETECT_STATUS, MPU9250_MOTION_MOT_YPOS_BIT);
         }
         /** Get Z-axis negative motion detection interrupt status.
         * @return Motion detection status
-        * @see MPU6050_RA_MOT_DETECT_STATUS
-        * @see MPU6050_MOTION_MOT_ZNEG_BIT
+        * @see MPU9250_RA_MOT_DETECT_STATUS
+        * @see MPU9250_MOTION_MOT_ZNEG_BIT
         */
         public bool getZNegMotionDetected()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_ZNEG_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_MOT_DETECT_STATUS, MPU9250_MOTION_MOT_ZNEG_BIT);
         }
         /** Get Z-axis positive motion detection interrupt status.
         * @return Motion detection status
-        * @see MPU6050_RA_MOT_DETECT_STATUS
-        * @see MPU6050_MOTION_MOT_ZPOS_BIT
+        * @see MPU9250_RA_MOT_DETECT_STATUS
+        * @see MPU9250_MOTION_MOT_ZPOS_BIT
         */
         public bool getZPosMotionDetected()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_ZPOS_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_MOT_DETECT_STATUS, MPU9250_MOTION_MOT_ZPOS_BIT);
         }
         /** Get zero motion detection interrupt status.
         * @return Motion detection status
-        * @see MPU6050_RA_MOT_DETECT_STATUS
-        * @see MPU6050_MOTION_MOT_ZRMOT_BIT
+        * @see MPU9250_RA_MOT_DETECT_STATUS
+        * @see MPU9250_MOTION_MOT_ZRMOT_BIT
         */
         public bool getZeroMotionDetected()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_MOT_DETECT_STATUS, MPU6050_MOTION_MOT_ZRMOT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_MOT_DETECT_STATUS, MPU9250_MOTION_MOT_ZRMOT_BIT);
         }
 
         // I2C_SLV*_DO register
@@ -2550,12 +2578,12 @@ namespace QuadroschrauberSharp.Hardware
         * refer to Registers 37 to 39 and immediately following.
         * @param num Slave number (0-3)
         * @param data Byte to write
-        * @see MPU6050_RA_I2C_SLV0_DO
+        * @see MPU9250_RA_I2C_SLV0_DO
         */
         public void setSlaveOutputByte(uint8_t num, uint8_t data)
         {
             if (num > 3) return;
-            i2c.writeByte(devAddr, MPU6050_RA_I2C_SLV0_DO + num, data);
+            i2c.writeByte(devAddr, MPU9250_RA_I2C_SLV0_DO + num, data);
         }
 
         // I2C_MST_DELAY_CTRL register
@@ -2565,22 +2593,22 @@ namespace QuadroschrauberSharp.Hardware
         * shadowing. When DELAY_ES_SHADOW is set to 1, shadowing of external
         * sensor data is delayed until all data has been received.
         * @return Current external data shadow delay enabled status.
-        * @see MPU6050_RA_I2C_MST_DELAY_CTRL
-        * @see MPU6050_DELAYCTRL_DELAY_ES_SHADOW_BIT
+        * @see MPU9250_RA_I2C_MST_DELAY_CTRL
+        * @see MPU9250_DELAYCTRL_DELAY_ES_SHADOW_BIT
         */
         public bool getExternalShadowDelayEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_I2C_MST_DELAY_CTRL, MPU6050_DELAYCTRL_DELAY_ES_SHADOW_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_I2C_MST_DELAY_CTRL, MPU9250_DELAYCTRL_DELAY_ES_SHADOW_BIT);
         }
         /** Set external data shadow delay enabled status.
         * @param enabled New external data shadow delay enabled status.
         * @see getExternalShadowDelayEnabled()
-        * @see MPU6050_RA_I2C_MST_DELAY_CTRL
-        * @see MPU6050_DELAYCTRL_DELAY_ES_SHADOW_BIT
+        * @see MPU9250_RA_I2C_MST_DELAY_CTRL
+        * @see MPU9250_DELAYCTRL_DELAY_ES_SHADOW_BIT
         */
         public void setExternalShadowDelayEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_MST_DELAY_CTRL, MPU6050_DELAYCTRL_DELAY_ES_SHADOW_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_MST_DELAY_CTRL, MPU9250_DELAYCTRL_DELAY_ES_SHADOW_BIT, enabled);
         }
         /** Get slave delay enabled status.
         * When a particular slave delay is enabled, the rate of access for the that
@@ -2597,24 +2625,24 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param num Slave number (0-4)
         * @return Current slave delay enabled status.
-        * @see MPU6050_RA_I2C_MST_DELAY_CTRL
-        * @see MPU6050_DELAYCTRL_I2C_SLV0_DLY_EN_BIT
+        * @see MPU9250_RA_I2C_MST_DELAY_CTRL
+        * @see MPU9250_DELAYCTRL_I2C_SLV0_DLY_EN_BIT
         */
         public bool getSlaveDelayEnabled(uint8_t num)
         {
-            // MPU6050_DELAYCTRL_I2C_SLV4_DLY_EN_BIT is 4, SLV3 is 3, etc.
+            // MPU9250_DELAYCTRL_I2C_SLV4_DLY_EN_BIT is 4, SLV3 is 3, etc.
             if (num > 4) return false;
-            return i2c.readBitB(devAddr, MPU6050_RA_I2C_MST_DELAY_CTRL, num);
+            return i2c.readBitB(devAddr, MPU9250_RA_I2C_MST_DELAY_CTRL, num);
         }
         /** Set slave delay enabled status.
         * @param num Slave number (0-4)
         * @param enabled New slave delay enabled status.
-        * @see MPU6050_RA_I2C_MST_DELAY_CTRL
-        * @see MPU6050_DELAYCTRL_I2C_SLV0_DLY_EN_BIT
+        * @see MPU9250_RA_I2C_MST_DELAY_CTRL
+        * @see MPU9250_DELAYCTRL_I2C_SLV0_DLY_EN_BIT
         */
         public void setSlaveDelayEnabled(uint8_t num, bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_I2C_MST_DELAY_CTRL, num, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_I2C_MST_DELAY_CTRL, num, enabled);
         }
 
         // SIGNAL_PATH_RESET register
@@ -2622,32 +2650,32 @@ namespace QuadroschrauberSharp.Hardware
         /** Reset gyroscope signal path.
         * The reset will revert the signal path analog to digital converters and
         * filters to their power up configurations.
-        * @see MPU6050_RA_SIGNAL_PATH_RESET
-        * @see MPU6050_PATHRESET_GYRO_RESET_BIT
+        * @see MPU9250_RA_SIGNAL_PATH_RESET
+        * @see MPU9250_PATHRESET_GYRO_RESET_BIT
         */
         public void resetGyroscopePath()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_SIGNAL_PATH_RESET, MPU6050_PATHRESET_GYRO_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_SIGNAL_PATH_RESET, MPU9250_PATHRESET_GYRO_RESET_BIT, true);
         }
         /** Reset accelerometer signal path.
         * The reset will revert the signal path analog to digital converters and
         * filters to their power up configurations.
-        * @see MPU6050_RA_SIGNAL_PATH_RESET
-        * @see MPU6050_PATHRESET_ACCEL_RESET_BIT
+        * @see MPU9250_RA_SIGNAL_PATH_RESET
+        * @see MPU9250_PATHRESET_ACCEL_RESET_BIT
         */
         public void resetAccelerometerPath()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_SIGNAL_PATH_RESET, MPU6050_PATHRESET_ACCEL_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_SIGNAL_PATH_RESET, MPU9250_PATHRESET_ACCEL_RESET_BIT, true);
         }
         /** Reset temperature sensor signal path.
         * The reset will revert the signal path analog to digital converters and
         * filters to their power up configurations.
-        * @see MPU6050_RA_SIGNAL_PATH_RESET
-        * @see MPU6050_PATHRESET_TEMP_RESET_BIT
+        * @see MPU9250_RA_SIGNAL_PATH_RESET
+        * @see MPU9250_PATHRESET_TEMP_RESET_BIT
         */
         public void resetTemperaturePath()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_SIGNAL_PATH_RESET, MPU6050_PATHRESET_TEMP_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_SIGNAL_PATH_RESET, MPU9250_PATHRESET_TEMP_RESET_BIT, true);
         }
 
         // MOT_DETECT_CTRL register
@@ -2663,22 +2691,22 @@ namespace QuadroschrauberSharp.Hardware
         * to Section 8 of the MPU-6000/MPU-6050 Product Specification document for
         * further information regarding the detection modules.
         * @return Current accelerometer power-on delay
-        * @see MPU6050_RA_MOT_DETECT_CTRL
-        * @see MPU6050_DETECT_ACCEL_ON_DELAY_BIT
+        * @see MPU9250_RA_MOT_DETECT_CTRL
+        * @see MPU9250_DETECT_ACCEL_ON_DELAY_BIT
         */
         public uint8_t getAccelerometerPowerOnDelay()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_ACCEL_ON_DELAY_BIT, MPU6050_DETECT_ACCEL_ON_DELAY_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_MOT_DETECT_CTRL, MPU9250_DETECT_ACCEL_ON_DELAY_BIT, MPU9250_DETECT_ACCEL_ON_DELAY_LENGTH);
         }
         /** Set accelerometer power-on delay.
         * @param delay New accelerometer power-on delay (0-3)
         * @see getAccelerometerPowerOnDelay()
-        * @see MPU6050_RA_MOT_DETECT_CTRL
-        * @see MPU6050_DETECT_ACCEL_ON_DELAY_BIT
+        * @see MPU9250_RA_MOT_DETECT_CTRL
+        * @see MPU9250_DETECT_ACCEL_ON_DELAY_BIT
         */
         public void setAccelerometerPowerOnDelay(uint8_t delay)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_ACCEL_ON_DELAY_BIT, MPU6050_DETECT_ACCEL_ON_DELAY_LENGTH, delay);
+            i2c.writeBits(devAddr, MPU9250_RA_MOT_DETECT_CTRL, MPU9250_DETECT_ACCEL_ON_DELAY_BIT, MPU9250_DETECT_ACCEL_ON_DELAY_LENGTH, delay);
         }
         /** Get Free Fall detection counter decrement configuration.
         * Detection is registered by the Free Fall detection module after accelerometer
@@ -2703,22 +2731,22 @@ namespace QuadroschrauberSharp.Hardware
         * please refer to Registers 29 to 32.
         *
         * @return Current decrement configuration
-        * @see MPU6050_RA_MOT_DETECT_CTRL
-        * @see MPU6050_DETECT_FF_COUNT_BIT
+        * @see MPU9250_RA_MOT_DETECT_CTRL
+        * @see MPU9250_DETECT_FF_COUNT_BIT
         */
         public uint8_t getFreefallDetectionCounterDecrement()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_FF_COUNT_BIT, MPU6050_DETECT_FF_COUNT_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_MOT_DETECT_CTRL, MPU9250_DETECT_FF_COUNT_BIT, MPU9250_DETECT_FF_COUNT_LENGTH);
         }
         /** Set Free Fall detection counter decrement configuration.
         * @param decrement New decrement configuration value
         * @see getFreefallDetectionCounterDecrement()
-        * @see MPU6050_RA_MOT_DETECT_CTRL
-        * @see MPU6050_DETECT_FF_COUNT_BIT
+        * @see MPU9250_RA_MOT_DETECT_CTRL
+        * @see MPU9250_DETECT_FF_COUNT_BIT
         */
         public void setFreefallDetectionCounterDecrement(uint8_t decrement)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_FF_COUNT_BIT, MPU6050_DETECT_FF_COUNT_LENGTH, decrement);
+            i2c.writeBits(devAddr, MPU9250_RA_MOT_DETECT_CTRL, MPU9250_DETECT_FF_COUNT_BIT, MPU9250_DETECT_FF_COUNT_LENGTH, decrement);
         }
         /** Get Motion detection counter decrement configuration.
         * Detection is registered by the Motion detection module after accelerometer
@@ -2745,17 +2773,17 @@ namespace QuadroschrauberSharp.Hardware
         */
         public uint8_t getMotionDetectionCounterDecrement()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_MOT_COUNT_BIT, MPU6050_DETECT_MOT_COUNT_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_MOT_DETECT_CTRL, MPU9250_DETECT_MOT_COUNT_BIT, MPU9250_DETECT_MOT_COUNT_LENGTH);
         }
         /** Set Motion detection counter decrement configuration.
         * @param decrement New decrement configuration value
         * @see getMotionDetectionCounterDecrement()
-        * @see MPU6050_RA_MOT_DETECT_CTRL
-        * @see MPU6050_DETECT_MOT_COUNT_BIT
+        * @see MPU9250_RA_MOT_DETECT_CTRL
+        * @see MPU9250_DETECT_MOT_COUNT_BIT
         */
         public void setMotionDetectionCounterDecrement(uint8_t decrement)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_MOT_DETECT_CTRL, MPU6050_DETECT_MOT_COUNT_BIT, MPU6050_DETECT_MOT_COUNT_LENGTH, decrement);
+            i2c.writeBits(devAddr, MPU9250_RA_MOT_DETECT_CTRL, MPU9250_DETECT_MOT_COUNT_BIT, MPU9250_DETECT_MOT_COUNT_LENGTH, decrement);
         }
 
         // USER_CTRL register
@@ -2765,22 +2793,22 @@ namespace QuadroschrauberSharp.Hardware
         * cannot be written to or read from while disabled. The FIFO buffer's state
         * does not change unless the MPU-60X0 is power cycled.
         * @return Current FIFO enabled status
-        * @see MPU6050_RA_USER_CTRL
-        * @see MPU6050_USERCTRL_FIFO_EN_BIT
+        * @see MPU9250_RA_USER_CTRL
+        * @see MPU9250_USERCTRL_FIFO_EN_BIT
         */
         public bool getFIFOEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_EN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_FIFO_EN_BIT);
         }
         /** Set FIFO enabled status.
         * @param enabled New FIFO enabled status
         * @see getFIFOEnabled()
-        * @see MPU6050_RA_USER_CTRL
-        * @see MPU6050_USERCTRL_FIFO_EN_BIT
+        * @see MPU9250_RA_USER_CTRL
+        * @see MPU9250_USERCTRL_FIFO_EN_BIT
         */
         public void setFIFOEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_EN_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_FIFO_EN_BIT, enabled);
         }
         /** Get I2C Master Mode enabled status.
         * When this mode is enabled, the MPU-60X0 acts as the I2C Master to the
@@ -2790,22 +2818,22 @@ namespace QuadroschrauberSharp.Hardware
         * enabling Bypass Mode. For further information regarding Bypass Mode, please
         * refer to Register 55.
         * @return Current I2C Master Mode enabled status
-        * @see MPU6050_RA_USER_CTRL
-        * @see MPU6050_USERCTRL_I2C_MST_EN_BIT
+        * @see MPU9250_RA_USER_CTRL
+        * @see MPU9250_USERCTRL_I2C_MST_EN_BIT
         */
         public bool getI2CMasterModeEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_EN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_I2C_MST_EN_BIT);
         }
         /** Set I2C Master Mode enabled status.
         * @param enabled New I2C Master Mode enabled status
         * @see getI2CMasterModeEnabled()
-        * @see MPU6050_RA_USER_CTRL
-        * @see MPU6050_USERCTRL_I2C_MST_EN_BIT
+        * @see MPU9250_RA_USER_CTRL
+        * @see MPU9250_USERCTRL_I2C_MST_EN_BIT
         */
         public void setI2CMasterModeEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_EN_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_I2C_MST_EN_BIT, enabled);
         }
         /** Switch from I2C to SPI mode (MPU-6000 only)
         * If this is set, the primary SPI interface will be enabled in place of the
@@ -2813,27 +2841,27 @@ namespace QuadroschrauberSharp.Hardware
         */
         public void switchSPIEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_IF_DIS_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_I2C_IF_DIS_BIT, enabled);
         }
         /** Reset the FIFO.
         * This bit resets the FIFO buffer when set to 1 while FIFO_EN equals 0. This
         * bit automatically clears to 0 after the reset has been triggered.
-        * @see MPU6050_RA_USER_CTRL
-        * @see MPU6050_USERCTRL_FIFO_RESET_BIT
+        * @see MPU9250_RA_USER_CTRL
+        * @see MPU9250_USERCTRL_FIFO_RESET_BIT
         */
         public void resetFIFO()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_FIFO_RESET_BIT, true);
         }
         /** Reset the I2C Master.
         * This bit resets the I2C Master when set to 1 while I2C_MST_EN equals 0.
         * This bit automatically clears to 0 after the reset has been triggered.
-        * @see MPU6050_RA_USER_CTRL
-        * @see MPU6050_USERCTRL_I2C_MST_RESET_BIT
+        * @see MPU9250_RA_USER_CTRL
+        * @see MPU9250_USERCTRL_I2C_MST_RESET_BIT
         */
         public void resetI2CMaster()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_I2C_MST_RESET_BIT, true);
         }
         /** Reset all sensor registers and signal paths.
         * When set to 1, this bit resets the signal paths for all sensors (gyroscopes,
@@ -2844,24 +2872,24 @@ namespace QuadroschrauberSharp.Hardware
         * When resetting only the signal path (and not the sensor registers), please
         * use Register 104, SIGNAL_PATH_RESET.
         *
-        * @see MPU6050_RA_USER_CTRL
-        * @see MPU6050_USERCTRL_SIG_COND_RESET_BIT
+        * @see MPU9250_RA_USER_CTRL
+        * @see MPU9250_USERCTRL_SIG_COND_RESET_BIT
         */
         public void resetSensors()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_SIG_COND_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_SIG_COND_RESET_BIT, true);
         }
 
         // PWR_MGMT_1 register
 
         /** Trigger a full device reset.
         * A small delay of ~50ms may be desirable after triggering a reset.
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_DEVICE_RESET_BIT
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_DEVICE_RESET_BIT
         */
         public void reset()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_DEVICE_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_DEVICE_RESET_BIT, true);
         }
         /** Get sleep mode status.
         * Setting the SLEEP bit in the register puts the device into very low power
@@ -2871,44 +2899,44 @@ namespace QuadroschrauberSharp.Hardware
         * selections for each of the gyros should be used if any gyro axis is not used
         * by the application.
         * @return Current sleep mode enabled status
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_SLEEP_BIT
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_SLEEP_BIT
         */
         public bool getSleepEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_SLEEP_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_SLEEP_BIT);
         }
         /** Set sleep mode status.
         * @param enabled New sleep mode enabled status
         * @see getSleepEnabled()
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_SLEEP_BIT
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_SLEEP_BIT
         */
         public void setSleepEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_SLEEP_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_SLEEP_BIT, enabled);
         }
         /** Get wake cycle enabled status.
         * When this bit is set to 1 and SLEEP is disabled, the MPU-60X0 will cycle
         * between sleep mode and waking up to take a single sample of data from active
         * sensors at a rate determined by LP_WAKE_CTRL (register 108).
         * @return Current sleep mode enabled status
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_CYCLE_BIT
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_CYCLE_BIT
         */
         public bool getWakeCycleEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CYCLE_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_CYCLE_BIT);
         }
         /** Set wake cycle enabled status.
         * @param enabled New sleep mode enabled status
         * @see getWakeCycleEnabled()
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_CYCLE_BIT
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_CYCLE_BIT
         */
         public void setWakeCycleEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CYCLE_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_CYCLE_BIT, enabled);
         }
         /** Get temperature sensor enabled status.
         * Control the usage of the internal temperature sensor.
@@ -2918,12 +2946,12 @@ namespace QuadroschrauberSharp.Hardware
         * values to indicate whether the sensor is enabled or disabled, respectively.
         *
         * @return Current temperature sensor enabled status
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_TEMP_DIS_BIT
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_TEMP_DIS_BIT
         */
         public bool getTempSensorEnabled()
         {
-            return !i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_TEMP_DIS_BIT);// 1 is actually disabled here
+            return !i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_TEMP_DIS_BIT);// 1 is actually disabled here
         }
         /** Set temperature sensor enabled status.
         * Note: this register stores the *disabled* value, but for consistency with the
@@ -2932,23 +2960,23 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param enabled New temperature sensor enabled status
         * @see getTempSensorEnabled()
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_TEMP_DIS_BIT
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_TEMP_DIS_BIT
         */
         public void setTempSensorEnabled(bool enabled)
         {
             // 1 is actually disabled here
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_TEMP_DIS_BIT, !enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_TEMP_DIS_BIT, !enabled);
         }
         /** Get clock source setting.
         * @return Current clock source setting
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_CLKSEL_BIT
-        * @see MPU6050_PWR1_CLKSEL_LENGTH
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_CLKSEL_BIT
+        * @see MPU9250_PWR1_CLKSEL_LENGTH
         */
         public uint8_t getClockSource()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_CLKSEL_BIT, MPU9250_PWR1_CLKSEL_LENGTH);
         }
         /** Set clock source setting.
         * An internal 8MHz oscillator, gyroscope based clock, or external sources can
@@ -2976,13 +3004,13 @@ namespace QuadroschrauberSharp.Hardware
         *
         * @param source New clock source setting
         * @see getClockSource()
-        * @see MPU6050_RA_PWR_MGMT_1
-        * @see MPU6050_PWR1_CLKSEL_BIT
-        * @see MPU6050_PWR1_CLKSEL_LENGTH
+        * @see MPU9250_RA_PWR_MGMT_1
+        * @see MPU9250_PWR1_CLKSEL_BIT
+        * @see MPU9250_PWR1_CLKSEL_LENGTH
         */
         public void setClockSource(uint8_t source)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH, source);
+            i2c.writeBits(devAddr, MPU9250_RA_PWR_MGMT_1, MPU9250_PWR1_CLKSEL_BIT, MPU9250_PWR1_CLKSEL_LENGTH, source);
         }
 
         // PWR_MGMT_2 register
@@ -3008,140 +3036,140 @@ namespace QuadroschrauberSharp.Hardware
         * Register 107.
         *
         * @return Current wake frequency
-        * @see MPU6050_RA_PWR_MGMT_2
+        * @see MPU9250_RA_PWR_MGMT_2
         */
         public uint8_t getWakeFrequency()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_LP_WAKE_CTRL_BIT, MPU6050_PWR2_LP_WAKE_CTRL_LENGTH);
+            return i2c.readBits(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_LP_WAKE_CTRL_BIT, MPU9250_PWR2_LP_WAKE_CTRL_LENGTH);
         }
         /** Set wake frequency in Accel-Only Low Power Mode.
         * @param frequency New wake frequency
-        * @see MPU6050_RA_PWR_MGMT_2
+        * @see MPU9250_RA_PWR_MGMT_2
         */
         public void setWakeFrequency(uint8_t frequency)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_LP_WAKE_CTRL_BIT, MPU6050_PWR2_LP_WAKE_CTRL_LENGTH, frequency);
+            i2c.writeBits(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_LP_WAKE_CTRL_BIT, MPU9250_PWR2_LP_WAKE_CTRL_LENGTH, frequency);
         }
 
         /** Get X-axis accelerometer standby enabled status.
         * If enabled, the X-axis will not gather or report data (or use power).
         * @return Current X-axis standby enabled status
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_XA_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_XA_BIT
         */
         public bool getStandbyXAccelEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_XA_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_XA_BIT);
         }
         /** Set X-axis accelerometer standby enabled status.
         * @param New X-axis standby enabled status
         * @see getStandbyXAccelEnabled()
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_XA_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_XA_BIT
         */
         public void setStandbyXAccelEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_XA_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_XA_BIT, enabled);
         }
         /** Get Y-axis accelerometer standby enabled status.
         * If enabled, the Y-axis will not gather or report data (or use power).
         * @return Current Y-axis standby enabled status
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_YA_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_YA_BIT
         */
         public bool getStandbyYAccelEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_YA_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_YA_BIT);
         }
         /** Set Y-axis accelerometer standby enabled status.
         * @param New Y-axis standby enabled status
         * @see getStandbyYAccelEnabled()
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_YA_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_YA_BIT
         */
         public void setStandbyYAccelEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_YA_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_YA_BIT, enabled);
         }
         /** Get Z-axis accelerometer standby enabled status.
         * If enabled, the Z-axis will not gather or report data (or use power).
         * @return Current Z-axis standby enabled status
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_ZA_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_ZA_BIT
         */
         public bool getStandbyZAccelEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_ZA_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_ZA_BIT);
         }
         /** Set Z-axis accelerometer standby enabled status.
         * @param New Z-axis standby enabled status
         * @see getStandbyZAccelEnabled()
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_ZA_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_ZA_BIT
         */
         public void setStandbyZAccelEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_ZA_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_ZA_BIT, enabled);
         }
         /** Get X-axis gyroscope standby enabled status.
         * If enabled, the X-axis will not gather or report data (or use power).
         * @return Current X-axis standby enabled status
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_XG_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_XG_BIT
         */
         public bool getStandbyXGyroEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_XG_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_XG_BIT);
         }
         /** Set X-axis gyroscope standby enabled status.
         * @param New X-axis standby enabled status
         * @see getStandbyXGyroEnabled()
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_XG_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_XG_BIT
         */
         public void setStandbyXGyroEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_XG_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_XG_BIT, enabled);
         }
         /** Get Y-axis gyroscope standby enabled status.
         * If enabled, the Y-axis will not gather or report data (or use power).
         * @return Current Y-axis standby enabled status
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_YG_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_YG_BIT
         */
         public bool getStandbyYGyroEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_YG_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_YG_BIT);
         }
         /** Set Y-axis gyroscope standby enabled status.
         * @param New Y-axis standby enabled status
         * @see getStandbyYGyroEnabled()
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_YG_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_YG_BIT
         */
         public void setStandbyYGyroEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_YG_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_YG_BIT, enabled);
         }
         /** Get Z-axis gyroscope standby enabled status.
         * If enabled, the Z-axis will not gather or report data (or use power).
         * @return Current Z-axis standby enabled status
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_ZG_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_ZG_BIT
         */
         public bool getStandbyZGyroEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_ZG_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_ZG_BIT);
         }
         /** Set Z-axis gyroscope standby enabled status.
         * @param New Z-axis standby enabled status
         * @see getStandbyZGyroEnabled()
-        * @see MPU6050_RA_PWR_MGMT_2
-        * @see MPU6050_PWR2_STBY_ZG_BIT
+        * @see MPU9250_RA_PWR_MGMT_2
+        * @see MPU9250_PWR2_STBY_ZG_BIT
         */
         public void setStandbyZGyroEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_PWR_MGMT_2, MPU6050_PWR2_STBY_ZG_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_PWR_MGMT_2, MPU9250_PWR2_STBY_ZG_BIT, enabled);
         }
 
         // FIFO_COUNT* registers
@@ -3155,7 +3183,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         public uint16_t getFIFOCount()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_FIFO_COUNTH, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_FIFO_COUNTH, 2, buffer);
             return (uint16_t)((((uint16_t)buffer[0]) << 8) | buffer[1]);
         }
 
@@ -3188,7 +3216,7 @@ namespace QuadroschrauberSharp.Hardware
         */
         uint8_t getFIFOByte()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_FIFO_R_W);
+            return i2c.readByte(devAddr, MPU9250_RA_FIFO_R_W);
         }
         public void getFIFOBytes(uint8_t[] data, uint8_t length)
         {
@@ -3196,17 +3224,17 @@ namespace QuadroschrauberSharp.Hardware
             while (pos < length)
             {
                 int read = Math.Min(127, length - pos);
-                i2c.readBytes((byte)devAddr, (byte)MPU6050_RA_FIFO_R_W, (byte)read, data, pos);
+                i2c.readBytes((byte)devAddr, (byte)MPU9250_RA_FIFO_R_W, (byte)read, data, pos);
                 pos += read;
             }
         }
         /** Write byte to FIFO buffer.
         * @see getFIFOByte()
-        * @see MPU6050_RA_FIFO_R_W
+        * @see MPU9250_RA_FIFO_R_W
         */
         void setFIFOByte(uint8_t data)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_FIFO_R_W, data);
+            i2c.writeByte(devAddr, MPU9250_RA_FIFO_R_W, data);
         }
 
         // WHO_AM_I register
@@ -3214,26 +3242,27 @@ namespace QuadroschrauberSharp.Hardware
         /** Get Device ID.
         * This register is used to verify the identity of the device (0b110100, 0x34).
         * @return Device ID (6 bits only! should be 0x34)
-        * @see MPU6050_RA_WHO_AM_I
-        * @see MPU6050_WHO_AM_I_BIT
-        * @see MPU6050_WHO_AM_I_LENGTH
+        * @see MPU9250_RA_WHO_AM_I
+        * @see MPU9250_WHO_AM_I_BIT
+        * @see MPU9250_WHO_AM_I_LENGTH
         */
         public uint8_t getDeviceID()
         {
-            return i2c.readBits(devAddr, MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH);
+            
+            return i2c.readBits(devAddr, MPU9250_RA_WHO_AM_I, MPU9250_WHO_AM_I_BIT, MPU9250_WHO_AM_I_LENGTH);
         }
         /** Set Device ID.
         * Write a new ID into the WHO_AM_I register (no idea why this should ever be
         * necessary though).
         * @param id New device ID to set.
         * @see getDeviceID()
-        * @see MPU6050_RA_WHO_AM_I
-        * @see MPU6050_WHO_AM_I_BIT
-        * @see MPU6050_WHO_AM_I_LENGTH
+        * @see MPU9250_RA_WHO_AM_I
+        * @see MPU9250_WHO_AM_I_BIT
+        * @see MPU9250_WHO_AM_I_LENGTH
         */
         public void setDeviceID(uint8_t id)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_WHO_AM_I, MPU6050_WHO_AM_I_BIT, MPU6050_WHO_AM_I_LENGTH, id);
+            i2c.writeBits(devAddr, MPU9250_RA_WHO_AM_I, MPU9250_WHO_AM_I_BIT, MPU9250_WHO_AM_I_LENGTH, id);
         }
 
         // ======== UNDOCUMENTED/DMP REGISTERS/METHODS ========
@@ -3242,218 +3271,218 @@ namespace QuadroschrauberSharp.Hardware
 
         uint8_t getOTPBankValid()
         {
-            return i2c.readBit(devAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OTP_BNK_VLD_BIT);
+            return i2c.readBit(devAddr, MPU9250_RA_XG_OFFS_TC, MPU9250_TC_OTP_BNK_VLD_BIT);
         }
         public void setOTPBankValid(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OTP_BNK_VLD_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_XG_OFFS_TC, MPU9250_TC_OTP_BNK_VLD_BIT, enabled);
         }
         public int8_t getXGyroOffset()
         {
-            return (int8_t)i2c.readBits(devAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH);
+            return (int8_t)i2c.readBits(devAddr, MPU9250_RA_XG_OFFS_TC, MPU9250_TC_OFFSET_BIT, MPU9250_TC_OFFSET_LENGTH);
         }
         public void setXGyroOffset(int8_t offset)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+            i2c.writeBits(devAddr, MPU9250_RA_XG_OFFS_TC, MPU9250_TC_OFFSET_BIT, MPU9250_TC_OFFSET_LENGTH, offset);
         }
 
         // YG_OFFS_TC register
 
         public int8_t getYGyroOffset()
         {
-            return (int8_t)i2c.readBits(devAddr, MPU6050_RA_YG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH);
+            return (int8_t)i2c.readBits(devAddr, MPU9250_RA_YG_OFFS_TC, MPU9250_TC_OFFSET_BIT, MPU9250_TC_OFFSET_LENGTH);
         }
         public void setYGyroOffset(int8_t offset)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_YG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+            i2c.writeBits(devAddr, MPU9250_RA_YG_OFFS_TC, MPU9250_TC_OFFSET_BIT, MPU9250_TC_OFFSET_LENGTH, offset);
         }
 
         // ZG_OFFS_TC register
 
         public int8_t getZGyroOffset()
         {
-            return unchecked((sbyte)i2c.readBits(devAddr, MPU6050_RA_ZG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH));
+            return unchecked((sbyte)i2c.readBits(devAddr, MPU9250_RA_ZG_OFFS_TC, MPU9250_TC_OFFSET_BIT, MPU9250_TC_OFFSET_LENGTH));
         }
         public void setZGyroOffset(int8_t offset)
         {
-            i2c.writeBits(devAddr, MPU6050_RA_ZG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+            i2c.writeBits(devAddr, MPU9250_RA_ZG_OFFS_TC, MPU9250_TC_OFFSET_BIT, MPU9250_TC_OFFSET_LENGTH, offset);
         }
 
         // X_FINE_GAIN register
 
         public int8_t getXFineGain()
         {
-            return unchecked((sbyte)i2c.readByte(devAddr, MPU6050_RA_X_FINE_GAIN));
+            return unchecked((sbyte)i2c.readByte(devAddr, MPU9250_RA_X_FINE_GAIN));
         }
         public void setXFineGain(int8_t gain)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_X_FINE_GAIN, gain);
+            i2c.writeByte(devAddr, MPU9250_RA_X_FINE_GAIN, gain);
         }
 
         // Y_FINE_GAIN register
 
         public int8_t getYFineGain()
         {
-            return unchecked((sbyte)i2c.readByte(devAddr, MPU6050_RA_Y_FINE_GAIN));
+            return unchecked((sbyte)i2c.readByte(devAddr, MPU9250_RA_Y_FINE_GAIN));
         }
         public void setYFineGain(int8_t gain)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_Y_FINE_GAIN, gain);
+            i2c.writeByte(devAddr, MPU9250_RA_Y_FINE_GAIN, gain);
         }
 
         // Z_FINE_GAIN register
 
         public int8_t getZFineGain()
         {
-            return unchecked((sbyte)i2c.readByte(devAddr, MPU6050_RA_Z_FINE_GAIN));
+            return unchecked((sbyte)i2c.readByte(devAddr, MPU9250_RA_Z_FINE_GAIN));
         }
         public void setZFineGain(int8_t gain)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_Z_FINE_GAIN, gain);
+            i2c.writeByte(devAddr, MPU9250_RA_Z_FINE_GAIN, gain);
         }
 
         // XA_OFFS_* registers
 
         public int16_t getXAccelOffset()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_XA_OFFS_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_XA_OFFS_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         public void setXAccelOffset(int16_t offset)
         {
-            i2c.writeWord(devAddr, MPU6050_RA_XA_OFFS_H, offset);
+            i2c.writeWord(devAddr, MPU9250_RA_XA_OFFS_H, offset);
         }
 
         // YA_OFFS_* register
 
         public int16_t getYAccelOffset()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_YA_OFFS_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_YA_OFFS_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         public void setYAccelOffset(int16_t offset)
         {
-            i2c.writeWord(devAddr, MPU6050_RA_YA_OFFS_H, offset);
+            i2c.writeWord(devAddr, MPU9250_RA_YA_OFFS_H, offset);
         }
 
         // ZA_OFFS_* register
 
         public int16_t getZAccelOffset()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_ZA_OFFS_H, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_ZA_OFFS_H, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         public void setZAccelOffset(int16_t offset)
         {
-            i2c.writeWord(devAddr, MPU6050_RA_ZA_OFFS_H, offset);
+            i2c.writeWord(devAddr, MPU9250_RA_ZA_OFFS_H, offset);
         }
 
         // XG_OFFS_USR* registers
 
         public int16_t getXGyroOffsetUser()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_XG_OFFS_USRH, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_XG_OFFS_USRH, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         public void setXGyroOffsetUser(int16_t offset)
         {
-            i2c.writeWord(devAddr, MPU6050_RA_XG_OFFS_USRH, offset);
+            i2c.writeWord(devAddr, MPU9250_RA_XG_OFFS_USRH, offset);
         }
 
         // YG_OFFS_USR* register
 
         public int16_t getYGyroOffsetUser()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_YG_OFFS_USRH, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_YG_OFFS_USRH, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         public void setYGyroOffsetUser(int16_t offset)
         {
-            i2c.writeWord(devAddr, MPU6050_RA_YG_OFFS_USRH, offset);
+            i2c.writeWord(devAddr, MPU9250_RA_YG_OFFS_USRH, offset);
         }
 
         // ZG_OFFS_USR* register
 
         public int16_t getZGyroOffsetUser()
         {
-            i2c.readBytes(devAddr, MPU6050_RA_ZG_OFFS_USRH, 2, buffer);
+            i2c.readBytes(devAddr, MPU9250_RA_ZG_OFFS_USRH, 2, buffer);
             return (short)((((int16_t)buffer[0]) << 8) | buffer[1]);
         }
         public void setZGyroOffsetUser(int16_t offset)
         {
-            i2c.writeWord(devAddr, MPU6050_RA_ZG_OFFS_USRH, offset);
+            i2c.writeWord(devAddr, MPU9250_RA_ZG_OFFS_USRH, offset);
         }
 
         // INT_ENABLE register (DMP functions)
 
         public bool getIntPLLReadyEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_PLL_RDY_INT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_PLL_RDY_INT_BIT);
         }
         public void setIntPLLReadyEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_PLL_RDY_INT_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_PLL_RDY_INT_BIT, enabled);
         }
         public bool getIntDMPEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_DMP_INT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_DMP_INT_BIT);
         }
         public void setIntDMPEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_INT_ENABLE, MPU6050_INTERRUPT_DMP_INT_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_INT_ENABLE, MPU9250_INTERRUPT_DMP_INT_BIT, enabled);
         }
 
         // DMP_INT_STATUS
 
         public bool getDMPInt5Status()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_5_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_DMP_INT_STATUS, MPU9250_DMPINT_5_BIT);
         }
         public bool getDMPInt4Status()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_4_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_DMP_INT_STATUS, MPU9250_DMPINT_4_BIT);
         }
         public bool getDMPInt3Status()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_3_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_DMP_INT_STATUS, MPU9250_DMPINT_3_BIT);
         }
         public bool getDMPInt2Status()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_2_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_DMP_INT_STATUS, MPU9250_DMPINT_2_BIT);
         }
         public bool getDMPInt1Status()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_1_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_DMP_INT_STATUS, MPU9250_DMPINT_1_BIT);
         }
         public bool getDMPInt0Status()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_DMP_INT_STATUS, MPU6050_DMPINT_0_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_DMP_INT_STATUS, MPU9250_DMPINT_0_BIT);
         }
 
         // INT_STATUS register (DMP functions)
 
         public bool getIntPLLReadyStatus()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_PLL_RDY_INT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_PLL_RDY_INT_BIT);
         }
         public bool getIntDMPStatus()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_INT_STATUS, MPU6050_INTERRUPT_DMP_INT_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_INT_STATUS, MPU9250_INTERRUPT_DMP_INT_BIT);
         }
 
         // USER_CTRL register (DMP functions)
 
         public bool getDMPEnabled()
         {
-            return i2c.readBitB(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT);
+            return i2c.readBitB(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_DMP_EN_BIT);
         }
         public void setDMPEnabled(bool enabled)
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT, enabled);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_DMP_EN_BIT, enabled);
         }
         public void resetDMP()
         {
-            i2c.writeBit(devAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_RESET_BIT, true);
+            i2c.writeBit(devAddr, MPU9250_RA_USER_CTRL, MPU9250_USERCTRL_DMP_RESET_BIT, true);
         }
 
         // BANK_SEL register
@@ -3463,25 +3492,25 @@ namespace QuadroschrauberSharp.Hardware
             bank &= 0x1F;
             if (userBank) bank |= 0x20;
             if (prefetchEnabled) bank |= 0x40;
-            i2c.writeByte(devAddr, MPU6050_RA_BANK_SEL, bank);
+            i2c.writeByte(devAddr, MPU9250_RA_BANK_SEL, bank);
         }
 
         // MEM_START_ADDR register
 
         void setMemoryStartAddress(uint8_t address)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_MEM_START_ADDR, address);
+            i2c.writeByte(devAddr, MPU9250_RA_MEM_START_ADDR, address);
         }
 
         // MEM_R_W register
 
         uint8_t readMemoryByte()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_MEM_R_W);
+            return i2c.readByte(devAddr, MPU9250_RA_MEM_R_W);
         }
         void writeMemoryByte(uint8_t data)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_MEM_R_W, data);
+            i2c.writeByte(devAddr, MPU9250_RA_MEM_R_W, data);
         }
         void readMemoryBlock(uint8_t[] data, int dataoffset, uint16_t dataSize, uint8_t bank, uint8_t address)
         {
@@ -3491,7 +3520,7 @@ namespace QuadroschrauberSharp.Hardware
             for (int i = 0; i < dataSize; )
             {
                 // determine correct chunk size according to bank position and data size
-                chunkSize = MPU6050_DMP_MEMORY_CHUNK_SIZE;
+                chunkSize = MPU9250_DMP_MEMORY_CHUNK_SIZE;
 
                 // make sure we don't go past the data size
                 if (i + chunkSize > dataSize) chunkSize = dataSize - i;
@@ -3500,7 +3529,7 @@ namespace QuadroschrauberSharp.Hardware
                 if (chunkSize > 256 - address) chunkSize = 256 - address;
 
                 // read the chunk of data as specified
-                i2c.readBytes(devAddr, MPU6050_RA_MEM_R_W, (byte)chunkSize, data, i + dataoffset);
+                i2c.readBytes(devAddr, MPU9250_RA_MEM_R_W, (byte)chunkSize, data, i + dataoffset);
 
                 // increase byte index by [chunkSize]
                 i += chunkSize;
@@ -3539,12 +3568,12 @@ namespace QuadroschrauberSharp.Hardware
             uint8_t[] progBuffer = null; // Keep compiler quiet
             int i;
             uint8_t j;
-            if (verify) verifyBuffer = new uint8_t[MPU6050_DMP_MEMORY_CHUNK_SIZE];
-            if (useProgMem) progBuffer = new uint8_t[MPU6050_DMP_MEMORY_CHUNK_SIZE];
+            if (verify) verifyBuffer = new uint8_t[MPU9250_DMP_MEMORY_CHUNK_SIZE];
+            if (useProgMem) progBuffer = new uint8_t[MPU9250_DMP_MEMORY_CHUNK_SIZE];
             for (i = 0; i < dataSize; )
             {
                 // determine correct chunk size according to bank position and data size
-                chunkSize = MPU6050_DMP_MEMORY_CHUNK_SIZE;
+                chunkSize = MPU9250_DMP_MEMORY_CHUNK_SIZE;
 
                 // make sure we don't go past the data size
                 if (i + chunkSize > dataSize) chunkSize = dataSize - i;
@@ -3567,14 +3596,14 @@ namespace QuadroschrauberSharp.Hardware
                 }
 
                 _logger.Debug("chunksize = " + chunkSize + " progbuffer = " + progBuffer.Select(x => x.ToString("X2")).Aggregate((a, b) => a + " " + b));
-                i2c.writeBytes(devAddr, MPU6050_RA_MEM_R_W, (byte)chunkSize, progBuffer);
+                i2c.writeBytes(devAddr, MPU9250_RA_MEM_R_W, (byte)chunkSize, progBuffer);
 
                 // verify data if needed
                 if (verify && verifyBuffer != null)
                 {
                     setMemoryBank(bank);
                     setMemoryStartAddress(address);
-                    i2c.readBytes(devAddr, MPU6050_RA_MEM_R_W, (byte)chunkSize, verifyBuffer);
+                    i2c.readBytes(devAddr, MPU9250_RA_MEM_R_W, (byte)chunkSize, verifyBuffer);
                     if (memcmp(progBuffer, verifyBuffer, chunkSize) != 0)
                     {
                         int k;
@@ -3699,7 +3728,7 @@ namespace QuadroschrauberSharp.Hardware
                         //setIntZeroMotionEnabled(true);
                         //setIntFIFOBufferOverflowEnabled(true);
                         //setIntDMPEnabled(true);
-                        i2c.writeByte(devAddr, MPU6050_RA_INT_ENABLE, (byte)0x32); // single operation
+                        i2c.writeByte(devAddr, MPU9250_RA_INT_ENABLE, (byte)0x32); // single operation
 
                         _logger.Debug("writeDMPConfigurationSet success");
                         success = true;
@@ -3730,22 +3759,22 @@ namespace QuadroschrauberSharp.Hardware
 
         uint8_t getDMPConfig1()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_DMP_CFG_1);
+            return i2c.readByte(devAddr, MPU9250_RA_DMP_CFG_1);
         }
         void setDMPConfig1(uint8_t config)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_DMP_CFG_1, config);
+            i2c.writeByte(devAddr, MPU9250_RA_DMP_CFG_1, config);
         }
 
         // DMP_CFG_2 register
 
         uint8_t getDMPConfig2()
         {
-            return i2c.readByte(devAddr, MPU6050_RA_DMP_CFG_2);
+            return i2c.readByte(devAddr, MPU9250_RA_DMP_CFG_2);
         }
         void setDMPConfig2(uint8_t config)
         {
-            i2c.writeByte(devAddr, MPU6050_RA_DMP_CFG_2, config);
+            i2c.writeByte(devAddr, MPU9250_RA_DMP_CFG_2, config);
         }
 
     }
