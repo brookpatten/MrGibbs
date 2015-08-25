@@ -13,7 +13,7 @@
         ""
     ],
     "companyName": "brook.patten@gmail.com",
-    "longName": "PovertySail",
+    "longName": "Mr. Gibbs",
     "projectType": "native",
     "resources": {
         "media": [
@@ -36,12 +36,12 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "PovertySail",
+    "shortName": "Mr. Gibbs",
     "targetPlatforms": [
         "aplite",
         "basalt"
     ],
-    "uuid": "2d3b6b60-b249-458e-85a7-75e9fa7ead84",
+    "uuid": "be296c12-1561-471e-bc6b-cb7d48724f9e",
     "versionLabel": "1.0",
     "watchapp": {
         "watchface": false
