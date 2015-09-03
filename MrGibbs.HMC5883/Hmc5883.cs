@@ -117,7 +117,7 @@ namespace MrGibbs.HMC5883
             SetGain(HMC5883L_GAIN_1370);
     
             // write MODE register
-            //SetMode(HMC5883L_MODE_CONTINUOUS);
+            SetMode(HMC5883L_MODE_CONTINUOUS);
         }
 
         public bool TestConnection()

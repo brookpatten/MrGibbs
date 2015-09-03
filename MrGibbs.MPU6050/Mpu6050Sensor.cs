@@ -68,8 +68,8 @@ namespace MrGibbs.MPU6050
 
 
 			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
-			    state.Heel = accel.y * (360.0/4.0);//((double)accel.y).ToDegrees();
-                	    state.Pitch = accel.x * (360.0 / 4.0);//((double)accel.x).ToDegrees();
+			    state.Heel = accel.x * (360.0/4.0);//((double)accel.y).ToDegrees();
+                state.Pitch = accel.y * (360.0 / 4.0);//((double)accel.x).ToDegrees();
 
 			    //if (framecounter++ == 100 && imu != null)
 			    //_imu.Calibrate ();

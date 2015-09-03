@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MrGibbs.Models
 {
     public enum MarkCaptureMethod : byte { Location = 0, Bearing = 1 }
-    public enum MarkType : byte { Windward = 0, Leeward = 1, Line = 2 }
+    public enum MarkType : byte { Windward = 0, Leeward = 1, Line = 2, Course=byte.MaxValue }
 
     public class Mark
     {

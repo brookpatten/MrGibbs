@@ -4,7 +4,7 @@
 #include "Dashboard.h"
   
 static uint16_t dashboard_map_menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
-  return 17;
+  return 19;
 }
 
 static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *context) {
@@ -60,6 +60,12 @@ static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_laye
       break;
     case 16:
       menu_cell_basic_draw(ctx, cell_layer, "Pitch", NULL, NULL);
+      break;
+    case 17:
+      menu_cell_basic_draw(ctx, cell_layer, "VMG %", NULL, NULL);
+      break;
+    case 18:
+      menu_cell_basic_draw(ctx, cell_layer, "VMC %", NULL, NULL);
       break;
     default:
       break;

@@ -20,6 +20,8 @@ static TextLayer *compass_text_layer_calib_state;
 //static GPath *compass_needle_north;
 //static GPath *compass_needle_south;
 
+static const uint8_t course_heading = UINT8_MAX;
+
 static uint8_t mark_index;
 static uint32_t mark_bearing;
 

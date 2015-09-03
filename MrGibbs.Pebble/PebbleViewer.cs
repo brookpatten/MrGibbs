@@ -142,6 +142,8 @@ namespace MrGibbs.Pebble
                 _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown",()=>_queueCommand((s,r)=>r.CountdownAction())));
                 _lineStateMaps.Add(new LineStateMap(s => s.DistanceToTargetMarkInYards.HasValue ? string.Format("{0}{1:0}",s.TargetMark!=null ? s.TargetMark.Abbreviation : "",s.DistanceToTargetMarkInYards.Value) :"?", "Distance to Mark (yds)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.Pitch.HasValue ? string.Format("{0:0.0}", s.Pitch.Value) : "", "Pitch"));
+                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGoodPercent.HasValue ? string.Format("{0:0.0}%", s.VelocityMadeGoodPercent.Value) : "?", "VMG %"));
+                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGoodOnCoursePercent.HasValue ? string.Format("{0:0.0}%", s.VelocityMadeGoodOnCoursePercent.Value) : "?", "VMC %"));
             }
 
             _lineValueIndexes = new List<int>();

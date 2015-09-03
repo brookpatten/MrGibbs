@@ -44,6 +44,7 @@
     <Compile Include="Coordinate.cs" />
     <Compile Include="CoordinatePoint.cs" />
     <Compile Include="CoordinatePointUtilities.cs" />
+    <Compile Include="Course.cs" />
     <Compile Include="Mark.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -45,7 +45,7 @@ static void main_menu_select_callback(struct MenuLayer *menu_layer, MenuIndex *c
 }
 
 static void main_menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *context) {
-  menu_cell_basic_header_draw(ctx, cell_layer, "PovertySail");
+  menu_cell_basic_header_draw(ctx, cell_layer, "Mr. Gibbs");
 }
 
 static int16_t main_menu_get_header_height_callback(struct MenuLayer *menu_layer, uint16_t section_index, void *context) {

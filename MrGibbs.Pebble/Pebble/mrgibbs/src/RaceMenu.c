@@ -3,6 +3,7 @@
 #include "Messages.h"
 #include "RaceMenu.h"
 #include "MarkSelectMenu.h"
+#include "Compass.h"
   
 static uint16_t race_menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
   return 3;
@@ -28,6 +29,7 @@ static void race_menu_draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIn
 static void race_menu_select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_index, void *context) {
   switch(cell_index->row) {
     case 0:
+        compass_init(course_heading);
       break;
     case 1:
         mark_select_menu_init();

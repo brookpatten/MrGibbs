@@ -78,18 +78,26 @@ namespace MrGibbs.Console
 
         public void SetMarkLocation(MarkType markType)
         {
+            if(_state.Course ==null || !(_state.Course is CourseByMarks))
+            {
+                _state.Course = new CourseByMarks();
+            }
+
+
             if (_state.Location != null)
             {
-                if (_state.Marks == null)
+                var course = _state.Course as CourseByMarks;
+
+                if (course.Marks == null)
                 {
-                    State.Marks = new List<Mark>();
+                    course.Marks = new List<Mark>();
                 }
 
-                if (!_state.Marks.Any())
+                if (!course.Marks.Any())
                 {
                     var mark = new Mark() { MarkType = markType, CaptureMethod = MarkCaptureMethod.Location, Location = _state.Location };
 
-                    State.Marks.Add(mark);
+                    course.Marks.Add(mark);
                     State.TargetMark = mark;
                 }
                 else if (_state.TargetMark != null && _state.TargetMark.MarkType == markType)
@@ -101,7 +109,7 @@ namespace MrGibbs.Console
                 {
                     var mark = new Mark() { MarkType = markType, CaptureMethod = MarkCaptureMethod.Location, Location = _state.Location };
 
-                    State.Marks.Add(mark);
+                    course.Marks.Add(mark);
                     //State.TargetMark = mark;
                 }
                 else
@@ -112,13 +120,37 @@ namespace MrGibbs.Console
         }
         public void SetMarkBearing(MarkType markType, double bearing, bool magneticBearing)
         {
-            if (_state.Location != null)
+            if(markType==MarkType.Course)
             {
-                if (_state.Marks == null)
+                if (_state.Course == null || !(_state.Course is CourseByAngle))
                 {
-                    State.Marks = new List<Mark>();
-                }
+                    _state.Course = new CourseByAngle();
 
+                    if(magneticBearing)
+                    {
+                        if(_state.MagneticDeviation.HasValue)
+                        {
+                            (_state.Course as CourseByAngle).CourseAngle = bearing + _state.MagneticDeviation.Value;
+                        }
+                        else
+                        {
+                            _logger.Error("Cannot set course angle using magnetic bearing without magnetic deviation!");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        (_state.Course as CourseByAngle).CourseAngle = bearing;
+                    }
+                }
+            }
+            else if (_state.Location != null)
+            {
+                if (_state.Course == null || !(_state.Course is CourseByMarks))
+                {
+                    _state.Course = new CourseByMarks();
+                }
+                
                 Bearing fullBearing = new Bearing() { Location = _state.Location, RecordedAt = _state.BestTime, CompassHeading = bearing };
 
                 //compensate for magnetic deviation
@@ -139,18 +171,20 @@ namespace MrGibbs.Console
 
                 Mark mark;
 
-                if (!_state.Marks.Any(x => x.MarkType == markType))
+                var course = _state.Course as CourseByMarks;
+
+                if (!course.Marks.Any(x => x.MarkType == markType))
                 {
                     mark = new Mark() { MarkType = markType, CaptureMethod = MarkCaptureMethod.Bearing, Location = null };
                     mark.Bearings = new List<Bearing>();
                     mark.Bearings.Add(fullBearing);
 
-                    State.Marks.Add(mark);
+                    course.Marks.Add(mark);
                     State.TargetMark = mark;
                 }
                 else
                 {
-                    mark = _state.Marks.Where(x => x.MarkType == markType).Last();
+                    mark = course.Marks.Where(x => x.MarkType == markType).Last();
                     mark.Bearings.Add(fullBearing);
                 }
 
@@ -181,75 +215,90 @@ namespace MrGibbs.Console
 
         public void NextMark()
         {
-            _state.PreviousMark = _state.TargetMark;
-            _state.TargetMark = GetNextMark(_state.TargetMark);
+            if (_state.Course is CourseByMarks)
+            {
+                _state.PreviousMark = _state.TargetMark;
+                _state.TargetMark = GetNextMark(_state.TargetMark);
+            }
         }
 
         private Mark GetNextMark(Mark currentTargetMark)
         {
-            if (currentTargetMark == null)
+            if (_state.Course is CourseByMarks)
             {
-                return _state.Marks.LastOrDefault();
-            }
-            else if (currentTargetMark.MarkType == MarkType.Line)
-            {
-                return _state.Marks.Where(x => x.MarkType == MarkType.Windward).LastOrDefault();
-            }
-            else if (currentTargetMark.MarkType == MarkType.Windward)
-            {
-                return _state.Marks.Where(x => x.MarkType == MarkType.Leeward).LastOrDefault();
-            }
-            else if (currentTargetMark.MarkType == MarkType.Leeward)
-            {
-                return _state.Marks.Where(x => x.MarkType == MarkType.Windward).LastOrDefault();
+                var course = _state.Course as CourseByMarks;
+                if (currentTargetMark == null)
+                {
+                    return course.Marks.LastOrDefault();
+                }
+                else if (currentTargetMark.MarkType == MarkType.Line)
+                {
+                    return course.Marks.Where(x => x.MarkType == MarkType.Windward).LastOrDefault();
+                }
+                else if (currentTargetMark.MarkType == MarkType.Windward)
+                {
+                    return course.Marks.Where(x => x.MarkType == MarkType.Leeward).LastOrDefault();
+                }
+                else if (currentTargetMark.MarkType == MarkType.Leeward)
+                {
+                    return course.Marks.Where(x => x.MarkType == MarkType.Windward).LastOrDefault();
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unknown condition selecting next mark");
+                }
             }
             else
             {
-                throw new InvalidOperationException("Unknown condition selecting next mark");
+                return null;
             }
         }
 
         public void ProcessMarkRoundings()
         {
-            //if the race just started, set the line
-            if (_state.StartTime.HasValue && !_state.RaceStarted && _state.BestTime > _state.StartTime)
+            if (_state.Course is CourseByMarks)
             {
-                _state.RaceStarted = true;
+                var course = _state.Course as CourseByMarks;
+                //if the race just started, set the line
+                if (_state.StartTime.HasValue && !_state.RaceStarted && _state.BestTime > _state.StartTime)
+                {
+                    _state.RaceStarted = true;
 
-                var line = _state.Marks.FirstOrDefault(x => x.MarkType == MarkType.Line);
-                if (line == null)
-                {
-                    line = new Mark()
+                    var line = course.Marks.FirstOrDefault(x => x.MarkType == MarkType.Line);
+                    if (line == null)
                     {
-                        MarkType = MarkType.Line,
-                        CaptureMethod = MarkCaptureMethod.Location,
-                        Location = _state.Location
-                    };
-                    _state.Marks.Insert(0, line);
-                }
-                _state.PreviousMark = line;
+                        line = new Mark()
+                        {
+                            MarkType = MarkType.Line,
+                            CaptureMethod = MarkCaptureMethod.Location,
+                            Location = _state.Location
+                        };
+                        course.Marks.Insert(0, line);
+                    }
+                    _state.PreviousMark = line;
 
-                if (State.Marks.Any(x => x.MarkType == MarkType.Windward))
-                {
-                    State.TargetMark = State.Marks.Where(x => x.MarkType == MarkType.Windward).Last();
-                }
-                else
-                {
-                    State.TargetMark = null;
-                }
-            }
-            else if (_state.StartTime.HasValue && _state.BestTime > _state.StartTime && _state.TargetMark != null &&
-                     _state.TargetMark.Location != null && _autoRoundMarkDistanceMeters.HasValue)
-            {
-                var nextMark = GetNextMark(_state.TargetMark);
-                if (nextMark != null)
-                {
-                    var distanceToMark = CoordinatePoint.HaversineDistance(_state.Location, _state.TargetMark.Location);
-                    if (distanceToMark < _autoRoundMarkDistanceMeters)
+                    if (course.Marks.Any(x => x.MarkType == MarkType.Windward))
                     {
-                        _logger.Info("Distance to " + _state.TargetMark.MarkType + " is " + string.Format("{0:0.0}m") +
-                                     ", advancing to next mark");
-                        NextMark();
+                        State.TargetMark = course.Marks.Where(x => x.MarkType == MarkType.Windward).Last();
+                    }
+                    else
+                    {
+                        State.TargetMark = null;
+                    }
+                }
+                else if (_state.StartTime.HasValue && _state.BestTime > _state.StartTime && _state.TargetMark != null &&
+                         _state.TargetMark.Location != null && _autoRoundMarkDistanceMeters.HasValue)
+                {
+                    var nextMark = GetNextMark(_state.TargetMark);
+                    if (nextMark != null)
+                    {
+                        var distanceToMark = CoordinatePoint.HaversineDistance(_state.Location, _state.TargetMark.Location);
+                        if (distanceToMark < _autoRoundMarkDistanceMeters)
+                        {
+                            _logger.Info("Distance to " + _state.TargetMark.MarkType + " is " + string.Format("{0:0.0}m") +
+                                         ", advancing to next mark");
+                            NextMark();
+                        }
                     }
                 }
             }

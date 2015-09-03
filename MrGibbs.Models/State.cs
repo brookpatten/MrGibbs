@@ -41,10 +41,12 @@ namespace MrGibbs.Models
         public double? MaximumSpeedInKnots { get; set; }
         public double? VelocityMadeGoodOnCourse { get; set; }
         public double? VelocityMadeGood { get; set; }
+        public double? VelocityMadeGoodPercent { get; set; }
+        public double? VelocityMadeGoodOnCoursePercent { get; set; }
 
         //race state
         public DateTime? StartTime { get; set; }
-        public IList<Mark> Marks { get; set; }
+        public ICourse Course { get; set; }
         private int? _targetMarkIndex;
         private int? _previousMarkIndex;
         public bool RaceStarted { get; set; }
@@ -55,7 +57,7 @@ namespace MrGibbs.Models
         public State()
         {
             _messages = new List<Message>();
-            Marks = new List<Mark>();
+            Course = null;
         }
 
         public Message Message
@@ -90,9 +92,12 @@ namespace MrGibbs.Models
         {
             get
             {
-                if (_targetMarkIndex.HasValue)
+                if (_targetMarkIndex.HasValue 
+                    && Course!=null 
+                    && Course is CourseByMarks 
+                    && _targetMarkIndex.Value < (Course as CourseByMarks).Marks.Count)
                 {
-                    return Marks[_targetMarkIndex.Value];
+                    return (Course as CourseByMarks).Marks[_targetMarkIndex.Value];
                 }
                 else
                 {
@@ -105,9 +110,9 @@ namespace MrGibbs.Models
                 {
                     _targetMarkIndex = null;
                 }
-                else if (Marks.Contains(value))
+                else if (Course !=null && Course is CourseByMarks && (Course as CourseByMarks).Marks.Contains(value))
                 {
-                    _targetMarkIndex = Marks.IndexOf(value);
+                    _targetMarkIndex = (Course as CourseByMarks).Marks.IndexOf(value);
                 }
                 else
                 {
@@ -120,9 +125,12 @@ namespace MrGibbs.Models
         {
             get
             {
-                if (_previousMarkIndex.HasValue)
+                if (_previousMarkIndex.HasValue
+                    && Course != null
+                    && Course is CourseByMarks
+                    && _previousMarkIndex.Value < (Course as CourseByMarks).Marks.Count)
                 {
-                    return Marks[_previousMarkIndex.Value];
+                    return (Course as CourseByMarks).Marks[_previousMarkIndex.Value];
                 }
                 else
                 {
@@ -135,9 +143,9 @@ namespace MrGibbs.Models
                 {
                     _previousMarkIndex = null;
                 }
-                else if (Marks.Contains(value))
+                else if (Course != null && Course is CourseByMarks && (Course as CourseByMarks).Marks.Contains(value))
                 {
-                    _previousMarkIndex = Marks.IndexOf(value);
+                    _previousMarkIndex = (Course as CourseByMarks).Marks.IndexOf(value);
                 }
                 else
                 {
@@ -145,7 +153,7 @@ namespace MrGibbs.Models
                 }
             }
         }
-
+        
         public DateTime BestTime
         {
             get
