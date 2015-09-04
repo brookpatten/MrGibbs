@@ -193,6 +193,8 @@ namespace MrGibbs.Console
                         }
 
                         _raceController.ProcessMarkRoundings();
+
+                        _logger.Info(string.Format("Speed: {0:0.0}\tHeading: {1:0.0}\tVMG: {2:0.0}\tVMG %:{3:0.0}", _state.SpeedInKnots, _state.CourseOverGroundByLocation, _state.VelocityMadeGood, _state.VelocityMadeGoodPercent));
                     }
                 }
 

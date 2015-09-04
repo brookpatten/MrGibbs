@@ -19,11 +19,11 @@ namespace MrGibbs.Pebble
         private IList<IPluginComponent> _components;
 
 #if !WINDOWS
-        private const string _pbwPath = "/home/pi/dev/povertysail/MrGibbs.Pebble/MrGibbs.pbw";
+        private const string _pbwPath = "/home/pi/dev/povertysail/MrGibbs.Pebble/Mr._Gibbs.pbw";
 #endif
 
 #if WINDOWS
-        private const string _pbwPath = "PovertySail.pbw";
+        private const string _pbwPath = "Mr._Gibbs.pbw";
 #endif
 
         public PebblePlugin(ILogger logger)
