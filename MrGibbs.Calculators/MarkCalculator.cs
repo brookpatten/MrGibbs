@@ -105,7 +105,7 @@ namespace MrGibbs.Calculators
 
         private double VelocityMadeGood(double courseAngle,double courseOverGround, double speed)
         {
-            return Math.Cos(Math.Abs(AngleUtilities.AngleDifference(courseAngle,courseOverGround))) * speed;
+            return Math.Cos(Math.Abs(AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians(courseAngle),AngleUtilities.DegreestoRadians(courseOverGround)))) * speed;
         }
 
         private double VelocityMadeGood(Mark targetMark, Mark previousMark, CoordinatePoint current, CoordinatePoint previous,double speed)
