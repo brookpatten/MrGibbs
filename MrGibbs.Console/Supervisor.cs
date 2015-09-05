@@ -84,6 +84,7 @@ namespace MrGibbs.Console
             _run = true;
             _restart = false;
             int operationCount = 1;
+            _state.SystemTime = DateTime.UtcNow;
             _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Startup Complete");
             while (_run && operationCount>0)
             {
@@ -195,6 +196,10 @@ namespace MrGibbs.Console
                         _raceController.ProcessMarkRoundings();
 
                         _logger.Info(string.Format("Speed: {0:0.0}\tHeading: {1:0.0}\tVMG: {2:0.0}\tVMG %:{3:0.0}", _state.SpeedInKnots, _state.CourseOverGroundByLocation, _state.VelocityMadeGood, _state.VelocityMadeGoodPercent));
+                        if(_state.Message!=null)
+                        {
+                            _logger.Info(_state.Message.Text);
+                        }
                     }
                 }
 

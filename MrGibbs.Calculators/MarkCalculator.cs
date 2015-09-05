@@ -103,7 +103,7 @@ namespace MrGibbs.Calculators
             }
         }
 
-        private double VelocityMadeGood(double courseAngle,double courseOverGround, double speed)
+        public static double VelocityMadeGood(double courseAngle,double courseOverGround, double speed)
         {
             return Math.Cos(Math.Abs(AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians(courseAngle),AngleUtilities.DegreestoRadians(courseOverGround)))) * speed;
         }

@@ -197,16 +197,23 @@ namespace MrGibbs.Models
         {
             lock (_messages)
             {
-                if ((Message == null || Message.HideAt < BestTime) && _messages.Any())
+                if (Message == null || Message.HideAt < BestTime)
                 {
-                    var highest = _messages.OrderBy(x => (int)x.Priority).First();
-                    Message = highest;
-                    Message.ShownAt = BestTime;
-                    _messages.Remove(highest);
+                    if (_messages.Any())
+                    {
+                        var highest = _messages.OrderBy(x => (int)x.Priority).First();
+                        Message = highest;
+                        Message.ShownAt = BestTime;
+                        _messages.Remove(highest);
+                    }
+                    else
+                    {
+                        Message = null;
+                    }
                 }
                 else
                 {
-                    Message = null;
+                    //Message = null;
                 }
             }
         }
