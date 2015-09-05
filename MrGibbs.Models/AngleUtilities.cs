@@ -8,6 +8,10 @@ namespace MrGibbs.Models
 {
     public class AngleUtilities
     {
+        public static double DegreestoRadians(double val)
+        {
+            return (Math.PI / 180) * val;
+        }
         public static double NormalizeAngle(double angle)
         {
             angle = angle % (Math.PI * 2d);
