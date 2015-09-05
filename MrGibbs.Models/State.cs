@@ -43,6 +43,7 @@ namespace MrGibbs.Models
         public double? VelocityMadeGood { get; set; }
         public double? VelocityMadeGoodPercent { get; set; }
         public double? VelocityMadeGoodOnCoursePercent { get; set; }
+        public double? CurrentTackCourseOverGroundDelta { get; set; }
 
         //race state
         public DateTime? StartTime { get; set; }

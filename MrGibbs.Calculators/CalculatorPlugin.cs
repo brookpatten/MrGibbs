@@ -29,6 +29,12 @@ namespace MrGibbs.Calculators
             _components.Add(distanceCalc);
             configuration.Calculators.Add(distanceCalc);
 
+            var tackCalc = new TackCalculator(_logger, this);
+            _components.Add(tackCalc);
+            configuration.Calculators.Add(tackCalc);
+
+
+
             _initialized = true;
         }
 
