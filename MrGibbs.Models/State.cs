@@ -44,7 +44,8 @@ namespace MrGibbs.Models
         public double? VelocityMadeGoodPercent { get; set; }
         public double? VelocityMadeGoodOnCoursePercent { get; set; }
         public double? CurrentTackCourseOverGroundDelta { get; set; }
-
+        public double? CourseOverGroundRelativeToCourse { get; set; }
+        
         //race state
         public DateTime? StartTime { get; set; }
         public ICourse Course { get; set; }

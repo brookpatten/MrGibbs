@@ -84,6 +84,9 @@ namespace MrGibbs.Calculators
                             calculation.Location, previous.Location, state.SpeedInKnots.Value);
 
                         state.VelocityMadeGoodPercent = calculation.VelocityMadeGood / state.SpeedInKnots * 100;
+
+                        var relativeAngle = RelativeAngleToCourse(state.TargetMark, state.PreviousMark, calculation.Location, previous.Location);
+                        state.CourseOverGroundRelativeToCourse = AngleUtilities.RadiansToDegrees(relativeAngle);
                     }
                 }
 
@@ -92,6 +95,9 @@ namespace MrGibbs.Calculators
             {
                 state.VelocityMadeGood = VelocityMadeGood((state.Course as CourseByAngle).CourseAngle, state.CourseOverGroundByLocation.Value, state.SpeedInKnots.Value);
                 state.VelocityMadeGoodPercent = state.VelocityMadeGood / state.SpeedInKnots * 100;
+
+                var relativeAngle = AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians((state.Course as CourseByAngle).CourseAngle), AngleUtilities.DegreestoRadians(state.CourseOverGroundByLocation.Value));
+                state.CourseOverGroundRelativeToCourse = AngleUtilities.RadiansToDegrees(relativeAngle);
             }
             else
             {
@@ -100,6 +106,7 @@ namespace MrGibbs.Calculators
                 state.VelocityMadeGood = null;
                 state.VelocityMadeGoodOnCoursePercent = null;
                 state.VelocityMadeGoodPercent = null;
+                state.CourseOverGroundRelativeToCourse = null;
             }
         }
 

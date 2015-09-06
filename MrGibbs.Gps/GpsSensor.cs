@@ -25,6 +25,8 @@ namespace MrGibbs.Gps
         private bool _run = false;
         private int _baud;
 
+        private double _minimumSpeed = 0.4;//knots
+
         public GpsSensor(ILogger logger, GpsPlugin plugin,string serialPort, int baud)
         {
             _numberCulture = System.Globalization.CultureInfo.GetCultureInfo("en-us");
@@ -303,11 +305,14 @@ namespace MrGibbs.Gps
                     if (speed != double.MinValue)
                     {
                         state.SpeedInKnots = speed;
+
+                        //don't set COG if we're not really moving
+                        if (courseOverGroundByLocation != double.MinValue && speed>_minimumSpeed)
+                        {
+                            state.CourseOverGroundByLocation = courseOverGroundByLocation;
+                        }
                     }
-                    if (courseOverGroundByLocation != double.MinValue)
-                    {
-                        state.CourseOverGroundByLocation = courseOverGroundByLocation;
-                    }
+                    
                     if (date.HasValue)
                     {
                         state.GpsTime = date.Value;

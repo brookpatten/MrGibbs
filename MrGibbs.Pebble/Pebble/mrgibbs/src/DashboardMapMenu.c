@@ -4,7 +4,7 @@
 #include "Dashboard.h"
   
 static uint16_t dashboard_map_menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *context) {
-  return 19;
+  return 21;
 }
 
 static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_layer, MenuIndex *cell_index, void *context) {
@@ -66,6 +66,12 @@ static void dashboard_map_menu_draw_row_callback(GContext *ctx, Layer *cell_laye
       break;
     case 18:
       menu_cell_basic_draw(ctx, cell_layer, "VMC %", NULL, NULL);
+      break;
+    case 19:
+      menu_cell_basic_draw(ctx, cell_layer, "Current Tack Delta", NULL, NULL);
+      break;
+    case 20:
+      menu_cell_basic_draw(ctx, cell_layer, "Course Relative", NULL, NULL);
       break;
     default:
       break;

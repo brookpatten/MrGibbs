@@ -24,8 +24,11 @@ namespace MrGibbs.Gps
         {
             _components = new List<IPluginComponent>();
             _initialized = false;
-            //var sensor = new SimulatedGpsSensor(_logger, this);
+#if WINDOWS
+            var sensor = new SimulatedGpsSensor(_logger, this);
+#else
             var sensor = new GpsSensor(_logger, this, AppConfig.GpsPort, AppConfig.GpsBaud);
+#endif
             configuration.Sensors.Add(sensor);
             _components.Add(sensor);
             sensor.Start();
