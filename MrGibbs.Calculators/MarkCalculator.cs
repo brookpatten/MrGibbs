@@ -73,7 +73,7 @@ namespace MrGibbs.Calculators
                     var vmcMetersPerSecond = distanceDelta/duration.TotalSeconds;
                     var vmcKnots = MetersPerSecondToKnots * vmcMetersPerSecond;
                     calculation.VelocityMadeGoodOnCourse = vmcKnots;
-                    state.VelocityMadeGoodOnCourse = _previousCalculations.Average(x => x.VelocityMadeGoodOnCourse);
+                    state.VelocityMadeGoodOnCourse = vmcKnots;//_previousCalculations.Average(x => x.VelocityMadeGoodOnCourse);
 
                     state.VelocityMadeGoodOnCoursePercent = vmcKnots / state.SpeedInKnots * 100;
 

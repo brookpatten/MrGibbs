@@ -25,7 +25,7 @@ namespace MrGibbs.Gps
         private bool _run = false;
         private int _baud;
 
-        private double _minimumSpeed = 0.4;//knots
+        private double _minimumSpeed = 0.3;//knots
 
         public GpsSensor(ILogger logger, GpsPlugin plugin,string serialPort, int baud)
         {
@@ -310,6 +310,10 @@ namespace MrGibbs.Gps
                         if (courseOverGroundByLocation != double.MinValue && speed>_minimumSpeed)
                         {
                             state.CourseOverGroundByLocation = courseOverGroundByLocation;
+                        }
+                        else
+                        {
+                            state.CourseOverGroundByLocation = null;
                         }
                     }
                     

@@ -45,6 +45,33 @@ namespace MrGibbs.Models
         public double? VelocityMadeGoodOnCoursePercent { get; set; }
         public double? CurrentTackCourseOverGroundDelta { get; set; }
         public double? CourseOverGroundRelativeToCourse { get; set; }
+
+        public void Clear()
+        {
+            GpsTime = null;
+            Location = null;
+            CourseOverGroundByLocation = null;
+            SpeedInKnots = null;
+            MagneticCourseMadeGood = null;
+            TrueCourseMadeGood = null;
+            AltitudeInMeters = null;
+            Accel = null;
+            Gyro = null;
+            Heel = null;
+            Pitch = null;
+            Magneto = null;
+            MagneticHeading = null;
+            MagneticDeviation = null;
+            MagneticHeadingWithVariation = null;
+            DistanceToTargetMarkInYards = null;
+            MaximumSpeedInKnots = null;
+            VelocityMadeGoodOnCourse = null;
+            VelocityMadeGood = null;
+            VelocityMadeGoodPercent = null;
+            VelocityMadeGoodOnCoursePercent = null;
+            CurrentTackCourseOverGroundDelta = null;
+            CourseOverGroundRelativeToCourse = null;
+        }
         
         //race state
         public DateTime? StartTime { get; set; }

@@ -88,6 +88,7 @@ namespace MrGibbs.Console
             //_state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Startup Complete");
             while (_run && operationCount>0)
             {
+                _state.Clear();
                 _state.SystemTime = DateTime.UtcNow;
                 
                 operationCount = 0;

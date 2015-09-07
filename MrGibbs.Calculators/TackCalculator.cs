@@ -26,7 +26,7 @@ namespace MrGibbs.Calculators
         private double _tackThreshold = AngleUtilities.DegreestoRadians(60);
         private TimeSpan _tackThresholdTime = new TimeSpan(0, 0, 10);
         private DateTime? _lastTackAt;
-        private TimeSpan _dataExclusionTime = new TimeSpan(0, 0, 5);
+        private TimeSpan _dataExclusionTime = new TimeSpan(0, 0, 10);
 
         private double? _previousTackCourseOverGroundRadians;
         private double? _currentTackStartCourseOverGroundRadians;
