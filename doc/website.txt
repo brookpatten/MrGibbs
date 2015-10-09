@@ -1,0 +1,26 @@
+goals
+  metrics that are important to dinghy racers
+  provide the same functionality as commercial units
+  provide enhanced real time analyssis and virtual tactician
+  low cost, commodity hardware
+  completley wireless.  Each component communicates via bluetooth or wifi.  Each component is self powered
+  open source, easily extensible in .net/mono
+
+hardware
+  raspberry pi
+  pebble smartwatch
+  mpu 6050 accelerometer
+  ublox neo 6m gps
+  hmc5883 compass
+  
+features
+  dashboard with 3 row customizable display
+  multiple displays
+  single, synchronized timer
+  configure course by current gps location, great circle intersection, compass heading(pebble), or heading (manually entered)
+  current tack lift/header with automatic tack detection
+  
+future enhancements
+  BLE Wind vane / anemometer
+  Data logging
+  kindle/nook display

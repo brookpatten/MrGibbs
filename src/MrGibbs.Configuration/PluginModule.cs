@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Ninject.Modules;
 
+
 using MrGibbs.Contracts;
 
 namespace MrGibbs.Configuration

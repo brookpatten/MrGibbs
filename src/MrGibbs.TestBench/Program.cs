@@ -21,16 +21,26 @@ namespace MrGibbs.TestBench
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
+            MrGibbs.Test.StateTest stateTest = new Test.StateTest();
+            stateTest.Run();
+
+            watch.Stop();
+            Console.ReadLine();
+
+        }
+
+        public static void VmgTest()
+        {
             double courseAngle = 270;
-            double courseOverGround = 270-45;
+            double courseOverGround = 270 - 45;
             double speed = 10;
 
             double courseAngleRadians = AngleUtilities.DegreestoRadians(courseAngle);
             double courseOverGroundRadians = AngleUtilities.DegreestoRadians(courseOverGround);
 
-            double difference = AngleUtilities.AngleDifference(courseAngleRadians,courseOverGroundRadians);
+            double difference = AngleUtilities.AngleDifference(courseAngleRadians, courseOverGroundRadians);
 
-            
+
             var cos = Math.Cos(difference);
 
             var vmg = cos * speed;
@@ -38,12 +48,7 @@ namespace MrGibbs.TestBench
             vmg = MarkCalculator.VelocityMadeGood(courseAngle, courseOverGround, speed);
 
 
-            Console.WriteLine(string.Format("VMG:{0:0.00}\tVMG%:{1:0.00}",vmg,(vmg/speed*100)));
-            
-
-            watch.Stop();
-            Console.ReadLine();
-
+            Console.WriteLine(string.Format("VMG:{0:0.00}\tVMG%:{1:0.00}", vmg, (vmg / speed * 100)));
         }
 
         public static void VariationTest()

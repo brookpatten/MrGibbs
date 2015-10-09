@@ -80,9 +80,9 @@ namespace MrGibbs.Calculators
         {
             var latest = _history.Last();
 
-            var deltas = _history.Where(x=>x.Time > latest.Time - _tackThresholdTime).Select(x => AngleUtilities.AngleDifference(latest.CourseOverGroundRadians, x.CourseOverGroundRadians)).Max();
+            var deltas = _history.Where(x=>x.Time > latest.Time - _tackThresholdTime).Select(x => Math.Abs(AngleUtilities.AngleDifference(latest.CourseOverGroundRadians, x.CourseOverGroundRadians))).Max();
 
-            if(Math.Abs(deltas)>_tackThreshold)
+            if(deltas>_tackThreshold)
             {
                 //tack detected
                 _lastTackAt = latest.Time;

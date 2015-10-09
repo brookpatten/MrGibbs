@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.Console", "MrGibbs.Console\MrGibbs.Console.csproj", "{0640B87F-A33C-4612-B3D7-AA7363BB1CCC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{E38D5C9B-42CF-48F1-A13E-BC66E00107EF}"
@@ -44,6 +46,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.MagneticVariation", "MrGibbs.MagneticVariation\MrGibbs.MagneticVariation.csproj", "{2BE5501B-FA4A-408F-8269-F2D6E7A02699}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.MPU9250", "MrGibbs.MPU9250\MrGibbs.MPU9250.csproj", "{C03B4B43-1404-4449-8865-3AFD1FD626E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.ChaosMonkey", "MrGibbs.ChaosMonkey\MrGibbs.ChaosMonkey.csproj", "{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.Test", "MrGibbs.Test\MrGibbs.Test.csproj", "{22546F50-64C4-4491-91DC-C79BE2F5DBE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -172,6 +178,18 @@ Global
 		{C03B4B43-1404-4449-8865-3AFD1FD626E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C03B4B43-1404-4449-8865-3AFD1FD626E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C03B4B43-1404-4449-8865-3AFD1FD626E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
+		{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,5 +208,6 @@ Global
 		{AB46A638-42D2-436E-A40B-1123AC4653D4} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{2BE5501B-FA4A-408F-8269-F2D6E7A02699} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{C03B4B43-1404-4449-8865-3AFD1FD626E9} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
+		{FCD96F72-0DD3-4C68-90A2-E7107EEC7AF4} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 	EndGlobalSection
 EndGlobal

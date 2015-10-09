@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</ProjectGuid>
+    <ProjectGuid>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MrGibbs.Gps</RootNamespace>
-    <AssemblyName>MrGibbs.Gps</AssemblyName>
+    <RootNamespace>MrGibbs.Pebble</RootNamespace>
+    <AssemblyName>MrGibbs.Pebble</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -39,19 +39,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GpsPlugin.cs" />
-    <Compile Include="GpsSensor.cs" />
-    <Compile Include="NMEA\NmeaDictionary.cs" />
-    <Compile Include="NMEA\NmeaParser.cs" />
-    <Compile Include="NMEA\NmeaSentenceType.cs" />
-    <Compile Include="NMEA\NmeaSentenceTypePart.cs" />
+    <Compile Include="PebbleViewer.cs" />
+    <Compile Include="PebblePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulatedGpsSensor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
-      <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
-      <Name>MrGibbs.Configuration</Name>
+    <ProjectReference Include="..\InTheHand.Net.Personal\InTheHand.Net.Personal.FX2.csproj">
+      <Project>{98BDDE14-8F8C-40CC-9E45-5BAC73573EF4}</Project>
+      <Name>InTheHand.Net.Personal.FX2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj">
+      <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
+      <Name>PebbleSharp.Core.NonPortable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PebbleSharp.Net45\PebbleSharp.Net45.csproj">
+      <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
+      <Name>PebbleSharp.Net45</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
       <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
@@ -63,10 +66,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="NMEA.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="example.nmea">
+    <Content Include="Mr._Gibbs.pbw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

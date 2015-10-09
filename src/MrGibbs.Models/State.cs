@@ -21,6 +21,12 @@ namespace MrGibbs.Models
         public double? CourseOverGroundByLocation { get; set; }
         public double? SpeedInKnots { get; set; }
         public double? MagneticCourseMadeGood { get; set; }
+
+        public static void Run()
+        {
+            throw new NotImplementedException();
+        }
+
         public double? TrueCourseMadeGood { get; set; }
         public double? AltitudeInMeters { get; set; }
         
@@ -220,6 +226,21 @@ namespace MrGibbs.Models
             message.Priority = priority;
             message.Duration = new TimeSpan(0,0,0,secondsDuration);
             AddMessage(message);
+        }
+
+        public int MessageCount
+        {
+            get
+            {
+                if(_messages!= null)
+                {
+                    return _messages.Count;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
         }
 
         public void CycleMessages()

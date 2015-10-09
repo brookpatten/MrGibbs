@@ -28,6 +28,13 @@ namespace MrGibbs.Console
             _sleepTime = sleepTime;
             _logger = logger;
             _allPlugins = plugins;
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _logger.Fatal("AppDomain Unhandled Exception", e.ExceptionObject);
         }
 
         public void Initialize()
@@ -63,6 +70,7 @@ namespace MrGibbs.Console
             {
                 _logger.Info(plugin.GetType().Name + " Initialized OK");
             }
+            
         }
 
         private void InitializePlugin(IPlugin plugin)

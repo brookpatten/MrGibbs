@@ -4,37 +4,34 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{490795D3-864E-4261-B3C6-799275CFF60B}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MrGibbs.TestBench</RootNamespace>
-    <AssemblyName>MrGibbs.TestBench</AssemblyName>
+    <RootNamespace>QuadroSchrauberLinux</RootNamespace>
+    <AssemblyName>QuadroSchrauberLinux</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,36 +39,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="I2CLinux.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MrGibbs.Calculators\MrGibbs.Calculators.csproj">
-      <Project>{40fa9817-077e-494c-8dcd-2f54758b5085}</Project>
-      <Name>MrGibbs.Calculators</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
-      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
-      <Name>MrGibbs.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.Infrastructure\MrGibbs.Infrastructure.csproj">
-      <Project>{860dcfbc-164c-4bca-a112-af0439a60211}</Project>
-      <Name>MrGibbs.Infrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.MagneticVariation\MrGibbs.MagneticVariation.csproj">
-      <Project>{2be5501b-fa4a-408f-8269-f2d6e7a02699}</Project>
-      <Name>MrGibbs.MagneticVariation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
-      <Project>{a41a884e-a7fe-4ec6-80a7-145e3fb4311f}</Project>
-      <Name>MrGibbs.Models</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
