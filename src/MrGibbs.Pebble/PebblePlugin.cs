@@ -36,7 +36,7 @@ namespace MrGibbs.Pebble
             _components = new List<IPluginComponent>();
         
             //scan for pebbles
-            var pebbles = PebbleNet45.DetectPebbles();
+			var pebbles = PebbleNet45.Detect (null, false);
 
             AppBundle bundle=null;
 

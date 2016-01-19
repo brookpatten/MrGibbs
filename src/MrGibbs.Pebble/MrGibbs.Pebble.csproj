@@ -44,10 +44,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InTheHand.Net.Personal\InTheHand.Net.Personal.FX2.csproj">
-      <Project>{98BDDE14-8F8C-40CC-9E45-5BAC73573EF4}</Project>
-      <Name>InTheHand.Net.Personal.FX2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj">
       <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
       <Name>PebbleSharp.Core.NonPortable</Name>

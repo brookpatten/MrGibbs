@@ -1,0 +1,53 @@
+﻿<Properties StartupItem="MrGibbs.Console/MrGibbs.Console.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Mono.BlueZ/dbus-sharp/src/Unix/UnixSocket.cs">
+    <Files>
+      <File FileName="Mono.BlueZ/dbus-sharp/src/Unix/UnixSocket.cs" Line="2" Column="2" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="187" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="156" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="159" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="161" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="177" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs" line="109" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs" line="134" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="28" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="33" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs" line="119" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="37" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="35" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="109" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="94" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="96" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="255" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="231" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="250" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="256" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="258" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="229" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="239" column="15" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="240" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs" line="76" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs" line="178" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Core.NonPortable/Pebble.cs" line="442" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Net45/PebbleNet45.cs" line="407" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageWriter.cs" line="205" column="18" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageWriter.cs" line="307" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="385" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="273" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="276" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="277" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="281" column="1" />
+      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="287" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <DisabledProjects>
+    <String>MrGibbs.Test/MrGibbs.Test.csproj</String>
+    <String>MrGibbs.ChaosMonkey/MrGibbs.ChaosMonkey.csproj</String>
+    <String>MrGibbs.TestBench/MrGibbs.TestBench.csproj</String>
+  </DisabledProjects>
+</Properties>

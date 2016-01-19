@@ -1,0 +1,342 @@
+2016-01-10 18:00:45.8366 Initializing Supervisor 
+2016-01-10 18:00:45.9966 Initializing Plugin CalculatorPlugin 
+2016-01-10 18:00:45.9990 Initializing Plugin GpsPlugin 
+2016-01-10 18:00:46.0163 Exception initializing plugin GpsPlugin System.IO.FileNotFoundException: Could not find file "/home/brook/Documents/Development/mrgibbs/src/example.nmea".
+File name: '/home/brook/Documents/Development/mrgibbs/src/example.nmea'
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) <0x7f18e8ce2060 + 0x005cd> in <filename unknown>:0 
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, System.String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost) <0x7f18e8ce1fb0 + 0x0004d> in <filename unknown>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream:.ctor (string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions,string,bool,bool,bool)
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost) <0x7f18e8b51530 + 0x000e4> in <filename unknown>:0 
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize) <0x7f18e8b514f0 + 0x00030> in <filename unknown>:0 
+  at System.IO.StreamReader..ctor (System.String path, Boolean detectEncodingFromByteOrderMarks) <0x7f18e8b51420 + 0x0003b> in <filename unknown>:0 
+  at System.IO.StreamReader..ctor (System.String path) <0x7f18e8b51400 + 0x00016> in <filename unknown>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamReader:.ctor (string)
+  at MrGibbs.Gps.SimulatedGpsSensor.Start () [0x00013] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/SimulatedGpsSensor.cs:27 
+  at MrGibbs.Gps.GpsPlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x00039] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/GpsPlugin.cs:34 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:00:46.0198 Initializing Plugin Hmc5883Plugin 
+2016-01-10 18:00:46.0224 Exception initializing plugin Hmc5883Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.writeBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:137 
+  at QuadroschrauberSharp.Hardware.I2C.Write (Byte devAddr, Byte regAddr, System.Byte[] data) [0x00009] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:269 
+  at QuadroschrauberSharp.Hardware.I2C.writeByte (Byte devAddr, Byte regAddr, Byte data) [0x00001] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:280 
+  at MrGibbs.HMC5883.Hmc5883.Initialize () [0x00066] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883.cs:114 
+  at MrGibbs.HMC5883.Hmc5883Sensor..ctor (ILogger logger, MrGibbs.HMC5883.Hmc5883Plugin plugin) [0x00027] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Sensor.cs:28 
+  at MrGibbs.HMC5883.Hmc5883Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001a] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Plugin.cs:23 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:00:46.0238 Initializing Plugin Mpu6050Plugin 
+2016-01-10 18:00:46.0254 Initializing MPU-6050 
+2016-01-10 18:00:46.0265 Exception initializing plugin Mpu6050Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, Int32 offset, UInt16 timeout) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:95 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:121 
+  at QuadroschrauberSharp.Hardware.I2C.readBytes (Byte devAddr, Int32 regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:117 
+  at QuadroschrauberSharp.Hardware.I2C.Read (Byte devAddr, Byte regAddr, Byte length, UInt16 timeout) [0x0000f] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:22 
+  at QuadroschrauberSharp.Hardware.I2C.readByte (Byte devAddr, Byte regAddr, UInt16 timeout) [0x00006] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:129 
+  at QuadroschrauberSharp.Hardware.I2C.writeBits (Byte devAddr, Byte regAddr, Byte bitStart, Byte length, Byte data) [0x00005] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:221 
+  at QuadroschrauberSharp.Hardware.MPU6050.setClockSource (Byte source) [0x00012] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:2985 
+  at QuadroschrauberSharp.Hardware.MPU6050.initialize () [0x00003] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:446 
+  at QuadroschrauberSharp.IMU_MPU6050.Init (Boolean dmp) [0x0001e] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/IMU.cs:37 
+  at MrGibbs.MPU6050.Mpu6050Sensor.Calibrate () [0x0000d] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:95 
+  at MrGibbs.MPU6050.Mpu6050Sensor..ctor (ILogger logger, MrGibbs.MPU6050.Mpu6050Plugin plugin, Boolean dmp) [0x00059] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:46 
+  at MrGibbs.MPU6050.Mpu6050Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001b] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Plugin.cs:27 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:00:46.0290 Initializing Plugin MagneticVariationPlugin 
+2016-01-10 18:00:46.0324 Loading WMM.COF File failed, using hard coded coefficients 
+2016-01-10 18:00:46.0345 Loaded Magnetic Variation Coefficients from Hardcoded values 
+2016-01-10 18:00:46.0348 Initializing Plugin PebblePlugin 
+2016-01-10 18:00:46.5631 Exception initializing plugin PebblePlugin System.PlatformNotSupportedException: No supported Bluetooth protocol stack found.
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.GetStacks_inLock () [0x00320] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:165 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factories () [0x00019] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:173 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factory () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:187 
+  at InTheHand.Net.Sockets.BluetoothClient..ctor () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Sockets/BluetoothClient.cs:96 
+  at PebbleSharp.Net45.PebbleNet45.DetectPebbles () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Net45/PebbleNet45.cs:18 
+  at MrGibbs.Pebble.PebblePlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0000c] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs:39 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:00:46.5664 Evicting GpsPlugin without reinitialize 
+2016-01-10 18:00:46.5680 Evicting Hmc5883Plugin without reinitialize 
+2016-01-10 18:00:46.5680 Evicting Mpu6050Plugin without reinitialize 
+2016-01-10 18:00:46.5680 Evicting PebblePlugin without reinitialize 
+2016-01-10 18:00:46.5686 CalculatorPlugin Initialized OK 
+2016-01-10 18:00:46.5686 MagneticVariationPlugin Initialized OK 
+2016-01-10 18:00:46.5718 Supervisor is running 
+2016-01-10 18:00:46.5837 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-10 18:00:47.5847 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-10 18:00:48.5862 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-10 18:00:49.5874 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-10 18:04:12.9089 Initializing Supervisor 
+2016-01-10 18:04:12.9506 Initializing Plugin CalculatorPlugin 
+2016-01-10 18:04:12.9527 Initializing Plugin GpsPlugin 
+2016-01-10 18:04:12.9693 Exception initializing plugin GpsPlugin System.IO.FileNotFoundException: Could not find file "/home/brook/Documents/Development/mrgibbs/src/example.nmea".
+File name: '/home/brook/Documents/Development/mrgibbs/src/example.nmea'
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) <0x7f6025d5d060 + 0x005cd> in <filename unknown>:0 
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, System.String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost) <0x7f6025d5cfb0 + 0x0004d> in <filename unknown>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream:.ctor (string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions,string,bool,bool,bool)
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost) <0x7f6025bcc530 + 0x000e4> in <filename unknown>:0 
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize) <0x7f6025bcc4f0 + 0x00030> in <filename unknown>:0 
+  at System.IO.StreamReader..ctor (System.String path, Boolean detectEncodingFromByteOrderMarks) <0x7f6025bcc420 + 0x0003b> in <filename unknown>:0 
+  at System.IO.StreamReader..ctor (System.String path) <0x7f6025bcc400 + 0x00016> in <filename unknown>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamReader:.ctor (string)
+  at MrGibbs.Gps.SimulatedGpsSensor.Start () [0x00013] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/SimulatedGpsSensor.cs:27 
+  at MrGibbs.Gps.GpsPlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x00039] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/GpsPlugin.cs:34 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:04:12.9728 Initializing Plugin Hmc5883Plugin 
+2016-01-10 18:04:12.9755 Exception initializing plugin Hmc5883Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.writeBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:137 
+  at QuadroschrauberSharp.Hardware.I2C.Write (Byte devAddr, Byte regAddr, System.Byte[] data) [0x00009] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:269 
+  at QuadroschrauberSharp.Hardware.I2C.writeByte (Byte devAddr, Byte regAddr, Byte data) [0x00001] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:280 
+  at MrGibbs.HMC5883.Hmc5883.Initialize () [0x00066] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883.cs:114 
+  at MrGibbs.HMC5883.Hmc5883Sensor..ctor (ILogger logger, MrGibbs.HMC5883.Hmc5883Plugin plugin) [0x00027] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Sensor.cs:28 
+  at MrGibbs.HMC5883.Hmc5883Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001a] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Plugin.cs:23 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:04:12.9770 Initializing Plugin Mpu6050Plugin 
+2016-01-10 18:04:12.9789 Initializing MPU-6050 
+2016-01-10 18:04:12.9800 Exception initializing plugin Mpu6050Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, Int32 offset, UInt16 timeout) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:95 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:121 
+  at QuadroschrauberSharp.Hardware.I2C.readBytes (Byte devAddr, Int32 regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:117 
+  at QuadroschrauberSharp.Hardware.I2C.Read (Byte devAddr, Byte regAddr, Byte length, UInt16 timeout) [0x0000f] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:22 
+  at QuadroschrauberSharp.Hardware.I2C.readByte (Byte devAddr, Byte regAddr, UInt16 timeout) [0x00006] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:129 
+  at QuadroschrauberSharp.Hardware.I2C.writeBits (Byte devAddr, Byte regAddr, Byte bitStart, Byte length, Byte data) [0x00005] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:221 
+  at QuadroschrauberSharp.Hardware.MPU6050.setClockSource (Byte source) [0x00012] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:2985 
+  at QuadroschrauberSharp.Hardware.MPU6050.initialize () [0x00003] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:446 
+  at QuadroschrauberSharp.IMU_MPU6050.Init (Boolean dmp) [0x0001e] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/IMU.cs:37 
+  at MrGibbs.MPU6050.Mpu6050Sensor.Calibrate () [0x0000d] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:95 
+  at MrGibbs.MPU6050.Mpu6050Sensor..ctor (ILogger logger, MrGibbs.MPU6050.Mpu6050Plugin plugin, Boolean dmp) [0x00059] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:46 
+  at MrGibbs.MPU6050.Mpu6050Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001b] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Plugin.cs:27 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:04:12.9823 Initializing Plugin MagneticVariationPlugin 
+2016-01-10 18:04:12.9854 Loading WMM.COF File failed, using hard coded coefficients 
+2016-01-10 18:04:12.9874 Loaded Magnetic Variation Coefficients from Hardcoded values 
+2016-01-10 18:04:12.9874 Initializing Plugin PebblePlugin 
+2016-01-10 18:04:13.1051 Exception initializing plugin PebblePlugin System.PlatformNotSupportedException: No supported Bluetooth protocol stack found.
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.GetStacks_inLock () [0x00320] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:165 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factories () [0x00019] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:173 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factory () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:187 
+  at InTheHand.Net.Sockets.BluetoothClient..ctor () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Sockets/BluetoothClient.cs:96 
+  at PebbleSharp.Net45.PebbleNet45.DetectPebbles () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Net45/PebbleNet45.cs:18 
+  at MrGibbs.Pebble.PebblePlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0000c] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs:39 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-10 18:04:13.1081 Evicting GpsPlugin without reinitialize 
+2016-01-10 18:04:13.1094 Evicting Hmc5883Plugin without reinitialize 
+2016-01-10 18:04:13.1094 Evicting Mpu6050Plugin without reinitialize 
+2016-01-10 18:04:13.1094 Evicting PebblePlugin without reinitialize 
+2016-01-10 18:04:13.1100 CalculatorPlugin Initialized OK 
+2016-01-10 18:04:13.1100 MagneticVariationPlugin Initialized OK 
+2016-01-10 18:04:13.1126 Supervisor is running 
+2016-01-10 18:04:13.1257 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-10 18:04:14.1268 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-10 18:04:15.1284 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-12 00:09:31.6929 Initializing Supervisor 
+2016-01-12 00:09:31.7586 Initializing Plugin CalculatorPlugin 
+2016-01-12 00:09:31.7605 Initializing Plugin GpsPlugin 
+2016-01-12 00:09:31.8003 Exception initializing plugin GpsPlugin System.IO.FileNotFoundException: Could not find file "/home/brook/Documents/Development/mrgibbs/src/example.nmea".
+File name: '/home/brook/Documents/Development/mrgibbs/src/example.nmea'
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) [0x0032f] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/FileStream.cs:320 
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/FileStream.cs:132 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream:.ctor (string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)
+  at System.IO.File.OpenRead (System.String path) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/File.cs:341 
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize) [0x00077] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/StreamReader.cs:189 
+  at System.IO.StreamReader..ctor (System.String path) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/StreamReader.cs:165 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamReader:.ctor (string)
+  at MrGibbs.Gps.SimulatedGpsSensor.Start () [0x00013] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/SimulatedGpsSensor.cs:27 
+  at MrGibbs.Gps.GpsPlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x00039] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/GpsPlugin.cs:34 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:31.8026 Initializing Plugin Hmc5883Plugin 
+2016-01-12 00:09:31.8305 Exception initializing plugin Hmc5883Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.writeBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:137 
+  at QuadroschrauberSharp.Hardware.I2C.Write (Byte devAddr, Byte regAddr, System.Byte[] data) [0x00009] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:269 
+  at QuadroschrauberSharp.Hardware.I2C.writeByte (Byte devAddr, Byte regAddr, Byte data) [0x00001] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:280 
+  at MrGibbs.HMC5883.Hmc5883.Initialize () [0x00066] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883.cs:114 
+  at MrGibbs.HMC5883.Hmc5883Sensor..ctor (ILogger logger, MrGibbs.HMC5883.Hmc5883Plugin plugin) [0x00027] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Sensor.cs:28 
+  at MrGibbs.HMC5883.Hmc5883Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001a] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Plugin.cs:23 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:31.8315 Initializing Plugin Mpu6050Plugin 
+2016-01-12 00:09:31.8328 Initializing MPU-6050 
+2016-01-12 00:09:31.8338 Exception initializing plugin Mpu6050Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, Int32 offset, UInt16 timeout) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:95 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:121 
+  at QuadroschrauberSharp.Hardware.I2C.readBytes (Byte devAddr, Int32 regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:117 
+  at QuadroschrauberSharp.Hardware.I2C.Read (Byte devAddr, Byte regAddr, Byte length, UInt16 timeout) [0x0000f] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:22 
+  at QuadroschrauberSharp.Hardware.I2C.readByte (Byte devAddr, Byte regAddr, UInt16 timeout) [0x00006] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:129 
+  at QuadroschrauberSharp.Hardware.I2C.writeBits (Byte devAddr, Byte regAddr, Byte bitStart, Byte length, Byte data) [0x00005] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:221 
+  at QuadroschrauberSharp.Hardware.MPU6050.setClockSource (Byte source) [0x00012] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:2985 
+  at QuadroschrauberSharp.Hardware.MPU6050.initialize () [0x00003] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:446 
+  at QuadroschrauberSharp.IMU_MPU6050.Init (Boolean dmp) [0x0001e] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/IMU.cs:37 
+  at MrGibbs.MPU6050.Mpu6050Sensor.Calibrate () [0x0000d] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:95 
+  at MrGibbs.MPU6050.Mpu6050Sensor..ctor (ILogger logger, MrGibbs.MPU6050.Mpu6050Plugin plugin, Boolean dmp) [0x00059] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:46 
+  at MrGibbs.MPU6050.Mpu6050Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001b] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Plugin.cs:27 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:31.8352 Initializing Plugin MagneticVariationPlugin 
+2016-01-12 00:09:31.8399 Loading WMM.COF File failed, using hard coded coefficients 
+2016-01-12 00:09:31.8420 Loaded Magnetic Variation Coefficients from Hardcoded values 
+2016-01-12 00:09:31.8420 Initializing Plugin PebblePlugin 
+2016-01-12 00:09:32.2740 Exception initializing plugin PebblePlugin System.PlatformNotSupportedException: No supported Bluetooth protocol stack found.
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.GetStacks_inLock () [0x00320] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:165 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factories () [0x00019] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:173 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factory () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:187 
+  at InTheHand.Net.Sockets.BluetoothClient..ctor () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Sockets/BluetoothClient.cs:96 
+  at PebbleSharp.Net45.PebbleNet45.DetectPebbles () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Net45/PebbleNet45.cs:18 
+  at MrGibbs.Pebble.PebblePlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0000c] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs:39 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:32.2766 Evicting GpsPlugin without reinitialize 
+2016-01-12 00:09:32.2781 Evicting Hmc5883Plugin without reinitialize 
+2016-01-12 00:09:32.2781 Evicting Mpu6050Plugin without reinitialize 
+2016-01-12 00:09:32.2781 Evicting PebblePlugin without reinitialize 
+2016-01-12 00:09:32.2781 CalculatorPlugin Initialized OK 
+2016-01-12 00:09:32.2788 MagneticVariationPlugin Initialized OK 
+2016-01-12 00:09:32.2814 Supervisor is running 
+2016-01-12 00:09:32.2918 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-12 00:09:33.2928 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-12 00:09:37.7993 Initializing Supervisor 
+2016-01-12 00:09:37.8342 Initializing Plugin CalculatorPlugin 
+2016-01-12 00:09:37.8370 Initializing Plugin GpsPlugin 
+2016-01-12 00:09:37.8749 Exception initializing plugin GpsPlugin System.IO.FileNotFoundException: Could not find file "/home/brook/Documents/Development/mrgibbs/src/example.nmea".
+File name: '/home/brook/Documents/Development/mrgibbs/src/example.nmea'
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) [0x0032f] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/FileStream.cs:320 
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/FileStream.cs:132 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream:.ctor (string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)
+  at System.IO.File.OpenRead (System.String path) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/File.cs:341 
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize) [0x00077] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/StreamReader.cs:189 
+  at System.IO.StreamReader..ctor (System.String path) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/StreamReader.cs:165 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamReader:.ctor (string)
+  at MrGibbs.Gps.SimulatedGpsSensor.Start () [0x00013] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/SimulatedGpsSensor.cs:27 
+  at MrGibbs.Gps.GpsPlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x00039] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/GpsPlugin.cs:34 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:37.8769 Initializing Plugin Hmc5883Plugin 
+2016-01-12 00:09:37.8792 Exception initializing plugin Hmc5883Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.writeBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:137 
+  at QuadroschrauberSharp.Hardware.I2C.Write (Byte devAddr, Byte regAddr, System.Byte[] data) [0x00009] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:269 
+  at QuadroschrauberSharp.Hardware.I2C.writeByte (Byte devAddr, Byte regAddr, Byte data) [0x00001] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:280 
+  at MrGibbs.HMC5883.Hmc5883.Initialize () [0x00066] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883.cs:114 
+  at MrGibbs.HMC5883.Hmc5883Sensor..ctor (ILogger logger, MrGibbs.HMC5883.Hmc5883Plugin plugin) [0x00027] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Sensor.cs:28 
+  at MrGibbs.HMC5883.Hmc5883Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001a] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Plugin.cs:23 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:37.8801 Initializing Plugin Mpu6050Plugin 
+2016-01-12 00:09:37.8814 Initializing MPU-6050 
+2016-01-12 00:09:37.8824 Exception initializing plugin Mpu6050Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, Int32 offset, UInt16 timeout) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:95 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:121 
+  at QuadroschrauberSharp.Hardware.I2C.readBytes (Byte devAddr, Int32 regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:117 
+  at QuadroschrauberSharp.Hardware.I2C.Read (Byte devAddr, Byte regAddr, Byte length, UInt16 timeout) [0x0000f] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:22 
+  at QuadroschrauberSharp.Hardware.I2C.readByte (Byte devAddr, Byte regAddr, UInt16 timeout) [0x00006] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:129 
+  at QuadroschrauberSharp.Hardware.I2C.writeBits (Byte devAddr, Byte regAddr, Byte bitStart, Byte length, Byte data) [0x00005] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:221 
+  at QuadroschrauberSharp.Hardware.MPU6050.setClockSource (Byte source) [0x00012] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:2985 
+  at QuadroschrauberSharp.Hardware.MPU6050.initialize () [0x00003] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:446 
+  at QuadroschrauberSharp.IMU_MPU6050.Init (Boolean dmp) [0x0001e] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/IMU.cs:37 
+  at MrGibbs.MPU6050.Mpu6050Sensor.Calibrate () [0x0000d] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:95 
+  at MrGibbs.MPU6050.Mpu6050Sensor..ctor (ILogger logger, MrGibbs.MPU6050.Mpu6050Plugin plugin, Boolean dmp) [0x00059] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:46 
+  at MrGibbs.MPU6050.Mpu6050Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001b] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Plugin.cs:27 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:37.8838 Initializing Plugin MagneticVariationPlugin 
+2016-01-12 00:09:37.8866 Loading WMM.COF File failed, using hard coded coefficients 
+2016-01-12 00:09:37.8886 Loaded Magnetic Variation Coefficients from Hardcoded values 
+2016-01-12 00:09:37.8886 Initializing Plugin PebblePlugin 
+2016-01-12 00:09:37.9878 Exception initializing plugin PebblePlugin System.PlatformNotSupportedException: No supported Bluetooth protocol stack found.
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.GetStacks_inLock () [0x00320] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:165 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factories () [0x00019] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:173 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factory () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:187 
+  at InTheHand.Net.Sockets.BluetoothClient..ctor () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Sockets/BluetoothClient.cs:96 
+  at PebbleSharp.Net45.PebbleNet45.DetectPebbles () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Net45/PebbleNet45.cs:18 
+  at MrGibbs.Pebble.PebblePlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0000c] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs:39 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-12 00:09:37.9911 Evicting GpsPlugin without reinitialize 
+2016-01-12 00:09:37.9930 Evicting Hmc5883Plugin without reinitialize 
+2016-01-12 00:09:37.9932 Evicting Mpu6050Plugin without reinitialize 
+2016-01-12 00:09:37.9932 Evicting PebblePlugin without reinitialize 
+2016-01-12 00:09:37.9932 CalculatorPlugin Initialized OK 
+2016-01-12 00:09:37.9932 MagneticVariationPlugin Initialized OK 
+2016-01-12 00:09:37.9969 Supervisor is running 
+2016-01-12 00:09:38.0076 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-12 00:09:39.0085 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-12 00:09:40.0091 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-12 00:09:41.0102 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-15 20:14:52.6412 Initializing Supervisor 
+2016-01-15 20:14:52.6953 Initializing Plugin CalculatorPlugin 
+2016-01-15 20:14:52.6979 Initializing Plugin GpsPlugin 
+2016-01-15 20:14:52.7334 Exception initializing plugin GpsPlugin System.IO.FileNotFoundException: Could not find file "/home/brook/Documents/Development/mrgibbs/src/example.nmea".
+File name: '/home/brook/Documents/Development/mrgibbs/src/example.nmea'
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) [0x0032f] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/FileStream.cs:320 
+  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/FileStream.cs:132 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream:.ctor (string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)
+  at System.IO.File.OpenRead (System.String path) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/File.cs:341 
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize) [0x00077] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/StreamReader.cs:189 
+  at System.IO.StreamReader..ctor (System.String path) [0x00000] in /home/brook/Documents/Development/mono-3.2.8+dfsg/mcs/class/corlib/System.IO/StreamReader.cs:165 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamReader:.ctor (string)
+  at MrGibbs.Gps.SimulatedGpsSensor.Start () [0x00013] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/SimulatedGpsSensor.cs:27 
+  at MrGibbs.Gps.GpsPlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x00039] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Gps/GpsPlugin.cs:34 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-15 20:14:52.7589 Initializing Plugin Hmc5883Plugin 
+2016-01-15 20:14:52.7932 Exception initializing plugin Hmc5883Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.writeBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:137 
+  at QuadroschrauberSharp.Hardware.I2C.Write (Byte devAddr, Byte regAddr, System.Byte[] data) [0x00009] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:269 
+  at QuadroschrauberSharp.Hardware.I2C.writeByte (Byte devAddr, Byte regAddr, Byte data) [0x00001] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:280 
+  at MrGibbs.HMC5883.Hmc5883.Initialize () [0x00066] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883.cs:114 
+  at MrGibbs.HMC5883.Hmc5883Sensor..ctor (ILogger logger, MrGibbs.HMC5883.Hmc5883Plugin plugin) [0x00027] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Sensor.cs:28 
+  at MrGibbs.HMC5883.Hmc5883Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001a] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.HMC5883/Hmc5883Plugin.cs:23 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-15 20:14:52.7932 Initializing Plugin Mpu6050Plugin 
+2016-01-15 20:14:52.7957 Initializing MPU-6050 
+2016-01-15 20:14:52.7967 Exception initializing plugin Mpu6050Plugin System.IO.IOException: /dev/i2c-1: ioctl
+  at QuadroschrauberSharp.Linux.I2CLinux.IoCtl (Byte devAddr) [0x00030] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:86 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, Int32 offset, UInt16 timeout) [0x00021] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:95 
+  at QuadroschrauberSharp.Linux.I2CLinux.readBytes (Byte devAddr, Byte regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp.Linux/I2CLinux.cs:121 
+  at QuadroschrauberSharp.Hardware.I2C.readBytes (Byte devAddr, Int32 regAddr, Byte length, System.Byte[] data, UInt16 timeout) [0x0000a] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:117 
+  at QuadroschrauberSharp.Hardware.I2C.Read (Byte devAddr, Byte regAddr, Byte length, UInt16 timeout) [0x0000f] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:22 
+  at QuadroschrauberSharp.Hardware.I2C.readByte (Byte devAddr, Byte regAddr, UInt16 timeout) [0x00006] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:129 
+  at QuadroschrauberSharp.Hardware.I2C.writeBits (Byte devAddr, Byte regAddr, Byte bitStart, Byte length, Byte data) [0x00005] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/I2C.cs:221 
+  at QuadroschrauberSharp.Hardware.MPU6050.setClockSource (Byte source) [0x00012] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:2985 
+  at QuadroschrauberSharp.Hardware.MPU6050.initialize () [0x00003] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/Hardware/MPU6050.cs:446 
+  at QuadroschrauberSharp.IMU_MPU6050.Init (Boolean dmp) [0x0001e] in /home/brook/Documents/Development/mrgibbs/src/lib/QuadroschrauberSharp/IMU.cs:37 
+  at MrGibbs.MPU6050.Mpu6050Sensor.Calibrate () [0x0000d] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:95 
+  at MrGibbs.MPU6050.Mpu6050Sensor..ctor (ILogger logger, MrGibbs.MPU6050.Mpu6050Plugin plugin, Boolean dmp) [0x00059] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Sensor.cs:46 
+  at MrGibbs.MPU6050.Mpu6050Plugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0001b] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.MPU6050/Mpu6050Plugin.cs:27 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-15 20:14:52.7988 Initializing Plugin MagneticVariationPlugin 
+2016-01-15 20:14:52.8018 Loading WMM.COF File failed, using hard coded coefficients 
+2016-01-15 20:14:52.8037 Loaded Magnetic Variation Coefficients from Hardcoded values 
+2016-01-15 20:14:52.8037 Initializing Plugin PebblePlugin 
+2016-01-15 20:14:53.0788 Exception initializing plugin PebblePlugin System.PlatformNotSupportedException: No supported Bluetooth protocol stack found.
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.GetStacks_inLock () [0x0031b] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:165 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factories () [0x00019] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:173 
+  at InTheHand.Net.Bluetooth.Factory.BluetoothFactory.get_Factory () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.Factory/BluetoothFactory.cs:187 
+  at InTheHand.Net.Sockets.BluetoothClient..ctor () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Sockets/BluetoothClient.cs:96 
+  at PebbleSharp.Net45.PebbleNet45.DetectPebbles () [0x00001] in /home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Net45/PebbleNet45.cs:18 
+  at MrGibbs.Pebble.PebblePlugin.Initialize (MrGibbs.Contracts.PluginConfiguration configuration, System.Action`1 queueCommand) [0x0000c] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs:39 
+  at MrGibbs.Console.Supervisor.InitializePlugin (IPlugin plugin) [0x00014] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:78 
+  at MrGibbs.Console.Supervisor.Initialize () [0x000a8] in /home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs:54 
+2016-01-15 20:14:53.0817 Evicting GpsPlugin without reinitialize 
+2016-01-15 20:14:53.0831 Evicting Hmc5883Plugin without reinitialize 
+2016-01-15 20:14:53.0831 Evicting Mpu6050Plugin without reinitialize 
+2016-01-15 20:14:53.0831 Evicting PebblePlugin without reinitialize 
+2016-01-15 20:14:53.0831 CalculatorPlugin Initialized OK 
+2016-01-15 20:14:53.0831 MagneticVariationPlugin Initialized OK 
+2016-01-15 20:14:53.0859 Supervisor is running 
+2016-01-15 20:14:53.0969 Speed: 	Heading: 	VMG: 	Tack: 
+2016-01-15 20:14:54.0979 Speed: 	Heading: 	VMG: 	Tack: 

@@ -51,11 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
-      <Project>{5b22b394-d1cc-457f-b83d-04d2c797e3b3}</Project>
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>MrGibbs.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
-      <Project>{a41a884e-a7fe-4ec6-80a7-145e3fb4311f}</Project>
+      <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>MrGibbs.Models</Name>
     </ProjectReference>
   </ItemGroup>
