@@ -128,7 +128,7 @@ namespace PebbleSharp.Net45
 			Profile.NewConnectionAction=(path,stream,props)=>{
 				if(Pebbles.ContainsKey(path))
 				{
-					Pebbles[path].Stream = stream;
+					Pebbles[path].FileDescriptor = stream;
 				}
 			};
 
@@ -221,9 +221,11 @@ namespace PebbleSharp.Net45
 				var results = new List<Pebble>();
 				foreach(var pebble in Pebbles.Keys)
 				{
-					if(Pebbles[pebble].Stream!=null)
+					if(Pebbles[pebble].FileDescriptor!=null)
 					{
-						results.Add(new PebbleNet45(new PebbleBluetoothConnection(Pebbles[pebble].Stream),Pebbles[pebble].Name));
+						Pebbles[pebble].FileDescriptor.SetBlocking();
+						var stream = Pebbles[pebble].FileDescriptor.OpenAsStream(true);
+						results.Add(new PebbleNet45(new PebbleBluetoothConnection(stream),Pebbles[pebble].Name));
 
 					}
 				}
@@ -240,7 +242,7 @@ namespace PebbleSharp.Net45
 		private class DiscoveredPebble
 		{
 			public Device1 Device{ get; set; }
-			public Stream Stream{get;set;}
+			public FileDescriptor FileDescriptor{get;set;}
 			public string Name{get;set;}
 		}
 
@@ -286,11 +288,11 @@ namespace PebbleSharp.Net45
 
 		private class PebbleProfile:Profile1
 		{
-			private Stream _fileDescriptor;
+			private FileDescriptor _fileDescriptor;
 
-			public Action<ObjectPath,Stream,IDictionary<string,object>> NewConnectionAction{get;set;}
-			public Action<ObjectPath,Stream> RequestDisconnectionAction{ get; set; }
-			public Action<Stream> ReleaseAction{ get; set; }
+			public Action<ObjectPath,FileDescriptor,IDictionary<string,object>> NewConnectionAction{get;set;}
+			public Action<ObjectPath,FileDescriptor> RequestDisconnectionAction{ get; set; }
+			public Action<FileDescriptor> ReleaseAction{ get; set; }
 
 			public PebbleProfile ()
 			{
@@ -302,7 +304,7 @@ namespace PebbleSharp.Net45
 					ReleaseAction (_fileDescriptor);
 				}
 			}
-			public void NewConnection (ObjectPath device, Stream fileDescriptor, IDictionary<string,object> properties)
+			public void NewConnection (ObjectPath device, FileDescriptor fileDescriptor, IDictionary<string,object> properties)
 			{
 				_fileDescriptor = fileDescriptor;
 				if (NewConnectionAction != null) {

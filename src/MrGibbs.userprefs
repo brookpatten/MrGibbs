@@ -1,10 +1,6 @@
 ﻿<Properties StartupItem="MrGibbs.Console/MrGibbs.Console.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Mono.BlueZ/dbus-sharp/src/Unix/UnixSocket.cs">
-    <Files>
-      <File FileName="Mono.BlueZ/dbus-sharp/src/Unix/UnixSocket.cs" Line="2" Column="2" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="187" column="1" />
@@ -33,10 +29,8 @@
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs" line="76" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs" line="178" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Core.NonPortable/Pebble.cs" line="442" column="1" />
-      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Net45/PebbleNet45.cs" line="407" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageWriter.cs" line="205" column="18" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageWriter.cs" line="307" column="1" />
-      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="385" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="273" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="276" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageReader.cs" line="277" column="1" />
