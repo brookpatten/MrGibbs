@@ -323,3 +323,10 @@ footer {
   }
 }
 
+.paragraph-image{
+  height:300px;
+  width:auto;
+  margin-left:auto;
+  margin-right:auto;
+  display:block;
+}
