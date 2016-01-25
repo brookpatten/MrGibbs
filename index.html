@@ -146,6 +146,14 @@
 <em>Wearable Screens</em>
 <p>If you follow this space at all you've probably seen the wearables the Oracle guys are wearing with the tiny screen in their sunglasses.  Their budget it just *slightly* bigger than mine, so I haven't gotten there yet.  My concern is two fold, first, the initial cost for such devices is still very high, and second, if it gets wet, you're now out the $700 or so that it costs.</p>
 
+<h3>
+<a id="bad" class="anchor" href="#bad" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Bad News</h3>
+<p>The "2015" model has a few problems that we are working on.  It runs on Raspbian Wheezy, which uses an old version of bluez (the linux bluetooth stack).  Integration with bluetooth requires the user to boot the pi to a desktop and pair the pebbles using a desktop widget or command line (although this only needs to be done once).  This version of bluez also does not support low-energy bluetooth, which is something we want to use in the future for various sensors (wind, load etc).</p>
+
+<p>The setup is onerous, to say the least.  It requires all the usual steps of installing raspbian, but also additional steps to configure bluetooth and compile a patched build of mono (the .Net runtime for linux)</p>
+
+<p>For the 2016 edition we are running raspbian Jessie, which runs a much newer version of bluez that allows us much better bluetooth capability.  The application can do its own device pairing, and can also use bluetooth low energy to communicate with the blend micro.  We still require a patch for mono, but this time we may be able to work around that by providing our own version of the mono.posix assembly.  We're planning on releasing a disk image that can simply be flashed to the pi and then used 100% "headless"</p>
+
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/brookpatten/MrGibbs">MrGibbs</a> is maintained by <a href="https://github.com/brookpatten">Brook Patten</a>.</span>
