@@ -1,0 +1,18 @@
+<header class="site-header {{#if @blog.cover}}" style="background-image: url({{@blog.cover}}){{else}}no-cover{{/if}}">
+
+    <div class="site-header__cell">
+        <div class="site-header__overlay"></div>
+        <div class="site-header__info">
+            <div class="logo {{#if image}}overlay{{/if}}">
+            {{#if @blog.logo}}
+            <a class="blog-logo-url" href="{{@blog.url}}">
+            <img class="blog-logo-img" src="{{@blog.logo}}" alt="{{@blog.title}}" />
+            </a>
+            {{/if}}
+            </div>
+            <h1 class="site-header__title">{{@blog.title}}</h1>
+            <h2 class="site-header__description">{{@blog.description}}</h2>
+        </div>
+    </div>
+    <a class="scroll-down icon-arrow-left" href="#content" data-offset="-45"><span class="hidden">Scroll Down</span></a>
+</header>

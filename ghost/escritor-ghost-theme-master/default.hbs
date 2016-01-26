@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{! Document Settings }}
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    {{! Page Meta }}
+    <title>{{meta_title}}</title>
+    <meta name="description" content="{{meta_description}}" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="{{asset "favicon.ico"}}">
+
+    {{! Styles'n'Scripts }}
+    <link rel="stylesheet" type="text/css" href="{{asset "css/main.css"}}" />
+    <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Crimson+Text:400,400italic,700,700italic' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Roboto:700,300,300italic,700italic' rel='stylesheet'>
+
+    {{! Ghost outputs important style and meta data with this tag }}
+    {{ghost_head}}
+</head>
+
+
+{{#if post}}
+<body class="{{body_class}} menu-toggle--posts">
+{{else}}
+<body class="{{body_class}}">
+{{/if}}
+
+
+    {{> browserupgrade}}
+
+
+    {{#if @blog.navigation}}
+        <a class="menu-toggle icon-menu" href="#">
+            <div class="bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <span class="menu-word">Menu</span>
+        </a>
+    {{/if}}
+
+
+    {{navigation}}
+
+    <div class="site-wrapper">
+
+
+        {{! Everything else gets inserted here }}
+        {{{body}}}
+
+    </div>
+
+
+    {{!-- Footer --}}
+    <footer class="site-footer clearfix">
+        <section class="site-footer__block">
+            <div class="copyright"><a href="http://escritor.ozywuli.com">Escritor</a> &copy; {{date format="YYYY"}} | Proudly published with <a href="https://ghost.org">Ghost</a></div>
+            <div class="madeby">Made by <a href="http://ozywuli.com">Ozy Wu-Li</a></div>
+
+
+        </section>
+    </footer>
+
+    {{! Ghost outputs important scripts and data with this tag }}
+    {{ghost_foot}}
+
+
+    {{! The main JavaScript file for Escritor }}
+    <script type="text/javascript" src="{{asset "js/main.js"}}"></script>
+
+
+</body>
+</html>

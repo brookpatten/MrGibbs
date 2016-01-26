@@ -1,0 +1,28 @@
+<div class="nav">
+    <h3 class="nav__title">Menu</h3>
+    <a href="#" class="nav__close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+        {{#foreach navigation}}
+            <li class="nav__{{slug}}{{#if current}} nav__current{{/if}}" role="presentation"><a href="{{url absolute="true"}}" class="nav__link">{{label}}</a></li>
+        {{/foreach}}
+    </ul>
+
+<div class="recent-articles">
+  <h3 class="recent-articles__title">Recent Articles</h3>
+  <div class="recent-articles__content loading">
+    <div class="loader">
+      <i class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>
+</div>
+
+
+    <div class="subscribe">
+      <a class="subscribe-button" href="{{@blog.url}}/rss/">Subscribe</a>
+    </div>
+    
+
+</div>
+<span class="nav__cover"></span>
