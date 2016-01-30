@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.BlueZ.DBus", "lib\Pebb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Core.NonPortable", "lib\PebbleSharp\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj", "{E52DCFA6-ED09-4B88-AE50-97072323942C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Mono.BlueZ5", "lib\PebbleSharp\PebbleSharp.Mono.BlueZ5\PebbleSharp.Mono.BlueZ5.csproj", "{40BD0369-85E6-4712-A28C-0C9178FD6F33}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Mono.BlueZ5", "lib\PebbleSharp\PebbleSharp.Net45\PebbleSharp.Mono.BlueZ5.csproj", "{40BD0369-85E6-4712-A28C-0C9178FD6F33}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.Configuration", "MrGibbs.Configuration\MrGibbs.Configuration.csproj", "{0096B610-9EAD-421F-83AC-C3FE2559EC68}"
 EndProject
