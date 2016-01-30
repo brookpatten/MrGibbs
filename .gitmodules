@@ -1,3 +1,4 @@
-[submodule "src/Mono.BlueZ"]
-	path = src/Mono.BlueZ
-	url = https://github.com/brookpatten/Mono.BlueZ.git
+
+[submodule "src/lib/PebbleSharp"]
+	path = src/lib/PebbleSharp
+	url = https://github.com/brookpatten/PebbleSharp.git

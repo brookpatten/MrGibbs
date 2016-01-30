@@ -122,12 +122,7 @@ namespace MrGibbs.Pebble
                     % Nominal Speed
                     Top Speed
                     Countdown
-                    Distance to Mark
-		Pitch
-		VMG %
-		VMC %
-Current Tack Delta
-Course Relative*/
+                    Distance to Mark*/
                 _lineStateMaps = new List<LineStateMap>();
                 _lineStateMaps.Add(new LineStateMap(s => s.SpeedInKnots.HasValue ? string.Format("{0:0.0}", s.SpeedInKnots.Value) : "", "Speed (kn)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGood.HasValue ? string.Format("{0:0.0}", s.VelocityMadeGood.Value) : "", "VMG (kn)"));
