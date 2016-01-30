@@ -44,14 +44,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj">
-      <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
-      <Name>PebbleSharp.Core.NonPortable</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PebbleSharp.Net45\PebbleSharp.Net45.csproj">
-      <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
-      <Name>PebbleSharp.Net45</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
       <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>MrGibbs.Contracts</Name>
@@ -59,6 +51,22 @@
     <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>MrGibbs.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\dbus-sharp\src\dbus-sharp.csproj">
+      <Project>{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C}</Project>
+      <Name>dbus-sharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\Mono.BlueZ.DBus\Mono.BlueZ.DBus.csproj">
+      <Project>{68E6EB3B-4076-48F6-9EB6-1181057C0977}</Project>
+      <Name>Mono.BlueZ.DBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Net45\PebbleSharp.Net45.csproj">
+      <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
+      <Name>PebbleSharp.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj">
+      <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
+      <Name>PebbleSharp.Core.NonPortable</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
