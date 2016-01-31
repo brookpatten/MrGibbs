@@ -10,7 +10,7 @@ namespace MrGibbs.Configuration
     {
         public static string DatabaseConnectionString
         {
-            get { return ConfigurationHelper.ReadStringAppSetting("Database", @"URI=file:povertysail.db"); }
+            get { return ConfigurationHelper.ReadStringAppSetting("Database", @"URI=file:gibbs.db"); }
         }
         public static int SleepTime
         {
@@ -29,5 +29,10 @@ namespace MrGibbs.Configuration
         {
             get { return ConfigurationHelper.ReadDoubleAppSetting("AutoRoundMarkDistanceMeters", 30); }
         }
+
+		public static int I2CAddress
+		{
+			get { return ConfigurationHelper.ReadIntAppSetting("I2CAddress", 1); }
+		}
     }
 }

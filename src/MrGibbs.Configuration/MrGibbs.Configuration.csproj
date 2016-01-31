@@ -57,11 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="ConfigBase.cs" />
     <Compile Include="LoggingModule.cs" />
     <Compile Include="PersistenceModule.cs" />
-    <Compile Include="PluginModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ConfigurationHelper.cs" />
+    <Compile Include="GenericHardwareModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -78,6 +78,14 @@
     <ProjectReference Include="..\MrGibbs.Persistence\MrGibbs.Persistence.csproj">
       <Project>{17B81C86-A8FF-46D5-8513-048B0571FDCF}</Project>
       <Name>MrGibbs.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
+      <Project>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</Project>
+      <Name>QuadroschrauberSharp.Linux</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\QuadroschrauberSharp\QuadroschrauberSharp.csproj">
+      <Project>{6C5550E5-299E-43C8-8E03-825E024DB764}</Project>
+      <Name>QuadroschrauberSharp</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

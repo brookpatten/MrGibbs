@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
@@ -26,7 +28,9 @@ namespace MrGibbs.MagneticVariation
         
             _initialized = false;
 
-            _tsaGeoMag = new TSAGeoMag(_logger);
+			string newestCofFile = FindNewestCofFile ();
+
+			_tsaGeoMag = new TSAGeoMag(newestCofFile,_logger);
 
             var magvarCalc = new MagneticVariationCalculator(_logger, this, _tsaGeoMag);
             _components.Add(magvarCalc);
@@ -34,6 +38,23 @@ namespace MrGibbs.MagneticVariation
 
             _initialized = true;
         }
+
+		private string FindNewestCofFile()
+		{
+			string exePath = System.Reflection.Assembly.GetExecutingAssembly ().CodeBase;
+			string exeDir = Path.GetDirectoryName (exePath);
+			var dir = new DirectoryInfo (exeDir);
+			var cofFiles = dir.GetFiles ("*.cof");
+			var newest = cofFiles.OrderByDescending (x => x.CreationTimeUtc).FirstOrDefault();
+			if(newest!=null)
+			{
+				return newest.FullName;
+			}
+			else
+			{
+				return null;
+			}
+		}
 
         public bool Initialized
         {

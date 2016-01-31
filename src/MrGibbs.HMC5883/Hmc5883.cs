@@ -96,6 +96,13 @@ namespace MrGibbs.HMC5883
             _devAddr = HMC5883L_DEFAULT_ADDRESS;
         }
 
+		public Hmc5883(I2C i2c)
+		{
+			_i2cAddress = 0;
+			_i2c = i2c;
+			_devAddr = HMC5883L_DEFAULT_ADDRESS;
+		}
+
         public Hmc5883(int i2cAddress, byte deviceAddress)
         {
             _i2cAddress = i2cAddress;

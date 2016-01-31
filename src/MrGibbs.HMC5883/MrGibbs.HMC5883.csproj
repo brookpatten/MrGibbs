@@ -6,7 +6,7 @@
     <ProjectGuid>{AB46A638-42D2-436E-A40B-1123AC4653D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>MrGibbs.HMC5883</RootNamespace>
-    <AssemblyName>MrGibbs.HMC5883</AssemblyName>
+    <AssemblyName>MrGibbs.HMC5883.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,12 +29,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Hmc5883.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Hmc5883Sensor.cs" />
     <Compile Include="Hmc5883Plugin.cs" />
+    <Compile Include="Hmc5883Module.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -54,8 +58,13 @@
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>MrGibbs.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
+      <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
+      <Name>MrGibbs.Configuration</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

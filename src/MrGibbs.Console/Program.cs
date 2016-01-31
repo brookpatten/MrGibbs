@@ -54,22 +54,25 @@ namespace MrGibbs.Console
         static IKernel Configure()
         {
             var kernel = new StandardKernel();
-            kernel.Load(new List<NinjectModule>()
+            //infrastructure modules
+			kernel.Load(new List<NinjectModule>()
             {
+				new GenericHardwareModule(),
                 new LoggingModule(new List<string>(){"Log.config"}),
                 new PersistenceModule(),
-                new PluginModule()
             });
 
+			//plugins
+			kernel.Load (new string[] { "*.Plugin.dll" });
+
+			//core services/controllers
             kernel.Bind<IRaceController>().To<RaceController>()
                 .InSingletonScope()
                 .WithConstructorArgument("autoRoundMarkDistanceMeters", AppConfig.AutoRoundMarkDistanceMeters);
-
-            kernel.Bind<Supervisor>().ToSelf()
+			kernel.Bind<Supervisor>().ToSelf()
                 .InSingletonScope()
                 .WithConstructorArgument("sleepTime", AppConfig.SleepTime);
                 
-
             return kernel;
         }
     }

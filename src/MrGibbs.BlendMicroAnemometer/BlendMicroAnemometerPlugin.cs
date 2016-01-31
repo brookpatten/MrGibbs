@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mono.BlueZ.DBus;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
@@ -13,9 +14,11 @@ namespace MrGibbs.BlendMicroAnemometer
         private ILogger _logger;
         private bool _initialized = false;
         private IList<IPluginComponent> _components;
+		private DBusConnection _connection;
 
-        public BlendMicroAnemometerPlugin(ILogger logger)
+        public BlendMicroAnemometerPlugin(ILogger logger,DBusConnection connection)
         {
+			_connection = connection;
             _logger = logger;
         }
 

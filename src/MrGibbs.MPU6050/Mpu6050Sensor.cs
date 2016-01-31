@@ -25,7 +25,7 @@ namespace MrGibbs.MPU6050
 		private DateTime? _lastTime;
         private bool _enableDmp;
 
-        public Mpu6050Sensor(ILogger logger, Mpu6050Plugin plugin, bool dmp)
+		public Mpu6050Sensor(I2C i2c,ILogger logger, Mpu6050Plugin plugin, bool dmp)
         {
             _enableDmp = dmp;
             _logger = logger;
@@ -33,7 +33,7 @@ namespace MrGibbs.MPU6050
 
 			//original pi is 0, pi rev 2 is 1
             //this probably DOES need to be configurable
-			_i2c = new I2C(1);
+			_i2c = i2c;//new I2C(1);
 
 
 			//address is dependent upon the voltage to the ADO pin

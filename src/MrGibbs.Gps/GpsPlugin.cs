@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MrGibbs.Configuration;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
@@ -13,10 +12,14 @@ namespace MrGibbs.Gps
     {
         private ILogger _logger;
         private bool _initialized = false;
-        private IList<IPluginComponent> _components; 
+        private IList<IPluginComponent> _components;
+		private string _gpsPort;
+		private int _gpsBaud;
 
-        public GpsPlugin(ILogger logger)
+		public GpsPlugin(ILogger logger,string gpsPort, int gpsBaud)
         {
+			_gpsPort = gpsPort;
+			_gpsBaud = gpsBaud;
             _logger = logger;
         }
 
@@ -24,11 +27,7 @@ namespace MrGibbs.Gps
         {
             _components = new List<IPluginComponent>();
             _initialized = false;
-#if WINDOWS
-            var sensor = new SimulatedGpsSensor(_logger, this);
-#else
-            var sensor = new GpsSensor(_logger, this, AppConfig.GpsPort, AppConfig.GpsBaud);
-#endif
+			var sensor = new GpsSensor(_logger, this, _gpsPort, _gpsBaud);
             configuration.Sensors.Add(sensor);
             _components.Add(sensor);
             sensor.Start();

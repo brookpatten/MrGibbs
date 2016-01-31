@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MrGibbs.Pebble</RootNamespace>
-    <AssemblyName>MrGibbs.Pebble</AssemblyName>
+    <AssemblyName>MrGibbs.Pebble.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,11 +37,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PebbleViewer.cs" />
     <Compile Include="PebblePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PebbleModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
@@ -64,9 +68,13 @@
       <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
       <Name>PebbleSharp.Core.NonPortable</Name>
     </ProjectReference>
-    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Net45\PebbleSharp.Mono.BlueZ5.csproj">
+    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Mono.BlueZ5\PebbleSharp.Mono.BlueZ5.csproj">
       <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
       <Name>PebbleSharp.Mono.BlueZ5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
+      <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
+      <Name>MrGibbs.Configuration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -82,4 +90,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

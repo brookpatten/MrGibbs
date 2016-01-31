@@ -10,7 +10,7 @@ using MrGibbs.Models;
 
 namespace MrGibbs.Console
 {
-	public class Supervisor:IDisposable,ISystemController
+	public class Supervisor:IDisposable,ISystemController,ICommandable
     {
         private ILogger _logger;
         private PluginConfiguration _configuration;
@@ -78,7 +78,7 @@ namespace MrGibbs.Console
             plugin.Initialize(_configuration, QueueCommand);
         }
 
-        private void QueueCommand(Action<ISystemController,IRaceController> command)
+        public void QueueCommand(Action<ISystemController,IRaceController> command)
         {
             lock(_commands)
             {

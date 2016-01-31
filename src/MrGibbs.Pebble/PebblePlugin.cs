@@ -20,22 +20,22 @@ namespace MrGibbs.Pebble
         private IList<IPluginComponent> _components;
 		private PebbleManager _manager;
 
-#if !WINDOWS
-        private const string _pbwPath = "/home/pi/dev/mrgibbs/MrGibbs.Pebble/Mr._Gibbs.pbw";
-#endif
+        //private string _pbwPath = "/home/pi/dev/mrgibbs/MrGibbs.Pebble/Mr._Gibbs.pbw";
+        private string _pbwPath /*= "Mr._Gibbs.pbw"*/;
+		private string _btAdapterName;
 
-#if WINDOWS
-        private const string _pbwPath = "Mr._Gibbs.pbw";
-#endif
-
-		public PebblePlugin(ILogger logger)
+		public PebblePlugin(string pbwPath,string btAdapterName,ILogger logger)
 		{
+			_pbwPath = pbwPath;
+			_btAdapterName = btAdapterName;
 			_logger = logger;
 			_manager = new PebbleManager ();
 		}
 
-        public PebblePlugin(ILogger logger,DBusConnection connection)
+		public PebblePlugin(string pbwPath,string btAdapterName,ILogger logger,DBusConnection connection)
         {
+			_pbwPath = pbwPath;
+			_btAdapterName = btAdapterName;
             _logger = logger;
 			_manager = new PebbleManager (connection);
         }

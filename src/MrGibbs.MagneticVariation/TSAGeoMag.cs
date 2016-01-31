@@ -174,12 +174,10 @@ using MrGibbs.Contracts.Infrastructure;
 
 namespace  MrGibbs.MagneticVariation
 {
-
-
-
-    public class TSAGeoMag
+	public class TSAGeoMag
     {
         private ILogger _logger;
+		private string _inputFilePath;
 
         //variables for magnetic calculations ////////////////////////////////////
         //
@@ -428,8 +426,9 @@ namespace  MrGibbs.MagneticVariation
         /**
          *	Instantiates object by calling initModel().
          */
-        public TSAGeoMag(ILogger logger)
+        public TSAGeoMag(string inputFilePath,ILogger logger)
         {
+			_inputFilePath = inputFilePath;
             _logger = logger;
             //read model data from file and initialize the GeoMag routine
             initModel();
@@ -485,25 +484,25 @@ namespace  MrGibbs.MagneticVariation
             try
             {
                 StreamReader sr=null;
-                if (File.Exists("WMM.COF"))
+				if (File.Exists(_inputFilePath))
                 {
                     _logger.Debug("Attempting to load magnetic variation coefficients from file...");
-                    sr = new StreamReader("WMM.COF");
+					sr = new StreamReader(_inputFilePath);
                 }
                 else
                 {
-                    throw new FileNotFoundException("Missing WMM.COF File");
+					throw new FileNotFoundException("Missing "+_inputFilePath+" File");
                 }
 
                 ReadCOFStream(sr);
 
                 sr.Close();
                 sr.Dispose();
-                _logger.Info("Loaded Magnetic Variation Coefficients from File WMM.COF");
+				_logger.Info("Loaded Magnetic Variation Coefficients from File "+_inputFilePath);
             } 
             catch (Exception ex)
             {
-                _logger.Error("Loading WMM.COF File failed, using hard coded coefficients");
+                _logger.Error("Loading File failed, using hard coded coefficients");
                 MemoryStream stream = null;
                 StreamWriter writer = null;
                 StreamReader sr;
