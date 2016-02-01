@@ -11,7 +11,11 @@ namespace MrGibbs.MagneticVariation
 		{
 			Kernel.Bind<IPlugin> ()
 				.To<MagneticVariationPlugin> ()
-				.InSingletonScope ();
+				.InSingletonScope ()
+				.WithConstructorArgument("cofFilePath"
+					,ConfigurationHelper.ReadStringAppSetting("cofFilePath",
+						ConfigurationHelper.FindNewestFileWithExtension("COF")));
+
 		}
 	}
 }

@@ -11,7 +11,8 @@ namespace MrGibbs.Pebble
 		{
 			Kernel.Bind<IPlugin> ().To<PebblePlugin> ()
 				.InSingletonScope ()
-				.WithConstructorArgument ("pbwPath", ConfigurationHelper.ReadStringAppSetting("PbwPath","Mr._Gibbs.pbw"))
+				.WithConstructorArgument ("pbwPath", ConfigurationHelper.ReadStringAppSetting("PbwPath"
+					,ConfigurationHelper.FindNewestFileWithExtension("pbw")))
 				.WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting("BtAdapterName",""));
 
 		}

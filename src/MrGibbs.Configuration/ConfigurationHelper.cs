@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace MrGibbs.Configuration
 {
@@ -17,7 +18,7 @@ namespace MrGibbs.Configuration
 			public Object ConfiguredValue{get;set;}
 		}
 
-		public static IList<ConfigurationSetting> Settings{ get; private set; }
+		private static IList<ConfigurationSetting> Settings;
 
 		private static T RecordAndReturnSetting<T> (string key, T defaultValue, T configuredValue)
 		{
@@ -38,6 +39,21 @@ namespace MrGibbs.Configuration
 			}
 
 			return configuredValue;
+		}
+
+		public static string GenerateDefaultConfiguration()
+		{
+			StringBuilder s = new StringBuilder ();
+			s.Append ("<appSettings>");
+			s.Append (Environment.NewLine);
+			foreach(var setting in Settings)
+			{
+				s.Append("\t"+@"<add key="""+setting.Key+@""" value="""+setting.DefaultValue+@"""/>");
+				s.Append(Environment.NewLine);
+			}
+			s.Append("</appSettings>");
+			s.Append(Environment.NewLine);
+			return s.ToString();
 		}
 
 		public static bool ReadBoolAppSetting(string key, bool defaultValue)
@@ -91,5 +107,26 @@ namespace MrGibbs.Configuration
 				return RecordAndReturnSetting(key,defaultValue,defaultValue);
             }
         }
+
+		public static string FindNewestFileWithExtension(string extension)
+		{
+			string exePath = System.Reflection.Assembly.GetExecutingAssembly ().CodeBase;
+			if (exePath.StartsWith ("file:"))
+			{
+				exePath = exePath.Substring (5);
+			}
+			string exeDir = Path.GetDirectoryName (exePath);
+			var dir = new DirectoryInfo (exeDir);
+			var matchingFiles = dir.GetFiles ("*."+extension);
+			var newest = matchingFiles.OrderByDescending (x => x.CreationTimeUtc).FirstOrDefault();
+			if(newest!=null)
+			{
+				return newest.FullName;
+			}
+			else
+			{
+				return null;
+			}
+		}
     }
 }

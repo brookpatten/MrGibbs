@@ -17,7 +17,7 @@ namespace MrGibbs.Console
     {
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Initializing Kernel...");
+            System.Console.WriteLine("Initializing Mr. Gibbs Kernel...");
 
             IKernel kernel;
             try
@@ -32,17 +32,26 @@ namespace MrGibbs.Console
             }
 
             var logger = kernel.Get<ILogger>();
+			logger.Info ("Kernel Configuration Complete");
 
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
             {
                 logger.Fatal("Unhandled Application Exception", e.ExceptionObject);
             };
 
+			logger.Info ("Configuring Supervisor");
+			bool isFirst = true;
 			using (var supervisor = kernel.Get<Supervisor> ()) {
                 do
                 {
                     logger.Info("Initializing Supervisor");
                     supervisor.Initialize();
+					if(isFirst)
+					{
+						var config = ConfigurationHelper.GenerateDefaultConfiguration();
+						logger.Info("Default Configuration"+System.Environment.NewLine+config);
+						isFirst=false;
+					}
                 }
                 while (supervisor.Run());//if run returns true then we need to restart, if false then it wants to close
             }
@@ -62,9 +71,12 @@ namespace MrGibbs.Console
                 new PersistenceModule(),
             });
 
+			var logger = kernel.Get<ILogger> ();
+			logger.Info ("Loading Plugins...");
 			//plugins
 			kernel.Load (new string[] { "*.Plugin.dll" });
 
+			logger.Info ("Loading Core...");
 			//core services/controllers
             kernel.Bind<IRaceController>().To<RaceController>()
                 .InSingletonScope()

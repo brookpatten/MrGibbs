@@ -45,9 +45,11 @@ namespace MrGibbs.Pebble
             _components = new List<IPluginComponent>();
         
             //scan for pebbles
-			var pebbles = _manager.Detect (null, false);
+			var pebbles = _manager.Detect (null, true);
 
             AppBundle bundle=null;
+
+			_logger.Info ("Found " + pebbles.Count + " Pebbles");
 
             if(pebbles.Any())
             {

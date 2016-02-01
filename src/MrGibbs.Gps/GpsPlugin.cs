@@ -15,9 +15,12 @@ namespace MrGibbs.Gps
         private IList<IPluginComponent> _components;
 		private string _gpsPort;
 		private int _gpsBaud;
+		private bool _simulated;
 
-		public GpsPlugin(ILogger logger,string gpsPort, int gpsBaud)
+
+		public GpsPlugin(ILogger logger,bool simulated,string gpsPort, int gpsBaud)
         {
+			_simulated = simulated;
 			_gpsPort = gpsPort;
 			_gpsBaud = gpsBaud;
             _logger = logger;
@@ -27,10 +30,18 @@ namespace MrGibbs.Gps
         {
             _components = new List<IPluginComponent>();
             _initialized = false;
-			var sensor = new GpsSensor(_logger, this, _gpsPort, _gpsBaud);
+			GpsSensor sensor;
+			if (_simulated)
+			{
+				sensor = new SimulatedGpsSensor (_logger, this);
+			}
+			else
+			{
+				sensor = new GpsSensor(_logger, this, _gpsPort, _gpsBaud);
+			}
+			sensor.Start ();
             configuration.Sensors.Add(sensor);
             _components.Add(sensor);
-            sensor.Start();
             _initialized = true;
         }
 

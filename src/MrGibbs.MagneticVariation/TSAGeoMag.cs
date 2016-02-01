@@ -484,15 +484,22 @@ namespace  MrGibbs.MagneticVariation
             try
             {
                 StreamReader sr=null;
-				if (File.Exists(_inputFilePath))
-                {
-                    _logger.Debug("Attempting to load magnetic variation coefficients from file...");
-					sr = new StreamReader(_inputFilePath);
-                }
-                else
-                {
-					throw new FileNotFoundException("Missing "+_inputFilePath+" File");
-                }
+				if(!string.IsNullOrEmpty(_inputFilePath))
+				{
+					if ( File.Exists(_inputFilePath))
+	                {
+						_logger.Debug("Loading magnetic variation coefficients from "+_inputFilePath);
+						sr = new StreamReader(_inputFilePath);
+	                }
+	                else
+	                {
+						throw new FileNotFoundException("Missing "+_inputFilePath);
+	                }
+				}
+				else
+				{
+					throw new FileNotFoundException("No .cof file found");
+				}
 
                 ReadCOFStream(sr);
 
@@ -502,7 +509,7 @@ namespace  MrGibbs.MagneticVariation
             } 
             catch (Exception ex)
             {
-                _logger.Error("Loading File failed, using hard coded coefficients");
+                _logger.Error("Loading .cof file failed, using hard coded coefficients",ex);
                 MemoryStream stream = null;
                 StreamWriter writer = null;
                 StreamReader sr;

@@ -119,7 +119,7 @@ namespace MrGibbs.Console
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Exception updating sensor "+sensor.GetType().Name);
+                        _logger.Error("Exception updating sensor "+sensor.GetType().Name,ex);
                         if (!erroredPlugins.Contains(sensor.Plugin))
                         {
                             erroredPlugins.Add(sensor.Plugin);
@@ -139,7 +139,7 @@ namespace MrGibbs.Console
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Exception updating calculator " + calculator.GetType().Name);
+                        _logger.Error("Exception updating calculator " + calculator.GetType().Name,ex);
                         if (!erroredPlugins.Contains(calculator.Plugin))
                         {
                             erroredPlugins.Add(calculator.Plugin);
@@ -175,7 +175,7 @@ namespace MrGibbs.Console
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Exception updating viewer " + viewer.GetType().Name);
+                        _logger.Error("Exception updating viewer " + viewer.GetType().Name,ex);
                         if (!erroredPlugins.Contains(viewer.Plugin))
                         {
                             erroredPlugins.Add(viewer.Plugin);

@@ -18,7 +18,7 @@ namespace MrGibbs.Gps
         
         public SimulatedGpsSensor(ILogger logger, GpsPlugin plugin):base(logger,plugin,null,0)
         {
-
+			_path = Configuration.ConfigurationHelper.FindNewestFileWithExtension ("nmea");
         }
 
         public override void Start()
