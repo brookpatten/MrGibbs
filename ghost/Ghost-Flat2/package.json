@@ -1,0 +1,23 @@
+{
+  "name": "Ghost-Flat",
+  "private": false,
+  "version": "0.7.0",
+  "description": "Ghost-Flat is a Flat theme for Ghost Blogs",
+  "author": "fabienwang <fabienwang@eliteheberg.fr>",
+  "homepage": "http://github.com/fabienwang/ghost-flat",
+  "keywords": [
+    "mobile",
+    "html5",
+    "css3",
+    "bootstrap",
+    "flat"
+  ],
+  "bugs": {
+    "url": "https://github.com/fabienwang/ghost-flat/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabienwang/ghost-flat/ghost-flat.git"
+  }
+}
