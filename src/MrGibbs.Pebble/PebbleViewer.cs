@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Models;
 
+using PebbleSharp;
 using PebbleSharp.Core;
 using PebbleSharp.Core.NonPortable.AppMessage;
 using PebbleSharp.Core.Bundles;
@@ -54,7 +56,7 @@ namespace MrGibbs.Pebble
         private volatile IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
         private static IList<LineStateMap> _lineStateMaps;
 
-        private static Dictionary<UICommand, Action<ApplicationMessageResponse>> _commandMaps;
+		private static Dictionary<UICommand, Action<AppMessagePacket>> _commandMaps;
 
         private Action<Action<ISystemController, IRaceController>> _queueCommand;
 
@@ -62,7 +64,7 @@ namespace MrGibbs.Pebble
         private Task _lastSend;
         private DateTime? _lastSendAt;
 
-        public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, AppBundle bundle, Action<Action<ISystemController, IRaceController>> queueCommand)
+		public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, IZip appBundleZip, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _queueCommand = queueCommand;
             _plugin = plugin;
@@ -72,31 +74,14 @@ namespace MrGibbs.Pebble
 			_logger.Info ("Connected to pebble " + _pebble.PebbleID);
             _transactionId = 255;
 
-            _uuid = new UUID(bundle.AppInfo.UUID);
+			var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
+			var bundle = new AppBundle ();
+			bundle.Load (appBundleZip, _pebble.Firmware.HardwarePlatform.GetPlatform ());
+			_uuid = bundle.AppMetadata.UUID;
+			_pebble.InstallClient.InstallAppAsync (bundle, progress).Wait();
+			_logger.Info("Installed app on pebble " + pebble.PebbleID);
 
-            var getAppBank = _pebble.GetAppbankContentsAsync();
-            getAppBank.Wait();
-            var bank = getAppBank.Result;
-
-            if (bank.AppUUIDs.Contains(_uuid))
-            {
-                _logger.Info("Pebble "+_pebble.PebbleID+" already has app installed, removing...");
-                var index = bank.AppUUIDs.IndexOf(_uuid);
-                var remove = _pebble.RemoveAppAsync(bank.AppBank.Apps[index]);
-                remove.Wait();
-            }
-
-            var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
-            var install = _pebble.InstallAppAsync(bundle,progress);
-            install.Wait();
-            _logger.Info("Installed app on pebble " + pebble.PebbleID);
-
-
-            var launch = _pebble.LaunchApp( _uuid);
-            launch.Wait();
-            _logger.Info("Launched app on pebble " + pebble.PebbleID);
-
-            _pebble.RegisterCallback<ApplicationMessageResponse>(Receive);
+			_pebble.RegisterCallback<AppMessagePacket>(Receive);
 
             InitializeViewer();
         }
@@ -160,7 +145,7 @@ Course Relative*/
 
             if(_commandMaps==null)
             {
-                _commandMaps = new Dictionary<UICommand, Action<ApplicationMessageResponse>>();
+				_commandMaps = new Dictionary<UICommand, Action<AppMessagePacket>>();
                 _commandMaps.Add(UICommand.Dash, ProcessDashCommand);
                 _commandMaps.Add(UICommand.Button, ProcessButtonCommand);
                 _commandMaps.Add(UICommand.Calibrate, m=>_queueCommand((s,r)=>s.Calibrate()));
@@ -171,11 +156,11 @@ Course Relative*/
             }
         }
 
-        private void Receive(ApplicationMessageResponse response)
+		private void Receive(AppMessagePacket response)
         {
-            if (response.Dictionary != null)
+			if (response.Values != null)
             {
-                var commandTuple = response.Dictionary.Values.SingleOrDefault(x => x.Key == 0);
+				var commandTuple = response.Values.SingleOrDefault(x => x.Key == 0);
                 if(commandTuple!=null && commandTuple is AppMessageUInt8)
                 {
                     UICommand command = (UICommand)((AppMessageUInt8)commandTuple).Value;
@@ -192,9 +177,9 @@ Course Relative*/
             }
         }
 
-        private void ProcessButtonCommand(ApplicationMessageResponse response)
+		private void ProcessButtonCommand(AppMessagePacket response)
         {
-            var lineTuple = response.Dictionary.Values.SingleOrDefault(x=>x.Key==1);
+            var lineTuple = response.Values.SingleOrDefault(x=>x.Key==1);
             if(lineTuple!=null && lineTuple is AppMessageUInt8)
             {
                 var line = ((AppMessageUInt8)lineTuple).Value;
@@ -211,12 +196,12 @@ Course Relative*/
             }
         }
 
-        private void ProcessDashCommand(ApplicationMessageResponse response)
+		private void ProcessDashCommand(AppMessagePacket response)
         {
             //which line are we changing?
-            var line = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
+            var line = ((AppMessageUInt8)response.Values.SingleOrDefault(x => x.Key == 1)).Value;
             //change it to which map?
-            var map = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 2)).Value;
+            var map = ((AppMessageUInt8)response.Values.SingleOrDefault(x => x.Key == 2)).Value;
 
             _logger.Info("Pebble "+_pebble.PebbleID+" Has requested Dashboard Row "+line+" to show "+_lineStateMaps[map].Caption);
 
@@ -226,11 +211,11 @@ Course Relative*/
             }
         }
 
-        private void ProcessMarkCommand(ApplicationMessageResponse response)
+		private void ProcessMarkCommand(AppMessagePacket response)
         {
-            var mark = (MarkType)((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
+            var mark = (MarkType)((AppMessageUInt8)response.Values.SingleOrDefault(x => x.Key == 1)).Value;
 
-            var bearingTuple = response.Dictionary.Values.SingleOrDefault(x=>x.Key==2);
+            var bearingTuple = response.Values.SingleOrDefault(x=>x.Key==2);
             if (bearingTuple!=null)
             {
                 //bearing
@@ -275,7 +260,7 @@ Course Relative*/
 #endif
 
                 _transactionId--;
-                AppMessageDictionary message = new AppMessageDictionary();
+				AppMessagePacket message = new AppMessagePacket();
                 message.ApplicationId = _uuid;
                 message.TransactionId = _transactionId;
                 message.Command = (byte) Command.Push;

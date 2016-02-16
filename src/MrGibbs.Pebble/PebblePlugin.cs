@@ -20,7 +20,6 @@ namespace MrGibbs.Pebble
         private IList<IPluginComponent> _components;
 		private PebbleManager _manager;
 
-        //private string _pbwPath = "/home/pi/dev/mrgibbs/MrGibbs.Pebble/Mr._Gibbs.pbw";
         private string _pbwPath /*= "Mr._Gibbs.pbw"*/;
 		private string _btAdapterName;
 
@@ -47,8 +46,6 @@ namespace MrGibbs.Pebble
             //scan for pebbles
 			var pebbles = _manager.Detect (null, true);
 
-            AppBundle bundle=null;
-
 			_logger.Info ("Found " + pebbles.Count + " Pebbles");
 
             if(pebbles.Any())
@@ -60,10 +57,11 @@ namespace MrGibbs.Pebble
                         using (var zip = new Zip())
                         {
                             zip.Open(stream);
-                            bundle = new AppBundle();
-                            stream.Position = 0;
-                            bundle.Load(stream, zip);
-                            _logger.Info("Loaded Pebble Application " + bundle.AppInfo.UUID.ToString());
+							foreach (var pebble in pebbles) 
+							{
+								stream.Position = 0;
+								InitializeViewer(pebble, zip, queueCommand, configuration);
+							}
                         }
                     }
                 }
@@ -73,21 +71,7 @@ namespace MrGibbs.Pebble
                 }
             }
             
-            //add a viewer for each pebble
-            foreach (var pebble in pebbles)
-            {
-                try
-                {
-                    var viewer = new PebbleViewer(_logger, this, pebble,bundle,queueCommand);
-                    
-                    _components.Add(viewer);
-                    configuration.DashboardViewers.Add(viewer);
-                }
-                catch (Exception ex)
-                {
-					_logger.Error("Failed to connect to pebble "+pebble.PebbleID,ex);
-                }
-            }
+            
 
             if (!_components.Any())
             {
@@ -107,6 +91,21 @@ namespace MrGibbs.Pebble
             }
 
         }
+
+		private void InitializeViewer(PebbleSharp.Core.Pebble pebble,PebbleSharp.Core.IZip zip, Action<Action<ISystemController, IRaceController>> queueCommand,PluginConfiguration configuration)
+		{
+			try
+			{
+				var viewer = new PebbleViewer(_logger, this, pebble,zip,queueCommand);
+
+				_components.Add(viewer);
+				configuration.DashboardViewers.Add(viewer);
+			}
+			catch (Exception ex)
+			{
+				_logger.Error("Failed to connect to pebble "+pebble.PebbleID,ex);
+			}
+		}
 
         public bool Initialized
         {

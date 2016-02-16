@@ -1,12 +1,21 @@
 ﻿<Properties StartupItem="MrGibbs.Console/MrGibbs.Console.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Console/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Pebble/PebbleViewer.cs">
     <Files>
-      <File FileName="MrGibbs.Configuration/ConfigBase.cs" Line="1" Column="1" />
-      <File FileName="MrGibbs.Configuration/PluginModule.cs" Line="75" Column="75" />
-      <File FileName="MrGibbs.Console/Program.cs" Line="45" Column="45" />
+      <File FileName="MrGibbs.Pebble/PebbleViewer.cs" Line="200" Column="10" />
+      <File FileName="MrGibbs.Pebble/PebblePlugin.cs" Line="67" Column="18" />
+      <File FileName="lib/PebbleSharp/PebbleSharp.Core.NonPortable/AppMessage/AppMessagePacket.cs" Line="166" Column="52" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MrGibbs" expanded="True" selected="True">
+            <Node name="Plugins" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezFactory.cs" line="187" column="1" />
@@ -32,7 +41,6 @@
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="229" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="239" column="15" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/InTheHand.Net.Personal/Net.Bluetooth.BlueZ/BluezDbus.cs" line="240" column="1" />
-      <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/MrGibbs.Pebble/PebblePlugin.cs" line="85" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/MrGibbs.Console/Supervisor.cs" line="178" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/PebbleSharp.Core.NonPortable/Pebble.cs" line="442" column="1" />
       <Breakpoint file="/home/brook/Documents/Development/mrgibbs/src/Mono.BlueZ/dbus-sharp/src/Protocol/MessageWriter.cs" line="205" column="18" />
@@ -45,6 +53,7 @@
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.MrGibbs.Console PreferredExecutionTarget="MonoDevelop.Default" />
   <DisabledProjects>
     <String>MrGibbs.Test/MrGibbs.Test.csproj</String>
     <String>MrGibbs.ChaosMonkey/MrGibbs.ChaosMonkey.csproj</String>

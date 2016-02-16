@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dbus-sharp", "lib\PebbleSha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.BlueZ.DBus", "lib\PebbleSharp\Mono.BlueZ\Mono.BlueZ.DBus\Mono.BlueZ.DBus.csproj", "{68E6EB3B-4076-48F6-9EB6-1181057C0977}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Core.NonPortable", "lib\PebbleSharp\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj", "{E52DCFA6-ED09-4B88-AE50-97072323942C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Mono.BlueZ5", "lib\PebbleSharp\PebbleSharp.Mono.BlueZ5\PebbleSharp.Mono.BlueZ5.csproj", "{40BD0369-85E6-4712-A28C-0C9178FD6F33}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.Configuration", "MrGibbs.Configuration\MrGibbs.Configuration.csproj", "{0096B610-9EAD-421F-83AC-C3FE2559EC68}"
@@ -46,6 +44,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.MagneticVariation", "MrGibbs.MagneticVariation\MrGibbs.MagneticVariation.csproj", "{2BE5501B-FA4A-408F-8269-F2D6E7A02699}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.MPU9250", "MrGibbs.MPU9250\MrGibbs.MPU9250.csproj", "{C03B4B43-1404-4449-8865-3AFD1FD626E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Core", "lib\PebbleSharp\PebbleSharp.Core.NonPortable\PebbleSharp.Core.csproj", "{E52DCFA6-ED09-4B88-AE50-97072323942C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -180,7 +180,6 @@ Global
 		{CEFF9E98-6499-4D7B-B523-BB1959674E79} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
 		{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
 		{68E6EB3B-4076-48F6-9EB6-1181057C0977} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
-		{E52DCFA6-ED09-4B88-AE50-97072323942C} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
 		{40BD0369-85E6-4712-A28C-0C9178FD6F33} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
 		{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{26A14CFB-80CB-4D89-9101-10D9E34514B9} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
@@ -190,6 +189,7 @@ Global
 		{AB46A638-42D2-436E-A40B-1123AC4653D4} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{2BE5501B-FA4A-408F-8269-F2D6E7A02699} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{C03B4B43-1404-4449-8865-3AFD1FD626E9} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
+		{E52DCFA6-ED09-4B88-AE50-97072323942C} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MrGibbs.Console\MrGibbs.Console.csproj
@@ -216,12 +216,16 @@ Global
 		$0.NameConventionPolicy = $4
 		$4.Rules = $5
 		$5.NamingRule = $6
-		$6.Name = Namespaces
-		$6.AffectedEntity = Namespace
+		$6.Name = Type Parameters
+		$6.AffectedEntity = TypeParameter
 		$6.VisibilityMask = VisibilityMask
 		$6.NamingStyle = PascalCase
 		$6.IncludeInstanceMembers = True
 		$6.IncludeStaticEntities = True
+		$6.RequiredPrefixes = $27
+		$27.String = T
+		$6.RequiredSuffixes = $28
+		$28.String = Exception
 		$5.NamingRule = $7
 		$7.Name = Types
 		$7.AffectedEntity = Class, Struct, Enum, Delegate
