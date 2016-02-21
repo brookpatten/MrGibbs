@@ -23,14 +23,6 @@ namespace MrGibbs.Pebble
         private string _pbwPath /*= "Mr._Gibbs.pbw"*/;
 		private string _btAdapterName;
 
-		public PebblePlugin(string pbwPath,string btAdapterName,ILogger logger)
-		{
-			_pbwPath = pbwPath;
-			_btAdapterName = btAdapterName;
-			_logger = logger;
-			_manager = new PebbleManager ();
-		}
-
 		public PebblePlugin(string pbwPath,string btAdapterName,ILogger logger,DBusConnection connection)
         {
 			_pbwPath = pbwPath;
