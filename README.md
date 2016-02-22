@@ -15,6 +15,17 @@ These instructions are intended to be used on Raspbian Jessie-Lite, although the
 * Enable I2C (sudo raspi-config)
 * Boot to command prompt
 * Install Bluetooth (sudo apt-get install bluetooth)
+* edit /etc/dbus-1/system.d/bluetooth.conf, add the following
+
+`<policy user="pi">
+    <allow own="org.bluez"/>
+    <allow send_destination="org.bluez"/>
+    <allow send_interface="org.bluez.Agent1"/>
+    <allow send_interface="org.bluez.MediaEndpoint1"/>
+    <allow send_interface="org.bluez.MediaPlayer1"/>
+    <allow send_interface="org.bluez.Profile1"/>
+    <allow send_interface="org.freedesktop.DBus.ObjectManager"/>
+  </policy>`
 * reboot
 
 #2 Mono Installation
@@ -33,22 +44,8 @@ As of this writing, a weekly build of mono is required as the necassary changes 
 #5 Build
 * cd MrGibbs/src
 * xbuild
-* 
-#6 Allow user pi to control bluetooth via dbus
-* edit /etc/dbus-1/system.d/bluetooth.conf
-* Add the following
-`<policy user="pi">
-    <allow own="org.bluez"/>
-    <allow send_destination="org.bluez"/>
-    <allow send_interface="org.bluez.Agent1"/>
-    <allow send_interface="org.bluez.MediaEndpoint1"/>
-    <allow send_interface="org.bluez.MediaPlayer1"/>
-    <allow send_interface="org.bluez.Profile1"/>
-    <allow send_interface="org.freedesktop.DBus.ObjectManager"/>
-  </policy> `
 
-#7 Run It
+#6 Run It
 * ./start.sh
 
-#8 (Optional but recommended if you're actually going to sail with it) 
-* [Set it to run at boot](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
+#7 [Set it to run at boot](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
