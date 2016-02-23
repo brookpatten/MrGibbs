@@ -28,12 +28,19 @@ These instructions are intended to be used on Raspbian Jessie-Lite, although the
   </policy>`
 * reboot
 
-#2 Mono Installation
+#2A (Raspberry Pi 2) Mono Installation
 As of this writing, a weekly build of mono is required as the necassary changes to mono.posix have not made it into a release yet.  CI builds do not include ArmHF packages so if you're intalling on a Pi, Weekly is the path of least resistance (Compiling mono from git on the pi is very time consuming).
 * sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 * echo "deb http://download.mono-project.com/repo/debian nightly main" | sudo tee /etc/apt/sources.list.d/mono-nightly.list
 * sudo apt-get update
 * sudo apt-get install mono-complete
+ 
+#2B (Raspberry Pi A/B/+/Zero) Mono Compilation 
+* sudo apt-get install autoconf libtool automake build-essential gettext
+* ./autogen.sh --prefix=/opt/mono
+* make get-monolite-latest
+* make (This will take about 4 hours)
+* sudo make install
 
 #3 Install git
 * sudo apt-get install git
