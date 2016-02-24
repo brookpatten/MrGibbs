@@ -20,6 +20,9 @@ namespace MrGibbs.Infrastructure
         int tm_isdst;/* unused */
     };
 
+    /// <summary>
+    /// intended to get/set time on a posix system, not implemented
+    /// </summary>
     public class LinuxSystemClock:IClock
     {
         public DateTime GetUtcTime()

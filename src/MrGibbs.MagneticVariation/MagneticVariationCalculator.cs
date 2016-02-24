@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Contracts;
@@ -11,6 +6,9 @@ using MrGibbs.Models;
 
 namespace MrGibbs.MagneticVariation
 {
+    /// <summary>
+    /// calculator which can convert magnetic headings to true headings based on WMM.COF file
+    /// </summary>
     public class MagneticVariationCalculator:ICalculator
     {
         private ILogger _logger;
@@ -24,6 +22,7 @@ namespace MrGibbs.MagneticVariation
             _logger = logger;
         }
 
+        /// <inheritdoc />
         public void Calculate(State state)
         {
             if (state.Location!=null && state.Location.Latitude!=null && state.Location.Longitude!=null && state.AltitudeInMeters.HasValue)
@@ -40,11 +39,13 @@ namespace MrGibbs.MagneticVariation
             }
         }
 
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             

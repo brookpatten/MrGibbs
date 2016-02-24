@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
 namespace MrGibbs.MagneticVariation
 {
+    /// <summary>
+    /// plugin to load the COF file magnetic variation calculator
+    /// </summary>
     public class MagneticVariationPlugin:IPlugin
     {
         private ILogger _logger;
         private bool _initialized = false;
         private IList<IPluginComponent> _components;
         private TSAGeoMag _tsaGeoMag;
+		private string _cofFilePath;
 
-        public MagneticVariationPlugin(ILogger logger)
+        public MagneticVariationPlugin(ILogger logger,string cofFilePath)
         {
+			_cofFilePath = cofFilePath;
             _logger = logger;
         }
 
@@ -26,7 +29,7 @@ namespace MrGibbs.MagneticVariation
         
             _initialized = false;
 
-            _tsaGeoMag = new TSAGeoMag(_logger);
+			_tsaGeoMag = new TSAGeoMag(_cofFilePath,_logger);
 
             var magvarCalc = new MagneticVariationCalculator(_logger, this, _tsaGeoMag);
             _components.Add(magvarCalc);
@@ -39,7 +42,6 @@ namespace MrGibbs.MagneticVariation
         {
             get { return _initialized; }
         }
-
 
         public IList<IPluginComponent> Components
         {

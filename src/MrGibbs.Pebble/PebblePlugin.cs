@@ -1,44 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Threading.Tasks;
-using PebbleSharp.Net45;
-using PebbleSharp.Core.NonPortable;
-using PebbleSharp.Core.Bundles;
+
+using PebbleSharp.Mono.BlueZ5;
+using Mono.BlueZ.DBus;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
 namespace MrGibbs.Pebble
 {
+    /// <summary>
+    /// pebble plugin which finds, pairs, and communicates with pebble watches
+    /// </summary>
     public class PebblePlugin:IPlugin
     {
         private ILogger _logger;
         private bool _initialized = false;
         private IList<IPluginComponent> _components;
+		private PebbleManager _manager;
 
-#if !WINDOWS
-        private const string _pbwPath = "/home/pi/dev/mrgibbs/MrGibbs.Pebble/Mr._Gibbs.pbw";
-#endif
+        private string _pbwPath /*= "Mr._Gibbs.pbw"*/;
+		private string _btAdapterName;
 
-#if WINDOWS
-        private const string _pbwPath = "Mr._Gibbs.pbw";
-#endif
-
-        public PebblePlugin(ILogger logger)
+		public PebblePlugin(string pbwPath,string btAdapterName,ILogger logger,DBusConnection connection)
         {
+			_pbwPath = pbwPath;
+			_btAdapterName = btAdapterName;
             _logger = logger;
+			_manager = new PebbleManager (connection);
         }
 
+        /// <inheritdoc />
         public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _components = new List<IPluginComponent>();
         
             //scan for pebbles
-            var pebbles = PebbleNet45.DetectPebbles();
+			var pebbles = _manager.Detect (_btAdapterName, true);
 
-            AppBundle bundle=null;
+			_logger.Info ("Found " + pebbles.Count + " Pebbles");
 
             if(pebbles.Any())
             {
@@ -49,10 +51,11 @@ namespace MrGibbs.Pebble
                         using (var zip = new Zip())
                         {
                             zip.Open(stream);
-                            bundle = new AppBundle();
-                            stream.Position = 0;
-                            bundle.Load(stream, zip);
-                            _logger.Info("Loaded Pebble Application " + bundle.AppInfo.UUID.ToString());
+							foreach (var pebble in pebbles) 
+							{
+								stream.Position = 0;
+								InitializeViewer(pebble, zip, queueCommand, configuration);
+							}
                         }
                     }
                 }
@@ -62,21 +65,7 @@ namespace MrGibbs.Pebble
                 }
             }
             
-            //add a viewer for each pebble
-            foreach (var pebble in pebbles)
-            {
-                try
-                {
-                    var viewer = new PebbleViewer(_logger, this, pebble,bundle,queueCommand);
-                    
-                    _components.Add(viewer);
-                    configuration.DashboardViewers.Add(viewer);
-                }
-                catch (Exception ex)
-                {
-					_logger.Error("Failed to connect to pebble "+pebble.PebbleID,ex);
-                }
-            }
+            
 
             if (!_components.Any())
             {
@@ -97,19 +86,44 @@ namespace MrGibbs.Pebble
 
         }
 
+        /// <summary>
+        /// initialize a given pebble and add it to the viewers if successful
+        /// </summary>
+        /// <param name="pebble"></param>
+        /// <param name="zip"></param>
+        /// <param name="queueCommand"></param>
+        /// <param name="configuration"></param>
+		private void InitializeViewer(PebbleSharp.Core.Pebble pebble,PebbleSharp.Core.IZip zip, Action<Action<ISystemController, IRaceController>> queueCommand,PluginConfiguration configuration)
+		{
+			try
+			{
+				var viewer = new PebbleViewer(_logger, this, pebble,zip,queueCommand);
+
+				_components.Add(viewer);
+				configuration.DashboardViewers.Add(viewer);
+			}
+			catch (Exception ex)
+			{
+				_logger.Error("Failed to connect to pebble "+pebble.PebbleID,ex);
+			}
+		}
+
+        /// <inheritdoc />
         public bool Initialized
         {
             get { return _initialized; }
         }
 
-
+        /// <inheritdoc />
         public IList<IPluginComponent> Components
         {
             get { return _components; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
+			_manager.Dispose ();
             if (_components != null)
             {
                 foreach (var component in _components)

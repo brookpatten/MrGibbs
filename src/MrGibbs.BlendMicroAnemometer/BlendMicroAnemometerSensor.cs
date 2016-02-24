@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
 namespace MrGibbs.BlendMicroAnemometer
 {
+    /// <summary>
+    /// sensor implementation of the blend micro wind sensor
+    /// </summary>
     public class BlendMicroAnemometerSensor:ISensor
     {
         private ILogger _logger;
@@ -19,24 +18,28 @@ namespace MrGibbs.BlendMicroAnemometer
             _logger = logger;
         }
 
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public void Start()
         {
         }
 
+        /// <inheritdoc />
         public void Update(Models.State state)
         {
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
         }
 
-
+        /// <inheritdoc />
         public void Calibrate()
         {
         }

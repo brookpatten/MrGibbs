@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Contracts.Infrastructure
 {
+    /// <summary>
+    /// simple logging wrapper to avoid dependencies on outside assemblies
+    /// </summary>
     public interface ILogger
     {
         void Debug(string message);

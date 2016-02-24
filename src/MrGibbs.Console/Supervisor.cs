@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Models;
 
 namespace MrGibbs.Console
 {
-	public class Supervisor:IDisposable,ISystemController
+    /// <summary>
+    /// Handles threading and plugin maintenance throughout the execution of the application.
+    /// In the event that a plugin throws an exception (due to hardware, software, whatever) it will attempt to recover that plugin
+    /// and hopefully leave the existing plugins still functional
+    /// </summary>
+	public class Supervisor:IDisposable,ISystemController,ICommandable
     {
         private ILogger _logger;
         private PluginConfiguration _configuration;
@@ -37,6 +41,9 @@ namespace MrGibbs.Console
             _logger.Fatal("AppDomain Unhandled Exception", e.ExceptionObject);
         }
 
+        /// <summary>
+        /// intiialize the plugins
+        /// </summary>
         public void Initialize()
         {
             _commands = new Queue<Action<ISystemController, IRaceController>>();
@@ -73,12 +80,17 @@ namespace MrGibbs.Console
             
         }
 
+        /// <summary>
+        /// initialize a single plugin
+        /// </summary>
+        /// <param name="plugin"></param>
         private void InitializePlugin(IPlugin plugin)
         {
             plugin.Initialize(_configuration, QueueCommand);
         }
 
-        private void QueueCommand(Action<ISystemController,IRaceController> command)
+        /// <inheritdoc />
+        public void QueueCommand(Action<ISystemController,IRaceController> command)
         {
             lock(_commands)
             {
@@ -86,14 +98,16 @@ namespace MrGibbs.Console
             }
         }
 
+        /// <summary>
+        /// the main thread loop of the application
+        /// </summary>
+        /// <returns>returns a boolean indicating whether the thread should be restarted</returns>
         public bool Run()
         {
             _logger.Info("Supervisor is running");
             _run = true;
             _restart = false;
             int operationCount = 1;
-            //_state.SystemTime = DateTime.UtcNow;
-            //_state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Startup Complete");
             while (_run && operationCount>0)
             {
                 _state.Clear();
@@ -119,7 +133,7 @@ namespace MrGibbs.Console
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Exception updating sensor "+sensor.GetType().Name);
+                        _logger.Error("Exception updating sensor "+sensor.GetType().Name,ex);
                         if (!erroredPlugins.Contains(sensor.Plugin))
                         {
                             erroredPlugins.Add(sensor.Plugin);
@@ -139,7 +153,7 @@ namespace MrGibbs.Console
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Exception updating calculator " + calculator.GetType().Name);
+                        _logger.Error("Exception updating calculator " + calculator.GetType().Name,ex);
                         if (!erroredPlugins.Contains(calculator.Plugin))
                         {
                             erroredPlugins.Add(calculator.Plugin);
@@ -175,7 +189,7 @@ namespace MrGibbs.Console
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Exception updating viewer " + viewer.GetType().Name);
+                        _logger.Error("Exception updating viewer " + viewer.GetType().Name,ex);
                         if (!erroredPlugins.Contains(viewer.Plugin))
                         {
                             erroredPlugins.Add(viewer.Plugin);
@@ -225,6 +239,12 @@ namespace MrGibbs.Console
             return _restart;
         }
 
+        /// <summary>
+        /// evicts a plugin and optionally reloads it
+        /// </summary>
+        /// <param name="configuration">the configuration object</param>
+        /// <param name="plugin">the plugin to evict</param>
+        /// <param name="reinitialize">whether to re-initialize the plugin or leave it out</param>
         private void EvictPlugin(PluginConfiguration configuration,IPlugin plugin,bool reinitialize)
         {
             _logger.Warn("Evicting "+plugin.GetType().Name+" "+(reinitialize? "with" : "without")+" reinitialize");
@@ -258,6 +278,7 @@ namespace MrGibbs.Console
 			}
 		}
 
+        /// <inheritdoc />
         public void Calibrate()
         {
             _logger.Info("Calibrating...");
@@ -272,6 +293,7 @@ namespace MrGibbs.Console
             _logger.Info("Calibration Complete");
         }
 
+        /// <inheritdoc />
         public void Restart()
         {
             _logger.Info("Restart");
@@ -279,6 +301,7 @@ namespace MrGibbs.Console
             _run = false;
         }
 
+        /// <inheritdoc />
         public void Reboot()
         {
             _logger.Info("Reboot");
@@ -294,6 +317,7 @@ namespace MrGibbs.Console
             _run = false;
         }
 
+        /// <inheritdoc />
         public void Shutdown()
         {
             _logger.Info("Shutdown");

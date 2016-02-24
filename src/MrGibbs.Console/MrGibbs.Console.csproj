@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
     <Externalconsole>true</Externalconsole>
+    <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MrGibbs.Calculators\MrGibbs.Calculators.csproj">
-      <Project>{40fa9817-077e-494c-8dcd-2f54758b5085}</Project>
+      <Project>{40FA9817-077E-494C-8DCD-2F54758B5085}</Project>
       <Name>MrGibbs.Calculators</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
@@ -71,31 +72,23 @@
       <Name>MrGibbs.Contracts</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Gps\MrGibbs.Gps.csproj">
-      <Project>{4d9f09b7-bad6-4f4a-a40d-e2a1440b3483}</Project>
+      <Project>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</Project>
       <Name>MrGibbs.Gps</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
-      <Project>{ab46a638-42d2-436e-a40b-1123ac4653d4}</Project>
-      <Name>MrGibbs.HMC5883</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Infrastructure\MrGibbs.Infrastructure.csproj">
       <Project>{860DCFBC-164C-4BCA-A112-AF0439A60211}</Project>
       <Name>MrGibbs.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.MagneticVariation\MrGibbs.MagneticVariation.csproj">
-      <Project>{2be5501b-fa4a-408f-8269-f2d6e7a02699}</Project>
+      <Project>{2BE5501B-FA4A-408F-8269-F2D6E7A02699}</Project>
       <Name>MrGibbs.MagneticVariation</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>MrGibbs.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
-      <Project>{c03b4b43-1404-4449-8865-3afd1fd626e7}</Project>
-      <Name>MrGibbs.MPU6050</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Pebble\MrGibbs.Pebble.csproj">
-      <Project>{4dc33cf3-5df6-4630-9297-e2dadc27cddd}</Project>
+      <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
       <Name>MrGibbs.Pebble</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Persistence\MrGibbs.Persistence.csproj">

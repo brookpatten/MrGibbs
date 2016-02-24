@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
 namespace MrGibbs.MPU9250
 {
+    /// <summary>
+    /// mpu9259 plugin
+    /// </summary>
     public class Mpu9250Plugin:IPlugin
     {
         private bool _initialized = false;

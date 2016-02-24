@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MrGibbs.Pebble</RootNamespace>
-    <AssemblyName>MrGibbs.Pebble</AssemblyName>
+    <AssemblyName>MrGibbs.Pebble.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,25 +37,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PebbleViewer.cs" />
     <Compile Include="PebblePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PebbleModule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InTheHand.Net.Personal\InTheHand.Net.Personal.FX2.csproj">
-      <Project>{98BDDE14-8F8C-40CC-9E45-5BAC73573EF4}</Project>
-      <Name>InTheHand.Net.Personal.FX2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PebbleSharp.Core.NonPortable\PebbleSharp.Core.NonPortable.csproj">
-      <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
-      <Name>PebbleSharp.Core.NonPortable</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PebbleSharp.Net45\PebbleSharp.Net45.csproj">
-      <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
-      <Name>PebbleSharp.Net45</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
       <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>MrGibbs.Contracts</Name>
@@ -63,6 +55,26 @@
     <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>MrGibbs.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
+      <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
+      <Name>MrGibbs.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\dbus-sharp\src\dbus-sharp.csproj">
+      <Project>{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C}</Project>
+      <Name>dbus-sharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\Mono.BlueZ.DBus\Mono.BlueZ.DBus.csproj">
+      <Project>{68E6EB3B-4076-48F6-9EB6-1181057C0977}</Project>
+      <Name>Mono.BlueZ.DBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Mono.BlueZ5\PebbleSharp.Mono.BlueZ5.csproj">
+      <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
+      <Name>PebbleSharp.Mono.BlueZ5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Core\PebbleSharp.Core.csproj">
+      <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
+      <Name>PebbleSharp.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -78,4 +90,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

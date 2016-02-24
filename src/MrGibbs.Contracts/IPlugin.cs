@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Contracts
 {
+    /// <summary>
+    /// A Mr. Gibbs Plugin
+    /// Initialize method should add relevant components to the PluginConfiguration and populate the Components proprty
+    /// </summary>
     public interface IPlugin:IDisposable
     {
         /// <summary>

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ninject.Modules;
-using MrGibbs.Infrastructure;
+﻿using System.Collections.Generic;
 
 using Ninject.Activation;
 using NLog;
 using ILogger = MrGibbs.Contracts.Infrastructure.ILogger;
+using Ninject.Modules;
+
+using MrGibbs.Infrastructure;
 
 namespace MrGibbs.Configuration
 {
+    /// <summary>
+    /// load and configure the NLog logger
+    /// </summary>
     public class LoggingModule:NinjectModule
     {
         private IList<string> _xmlConfigFiles;

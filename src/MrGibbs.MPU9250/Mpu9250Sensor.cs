@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using MrGibbs.Contracts;
 using MrGibbs.Models;
 using MrGibbs.Contracts.Infrastructure;
 
-using QuadroschrauberSharp;
 using QuadroschrauberSharp.Hardware;
 
 namespace MrGibbs.MPU9250
 {
+    /// <summary>
+    /// i2c connected mpu9250
+    /// </summary>
     public class Mpu9250Sensor:ISensor
     {
         private ILogger _logger;

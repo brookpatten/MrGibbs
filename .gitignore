@@ -18,3 +18,4 @@ localSettings.config
 Debug
 Debug/*
 Log/*
+*.log

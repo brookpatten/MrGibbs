@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Models
 {
@@ -17,6 +13,10 @@ namespace MrGibbs.Models
         Normal=1,
         High=2
     }
+
+    /// <summary>
+    /// Message which needs to be communicated to the user via some means
+    /// </summary>
     public class Message
     {
         public MessageCategory Category { get; set; }

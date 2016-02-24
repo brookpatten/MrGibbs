@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QuadroschrauberSharp.Hardware;
 
 using uint8_t = System.Byte;
@@ -18,6 +13,9 @@ namespace MrGibbs.HMC5883
     //derived from arduino library of the same name
     //https://github.com/jrowberg/i2cdevlib/tree/master/Arduino/HMC5883L
 
+    /// <summary>
+    /// TODO: change this to use nuget packages for this chip rather than this home grown version
+    /// </summary>
     public class Hmc5883:IDisposable
     {
         private byte HMC5883L_ADDRESS = 0x1E;
@@ -95,6 +93,13 @@ namespace MrGibbs.HMC5883
             _i2c = new I2C(_i2cAddress);
             _devAddr = HMC5883L_DEFAULT_ADDRESS;
         }
+
+		public Hmc5883(I2C i2c)
+		{
+			_i2cAddress = 0;
+			_i2c = i2c;
+			_devAddr = HMC5883L_DEFAULT_ADDRESS;
+		}
 
         public Hmc5883(int i2cAddress, byte deviceAddress)
         {

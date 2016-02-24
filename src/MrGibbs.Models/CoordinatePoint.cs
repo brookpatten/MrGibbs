@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Models
 {
+    /// <summary>
+    /// gps/coordinate point class & helper methods
+    /// mostly stolen from visualsail, so it's a bit crusty
+    /// </summary>
     public class CoordinatePoint
     {
         private Coordinate _latitude;
@@ -218,12 +218,12 @@ namespace MrGibbs.Models
             return lat + " " + lon;
         }
     }
+    
     public class ProjectedPoint
     {
         public double Height { get; set; }
         public double Easting { get; set; }
         public double Northing { get; set; }
         public int Zone { get; set; }
-        
     }
 }

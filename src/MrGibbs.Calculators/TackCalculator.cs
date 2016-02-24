@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Contracts;
@@ -12,6 +9,9 @@ using MrGibbs.Models;
 
 namespace MrGibbs.Calculators
 {
+    /// <summary>
+    /// calculates stats based on most recent tack
+    /// </summary>
     public class TackCalculator : ICalculator
     {
         class CourseHistory
@@ -40,6 +40,7 @@ namespace MrGibbs.Calculators
             _logger = logger;
         }
 
+        /// <inheritdoc />
         public void Calculate(State state)
         {
             if (state.CourseOverGroundByLocation.HasValue)
@@ -76,7 +77,12 @@ namespace MrGibbs.Calculators
             PurgeOldHistory();
         }
 
-        public void CheckForTack(State state)
+        /// <summary>
+        /// compare the new state to the last values and determine if a tack has occured
+        /// if so, update the state with the new tack
+        /// </summary>
+        /// <param name="state"></param>
+        private void CheckForTack(State state)
         {
             var latest = _history.Last();
 
@@ -108,7 +114,10 @@ namespace MrGibbs.Calculators
             }
         }
 
-        public void PurgeOldHistory()
+        /// <summary>
+        /// used to purge history data prior to the most recent data when a tack occurs
+        /// </summary>
+        private void PurgeOldHistory()
         {
             if (_history.Count>1)
             {
@@ -117,12 +126,14 @@ namespace MrGibbs.Calculators
                 _history = _history.Where(x => x.Time > latest.Time - (_tackThresholdTime + _dataExclusionTime)).ToList();
             }
         }
-        
+
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _history.Clear();

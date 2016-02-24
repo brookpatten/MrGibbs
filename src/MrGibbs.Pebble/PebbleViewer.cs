@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
@@ -10,10 +9,13 @@ using MrGibbs.Models;
 using PebbleSharp.Core;
 using PebbleSharp.Core.NonPortable.AppMessage;
 using PebbleSharp.Core.Bundles;
-using PebbleSharp.Core.Responses;
 
 namespace MrGibbs.Pebble
 {
+    /// <summary>
+    /// used to map a given line on the dashboard to a function to retrieve its data, its caption
+    /// and optionally an action to invoke if the button next to it is pushed
+    /// </summary>
     internal class LineStateMap
     {
         //func that given the state, returns a string that will be displayed on the dashboard
@@ -38,9 +40,18 @@ namespace MrGibbs.Pebble
         }
     }
 
+    /// <summary>
+    /// viewer for a specific pebble.
+    /// </summary>
     public class PebbleViewer:IViewer
     {
+        /// <summary>
+        /// commands that the pebble may send
+        /// </summary>
         private enum UICommand:byte{Button=0,Dash=1,Course=2,Mark=3,NewRace=4,Calibrate=5,Restart=6,Reboot=7,Shutdown=8}
+        /// <summary>
+        /// buttons that the pebble may send from the dashboard
+        /// </summary>
         private enum Button : byte { Up = 0, Select = 1, Down = 2 }
 
         private ILogger _logger;
@@ -49,12 +60,11 @@ namespace MrGibbs.Pebble
         private byte _transactionId;
         private UUID _uuid;
         
-        
         private int _lineCount;//number of rows shown on the pebble UI
         private volatile IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
         private static IList<LineStateMap> _lineStateMaps;
 
-        private static Dictionary<UICommand, Action<ApplicationMessageResponse>> _commandMaps;
+		private static Dictionary<UICommand, Action<AppMessagePacket>> _commandMaps;
 
         private Action<Action<ISystemController, IRaceController>> _queueCommand;
 
@@ -62,7 +72,7 @@ namespace MrGibbs.Pebble
         private Task _lastSend;
         private DateTime? _lastSendAt;
 
-        public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, AppBundle bundle, Action<Action<ISystemController, IRaceController>> queueCommand)
+		public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, IZip appBundleZip, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _queueCommand = queueCommand;
             _plugin = plugin;
@@ -72,35 +82,22 @@ namespace MrGibbs.Pebble
 			_logger.Info ("Connected to pebble " + _pebble.PebbleID);
             _transactionId = 255;
 
-            _uuid = new UUID(bundle.AppInfo.UUID);
+			var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
+			var bundle = new AppBundle ();
+			bundle.Load (appBundleZip, _pebble.Firmware.HardwarePlatform.GetPlatform ());
+			_uuid = bundle.AppMetadata.UUID;
+			_pebble.InstallClient.InstallAppAsync (bundle, progress).Wait();
+			_logger.Info("Installed app on pebble " + pebble.PebbleID);
 
-            var getAppBank = _pebble.GetAppbankContentsAsync();
-            getAppBank.Wait();
-            var bank = getAppBank.Result;
-
-            if (bank.AppUUIDs.Contains(_uuid))
-            {
-                _logger.Info("Pebble "+_pebble.PebbleID+" already has app installed, removing...");
-                var index = bank.AppUUIDs.IndexOf(_uuid);
-                var remove = _pebble.RemoveAppAsync(bank.AppBank.Apps[index]);
-                remove.Wait();
-            }
-
-            var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
-            var install = _pebble.InstallAppAsync(bundle,progress);
-            install.Wait();
-            _logger.Info("Installed app on pebble " + pebble.PebbleID);
-
-
-            var launch = _pebble.LaunchApp( _uuid);
-            launch.Wait();
-            _logger.Info("Launched app on pebble " + pebble.PebbleID);
-
-            _pebble.RegisterCallback<ApplicationMessageResponse>(Receive);
+			_pebble.RegisterCallback<AppMessagePacket>(Receive);
 
             InitializeViewer();
         }
 
+        /// <summary>
+        /// initializes the viewer state to the defaults
+        /// TODO: have this load from whatever the last set of settings was based on pebble id?
+        /// </summary>
         private void InitializeViewer()
         {
             _lineCount = 3;
@@ -122,7 +119,12 @@ namespace MrGibbs.Pebble
                     % Nominal Speed
                     Top Speed
                     Countdown
-                    Distance to Mark*/
+                    Distance to Mark
+		Pitch
+		VMG %
+		VMC %
+Current Tack Delta
+Course Relative*/
                 _lineStateMaps = new List<LineStateMap>();
                 _lineStateMaps.Add(new LineStateMap(s => s.SpeedInKnots.HasValue ? string.Format("{0:0.0}", s.SpeedInKnots.Value) : "", "Speed (kn)"));
                 _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGood.HasValue ? string.Format("{0:0.0}", s.VelocityMadeGood.Value) : "", "VMG (kn)"));
@@ -155,7 +157,7 @@ namespace MrGibbs.Pebble
 
             if(_commandMaps==null)
             {
-                _commandMaps = new Dictionary<UICommand, Action<ApplicationMessageResponse>>();
+				_commandMaps = new Dictionary<UICommand, Action<AppMessagePacket>>();
                 _commandMaps.Add(UICommand.Dash, ProcessDashCommand);
                 _commandMaps.Add(UICommand.Button, ProcessButtonCommand);
                 _commandMaps.Add(UICommand.Calibrate, m=>_queueCommand((s,r)=>s.Calibrate()));
@@ -166,11 +168,15 @@ namespace MrGibbs.Pebble
             }
         }
 
-        private void Receive(ApplicationMessageResponse response)
+        /// <summary>
+        /// invoked when data is received by the pebble
+        /// </summary>
+        /// <param name="response"></param>
+		private void Receive(AppMessagePacket response)
         {
-            if (response.Dictionary != null)
+			if (response.Values != null)
             {
-                var commandTuple = response.Dictionary.Values.SingleOrDefault(x => x.Key == 0);
+				var commandTuple = response.Values.SingleOrDefault(x => x.Key == 0);
                 if(commandTuple!=null && commandTuple is AppMessageUInt8)
                 {
                     UICommand command = (UICommand)((AppMessageUInt8)commandTuple).Value;
@@ -187,9 +193,13 @@ namespace MrGibbs.Pebble
             }
         }
 
-        private void ProcessButtonCommand(ApplicationMessageResponse response)
+        /// <summary>
+        /// received when a button is pushed on the pebble dashboard
+        /// </summary>
+        /// <param name="response"></param>
+		private void ProcessButtonCommand(AppMessagePacket response)
         {
-            var lineTuple = response.Dictionary.Values.SingleOrDefault(x=>x.Key==1);
+            var lineTuple = response.Values.SingleOrDefault(x=>x.Key==1);
             if(lineTuple!=null && lineTuple is AppMessageUInt8)
             {
                 var line = ((AppMessageUInt8)lineTuple).Value;
@@ -206,12 +216,16 @@ namespace MrGibbs.Pebble
             }
         }
 
-        private void ProcessDashCommand(ApplicationMessageResponse response)
+        /// <summary>
+        /// invoked when the user wants to change out a line on the dashboard
+        /// </summary>
+        /// <param name="response"></param>
+		private void ProcessDashCommand(AppMessagePacket response)
         {
             //which line are we changing?
-            var line = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
+            var line = ((AppMessageUInt8)response.Values.SingleOrDefault(x => x.Key == 1)).Value;
             //change it to which map?
-            var map = ((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 2)).Value;
+            var map = ((AppMessageUInt8)response.Values.SingleOrDefault(x => x.Key == 2)).Value;
 
             _logger.Info("Pebble "+_pebble.PebbleID+" Has requested Dashboard Row "+line+" to show "+_lineStateMaps[map].Caption);
 
@@ -221,11 +235,15 @@ namespace MrGibbs.Pebble
             }
         }
 
-        private void ProcessMarkCommand(ApplicationMessageResponse response)
+        /// <summary>
+        /// invoked when the user is attempting to tell us something about the course
+        /// </summary>
+        /// <param name="response"></param>
+		private void ProcessMarkCommand(AppMessagePacket response)
         {
-            var mark = (MarkType)((AppMessageUInt8)response.Dictionary.Values.SingleOrDefault(x => x.Key == 1)).Value;
+            var mark = (MarkType)((AppMessageUInt8)response.Values.SingleOrDefault(x => x.Key == 1)).Value;
 
-            var bearingTuple = response.Dictionary.Values.SingleOrDefault(x=>x.Key==2);
+            var bearingTuple = response.Values.SingleOrDefault(x=>x.Key==2);
             if (bearingTuple!=null)
             {
                 //bearing
@@ -248,6 +266,10 @@ namespace MrGibbs.Pebble
             }
         }
 
+        /// <summary>
+        /// update the the pebble with data from the current race/boat state
+        /// </summary>
+        /// <param name="state"></param>
         public void Update(State state)
         {
 
@@ -270,7 +292,7 @@ namespace MrGibbs.Pebble
 #endif
 
                 _transactionId--;
-                AppMessageDictionary message = new AppMessageDictionary();
+				AppMessagePacket message = new AppMessagePacket();
                 message.ApplicationId = _uuid;
                 message.TransactionId = _transactionId;
                 message.Command = (byte) Command.Push;
@@ -312,11 +334,13 @@ namespace MrGibbs.Pebble
             }
         }
 
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _pebble.Disconnect();

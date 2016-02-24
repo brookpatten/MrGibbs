@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MrGibbs.MPU9250</RootNamespace>
-    <AssemblyName>MrGibbs.MPU9250</AssemblyName>
+    <AssemblyName>MrGibbs.MPU9250.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

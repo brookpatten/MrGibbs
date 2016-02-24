@@ -8,6 +8,10 @@ using MrGibbs.Contracts.Infrastructure;
 
 namespace MrGibbs.Calculators
 {
+    /// <summary>
+    /// general collection of calculation plugins, possibly consider breaking apart into seperate assemblies
+    /// if the need arises to only load some of these
+    /// </summary>
     public class CalculatorPlugin:IPlugin
     {
         private ILogger _logger;
@@ -19,6 +23,7 @@ namespace MrGibbs.Calculators
             _logger = logger;
         }
 
+        /// <inheritdoc />
         public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _components = new List<IPluginComponent>();
@@ -38,17 +43,19 @@ namespace MrGibbs.Calculators
             _initialized = true;
         }
 
+        /// <inheritdoc />
         public bool Initialized
         {
             get { return _initialized; }
         }
 
-
+        /// <inheritdoc />
         public IList<IPluginComponent> Components
         {
             get { return _components; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             if (_components != null)

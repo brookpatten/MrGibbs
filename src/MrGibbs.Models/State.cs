@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Models
 {
+    /// <summary>
+    /// the current state of all sensor data and calculated values
+    /// TODO: refactor this to allow plugins to add/remove things as needed, it's kind of a 
+    /// god class right now
+    /// </summary>
     public class State
     {
         enum Tack : byte { Port = 0, Starboard = 1 }
