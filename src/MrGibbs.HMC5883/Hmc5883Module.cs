@@ -1,10 +1,12 @@
 ﻿using System;
 using MrGibbs.Contracts;
-using MrGibbs.Configuration;
 using Ninject.Modules;
 
 namespace MrGibbs.HMC5883
 {
+    /// <summary>
+    /// configures types releavant to this plugin
+    /// </summary>
 	public class Hmc5883Module:NinjectModule
 	{
 		public override void Load()

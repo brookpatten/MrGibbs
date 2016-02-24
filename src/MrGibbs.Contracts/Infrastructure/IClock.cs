@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Contracts.Infrastructure
 {
+    /// <summary>
+    /// wraps the clock so it can be easily mocked
+    /// </summary>
     public interface IClock
     {
         DateTime GetUtcTime();

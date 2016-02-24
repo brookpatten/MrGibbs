@@ -5,6 +5,9 @@ using Ninject.Modules;
 
 namespace MrGibbs.Pebble
 {
+    /// <summary>
+    /// configures types releavant to this plugin
+    /// </summary>
 	public class PebbleModule:NinjectModule
 	{
 		public override void Load()

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Threading.Tasks;
+
 using PebbleSharp.Mono.BlueZ5;
-using PebbleSharp.Core.NonPortable;
-using PebbleSharp.Core.Bundles;
+using Mono.BlueZ.DBus;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
-using Mono.BlueZ.DBus;
 
 namespace MrGibbs.Pebble
 {
+    /// <summary>
+    /// pebble plugin which finds, pairs, and communicates with pebble watches
+    /// </summary>
     public class PebblePlugin:IPlugin
     {
         private ILogger _logger;
@@ -31,12 +32,13 @@ namespace MrGibbs.Pebble
 			_manager = new PebbleManager (connection);
         }
 
+        /// <inheritdoc />
         public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _components = new List<IPluginComponent>();
         
             //scan for pebbles
-			var pebbles = _manager.Detect (null, true);
+			var pebbles = _manager.Detect (_btAdapterName, true);
 
 			_logger.Info ("Found " + pebbles.Count + " Pebbles");
 
@@ -84,6 +86,13 @@ namespace MrGibbs.Pebble
 
         }
 
+        /// <summary>
+        /// initialize a given pebble and add it to the viewers if successful
+        /// </summary>
+        /// <param name="pebble"></param>
+        /// <param name="zip"></param>
+        /// <param name="queueCommand"></param>
+        /// <param name="configuration"></param>
 		private void InitializeViewer(PebbleSharp.Core.Pebble pebble,PebbleSharp.Core.IZip zip, Action<Action<ISystemController, IRaceController>> queueCommand,PluginConfiguration configuration)
 		{
 			try
@@ -99,17 +108,19 @@ namespace MrGibbs.Pebble
 			}
 		}
 
+        /// <inheritdoc />
         public bool Initialized
         {
             get { return _initialized; }
         }
 
-
+        /// <inheritdoc />
         public IList<IPluginComponent> Components
         {
             get { return _components; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
 			_manager.Dispose ();

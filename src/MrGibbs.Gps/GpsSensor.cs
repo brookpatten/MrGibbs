@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.IO.Ports;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
-using System.IO.Ports;
 using MrGibbs.Gps.NMEA;
 using MrGibbs.Models;
 
 namespace MrGibbs.Gps
 {
+    /// <summary>
+    /// represents a single gps connected via serial port
+    /// maintains its own thread to read data off the port due to serial implementation details in mono
+    /// also handles parsing of nmea sentences and updating of race state
+    /// </summary>
     public class GpsSensor:ISensor
     {
         private string _portName;
@@ -37,11 +41,13 @@ namespace MrGibbs.Gps
             _baud = baud;
         }
 
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public virtual void Start()
         {
             _buffer = new Queue<string>();
@@ -60,6 +66,9 @@ namespace MrGibbs.Gps
             _task.Start();
         }
 
+        /// <summary>
+        /// thread method for reading from port
+        /// </summary>
         private void Run()
         {
             while (_run)
@@ -76,6 +85,11 @@ namespace MrGibbs.Gps
             }
         }
 
+        /// <summary>
+        /// update the state object with the current gps data
+        /// TODO: possibly consider finding an external NMEA lib, this is kindof a mess
+        /// </summary>
+        /// <param name="state">state to add data to</param>
         public virtual void Update(Models.State state)
         {
             lock (_buffer)
@@ -346,7 +360,8 @@ namespace MrGibbs.Gps
             }
             
         }
-        
+
+        /// <inheritdoc />
         public virtual void Dispose()
         {
             _run = false;
@@ -363,9 +378,10 @@ namespace MrGibbs.Gps
             _buffer.Clear();
         }
 
-
+        /// <inheritdoc />
         public void Calibrate()
         {
+            //gps doesn't need any calibration
         }
     }
 }

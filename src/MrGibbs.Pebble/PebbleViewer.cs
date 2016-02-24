@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.IO;
 using System.Threading.Tasks;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Models;
 
-using PebbleSharp;
 using PebbleSharp.Core;
 using PebbleSharp.Core.NonPortable.AppMessage;
 using PebbleSharp.Core.Bundles;
-using PebbleSharp.Core.Responses;
 
 namespace MrGibbs.Pebble
 {
+    /// <summary>
+    /// used to map a given line on the dashboard to a function to retrieve its data, its caption
+    /// and optionally an action to invoke if the button next to it is pushed
+    /// </summary>
     internal class LineStateMap
     {
         //func that given the state, returns a string that will be displayed on the dashboard
@@ -40,9 +40,18 @@ namespace MrGibbs.Pebble
         }
     }
 
+    /// <summary>
+    /// viewer for a specific pebble.
+    /// </summary>
     public class PebbleViewer:IViewer
     {
+        /// <summary>
+        /// commands that the pebble may send
+        /// </summary>
         private enum UICommand:byte{Button=0,Dash=1,Course=2,Mark=3,NewRace=4,Calibrate=5,Restart=6,Reboot=7,Shutdown=8}
+        /// <summary>
+        /// buttons that the pebble may send from the dashboard
+        /// </summary>
         private enum Button : byte { Up = 0, Select = 1, Down = 2 }
 
         private ILogger _logger;
@@ -50,7 +59,6 @@ namespace MrGibbs.Pebble
         private PebbleSharp.Core.Pebble _pebble;
         private byte _transactionId;
         private UUID _uuid;
-        
         
         private int _lineCount;//number of rows shown on the pebble UI
         private volatile IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
@@ -86,6 +94,10 @@ namespace MrGibbs.Pebble
             InitializeViewer();
         }
 
+        /// <summary>
+        /// initializes the viewer state to the defaults
+        /// TODO: have this load from whatever the last set of settings was based on pebble id?
+        /// </summary>
         private void InitializeViewer()
         {
             _lineCount = 3;
@@ -156,6 +168,10 @@ Course Relative*/
             }
         }
 
+        /// <summary>
+        /// invoked when data is received by the pebble
+        /// </summary>
+        /// <param name="response"></param>
 		private void Receive(AppMessagePacket response)
         {
 			if (response.Values != null)
@@ -177,6 +193,10 @@ Course Relative*/
             }
         }
 
+        /// <summary>
+        /// received when a button is pushed on the pebble dashboard
+        /// </summary>
+        /// <param name="response"></param>
 		private void ProcessButtonCommand(AppMessagePacket response)
         {
             var lineTuple = response.Values.SingleOrDefault(x=>x.Key==1);
@@ -196,6 +216,10 @@ Course Relative*/
             }
         }
 
+        /// <summary>
+        /// invoked when the user wants to change out a line on the dashboard
+        /// </summary>
+        /// <param name="response"></param>
 		private void ProcessDashCommand(AppMessagePacket response)
         {
             //which line are we changing?
@@ -211,6 +235,10 @@ Course Relative*/
             }
         }
 
+        /// <summary>
+        /// invoked when the user is attempting to tell us something about the course
+        /// </summary>
+        /// <param name="response"></param>
 		private void ProcessMarkCommand(AppMessagePacket response)
         {
             var mark = (MarkType)((AppMessageUInt8)response.Values.SingleOrDefault(x => x.Key == 1)).Value;
@@ -238,6 +266,10 @@ Course Relative*/
             }
         }
 
+        /// <summary>
+        /// update the the pebble with data from the current race/boat state
+        /// </summary>
+        /// <param name="state"></param>
         public void Update(State state)
         {
 
@@ -302,11 +334,13 @@ Course Relative*/
             }
         }
 
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _pebble.Disconnect();

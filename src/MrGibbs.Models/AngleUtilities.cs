@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Models
 {
+    /// <summary>
+    /// angle helper functions, function names should be self explanatory
+    /// </summary>
     public class AngleUtilities
     {
         public static double DegreestoRadians(double val)

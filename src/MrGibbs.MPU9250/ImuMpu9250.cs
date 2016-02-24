@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using MrGibbs.Models;
 using MrGibbs.Contracts.Infrastructure;
 using QuadroschrauberSharp;
 
 namespace MrGibbs.MPU9250
 {
+    /// <summary>
+    /// IMU implementation for the mpu9259
+    /// </summary>
     public class ImuMpu9250
     {
 

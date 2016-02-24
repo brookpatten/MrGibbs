@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MrGibbs.Models
 {
     public enum MarkCaptureMethod : byte { Location = 0, Bearing = 1 }
     public enum MarkType : byte { Windward = 0, Leeward = 1, Line = 2, Course=byte.MaxValue }
 
+    /// <summary>
+    /// represents a mark on a racecourse, or rather, as much as we know about a mark
+    /// </summary>
     public class Mark
     {
         public CoordinatePoint Location { get; set; }

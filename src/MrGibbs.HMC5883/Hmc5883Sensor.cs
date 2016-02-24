@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+
 using MrGibbs.Contracts;
 using MrGibbs.Models;
 using MrGibbs.Contracts.Infrastructure;
 
-using QuadroschrauberSharp;
 using QuadroschrauberSharp.Hardware;
 
 namespace MrGibbs.HMC5883
 {
+    /// <summary>
+    /// represents an i2c connected hmc5883l magnetometer
+    /// </summary>
 	public class Hmc5883Sensor:ISensor
 	{
 		private ILogger _logger;
@@ -33,6 +36,7 @@ namespace MrGibbs.HMC5883
 		    }
 		}
 
+        /// <inheritdoc />
 		public void Update(State state)
 		{
 		    short x=0, y=0, z=0;
@@ -54,11 +58,13 @@ namespace MrGibbs.HMC5883
             state.MagneticHeading = heading;
 		}
 
+        /// <inheritdoc />
 		public IPlugin Plugin
 		{
 			get { return _plugin; }
 		}
 
+        /// <inheritdoc />
 		public void Dispose()
 		{
 		    if (_hmc5883 != null)
@@ -67,7 +73,7 @@ namespace MrGibbs.HMC5883
 		    }
 		}
 
-
+        /// <inheritdoc />
         public void Calibrate()
         {
         }

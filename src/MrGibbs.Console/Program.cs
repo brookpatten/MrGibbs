@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+
 using Ninject;
 using Ninject.Modules;
+
 using MrGibbs.Configuration;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
-using MrGibbs.Persistence.Migrations;
 
 namespace MrGibbs.Console
 {
+    /// <summary>
+    /// Bootstrap for the MrGibbs application
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
@@ -59,7 +59,10 @@ namespace MrGibbs.Console
             logger.Info("Shutting down");
         }
 
-
+        /// <summary>
+        /// Configures the DI container
+        /// </summary>
+        /// <returns>configured kernel</returns>
         static IKernel Configure()
         {
             var kernel = new StandardKernel();

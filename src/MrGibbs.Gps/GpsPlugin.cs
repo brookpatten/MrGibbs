@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
 namespace MrGibbs.Gps
 {
+    /// <summary>
+    /// plugin for communicating with a serial GPS
+    /// maintains its own thread for reading data off the port
+    /// also handles parsing of gps data via nmea
+    /// </summary>
     public class GpsPlugin:IPlugin
     {
         private ILogger _logger;
@@ -26,6 +29,7 @@ namespace MrGibbs.Gps
             _logger = logger;
         }
 
+        /// <inheritdoc />
         public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
         {
             _components = new List<IPluginComponent>();
@@ -45,16 +49,19 @@ namespace MrGibbs.Gps
             _initialized = true;
         }
 
+        /// <inheritdoc />
         public bool Initialized
         {
             get { return _initialized; }
         }
 
+        /// <inheritdoc />
         public IList<IPluginComponent> Components
         {
             get { return _components; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             if (_components != null)

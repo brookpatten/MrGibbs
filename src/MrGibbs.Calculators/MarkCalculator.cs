@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Contracts;
@@ -11,6 +7,9 @@ using MrGibbs.Models;
 
 namespace MrGibbs.Calculators
 {
+    /// <summary>
+    /// Calculator that creates vmg, vmc etc based on the current state
+    /// </summary>
     public class MarkCalculator:ICalculator
     {
         class MarkCalculation
@@ -37,6 +36,10 @@ namespace MrGibbs.Calculators
             _previousCalculations = new List<MarkCalculation>();
         }
 
+        /// <summary>
+        /// calculate vmc and vmg values if possible with current state
+        /// </summary>
+        /// <param name="state">current race state</param>
         public void Calculate(State state)
         {
             if(state.Location!=null && state.TargetMark!=null && state.TargetMark.Location!=null && state.Course is CourseByMarks)
@@ -110,16 +113,40 @@ namespace MrGibbs.Calculators
             }
         }
 
+        /// <summary>
+        /// calculate vmg from raw values
+        /// </summary>
+        /// <param name="courseAngle"></param>
+        /// <param name="courseOverGround"></param>
+        /// <param name="speed"></param>
+        /// <returns></returns>
         public static double VelocityMadeGood(double courseAngle,double courseOverGround, double speed)
         {
             return Math.Cos(Math.Abs(AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians(courseAngle),AngleUtilities.DegreestoRadians(courseOverGround)))) * speed;
         }
 
+        /// <summary>
+        /// calculate vmg from marks
+        /// </summary>
+        /// <param name="targetMark"></param>
+        /// <param name="previousMark"></param>
+        /// <param name="current"></param>
+        /// <param name="previous"></param>
+        /// <param name="speed"></param>
+        /// <returns></returns>
         private double VelocityMadeGood(Mark targetMark, Mark previousMark, CoordinatePoint current, CoordinatePoint previous,double speed)
         {
             return Math.Cos(Math.Abs(RelativeAngleToCourse(targetMark,previousMark,current,previous))) * speed;
         }
 
+        /// <summary>
+        /// find difference between current heading and course heading
+        /// </summary>
+        /// <param name="targetMark"></param>
+        /// <param name="previousMark"></param>
+        /// <param name="current"></param>
+        /// <param name="previous"></param>
+        /// <returns></returns>
         private double RelativeAngleToCourse(Mark targetMark, Mark previousMark, CoordinatePoint current, CoordinatePoint previous)
         {
             if (previousMark != null && targetMark != null)
@@ -134,11 +161,13 @@ namespace MrGibbs.Calculators
             }
         }
 
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             

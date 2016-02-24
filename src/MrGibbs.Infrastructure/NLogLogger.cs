@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using MrGibbs.Contracts.Infrastructure;
-
-using NLog;
 using Newtonsoft.Json;
 
 namespace MrGibbs.Infrastructure
 {
+    /// <summary>
+    /// wraps nlog with the logging interface
+    /// </summary>
     public class NLogLogger : MrGibbs.Contracts.Infrastructure.ILogger
     {
         private NLog.ILogger _logger;

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MrGibbs.Contracts
+﻿namespace MrGibbs.Contracts
 {
+    /// <summary>
+    /// persists data to the database
+    /// not OSS yet, TBD
+    /// </summary>
     public interface IRecorder : IPluginComponent
     {
     }

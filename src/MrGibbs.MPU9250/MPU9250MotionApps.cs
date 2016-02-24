@@ -33,11 +33,8 @@ THE SOFTWARE.
 #define MPU9250_INCLUDE_DMP_MOTIONAPPS20
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using prog_uchar = System.Byte;
 using uint8_t = System.Byte;
 using int8_t = System.SByte;

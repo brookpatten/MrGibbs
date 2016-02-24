@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MrGibbs.Contracts
 {
+    /// <summary>
+    /// contains the current state of all loaded plugins and their components
+    /// </summary>
 	public class PluginConfiguration:IDisposable
     {
         public PluginConfiguration()

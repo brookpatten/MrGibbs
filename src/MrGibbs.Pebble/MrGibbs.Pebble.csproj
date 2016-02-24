@@ -72,7 +72,7 @@
       <Project>{40BD0369-85E6-4712-A28C-0C9178FD6F33}</Project>
       <Name>PebbleSharp.Mono.BlueZ5</Name>
     </ProjectReference>
-    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Core.NonPortable\PebbleSharp.Core.csproj">
+    <ProjectReference Include="..\lib\PebbleSharp\PebbleSharp.Core\PebbleSharp.Core.csproj">
       <Project>{E52DCFA6-ED09-4B88-AE50-97072323942C}</Project>
       <Name>PebbleSharp.Core</Name>
     </ProjectReference>

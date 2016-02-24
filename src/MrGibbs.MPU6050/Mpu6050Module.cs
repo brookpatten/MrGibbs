@@ -1,10 +1,12 @@
 ﻿using System;
 using MrGibbs.Contracts;
-using MrGibbs.Configuration;
 using Ninject.Modules;
 
 namespace MrGibbs.MPU6050
 {
+    /// <summary>
+    /// configures types releavant to this plugin
+    /// </summary>
 	public class Mpu6050Module:NinjectModule
 	{
 		public override void Load()

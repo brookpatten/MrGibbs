@@ -5,6 +5,9 @@ using Ninject.Modules;
 
 namespace MrGibbs.Gps
 {
+    /// <summary>
+    /// configures types releavant to this plugin
+    /// </summary>
 	public class GpsModule:NinjectModule
 	{
 		public override void Load()

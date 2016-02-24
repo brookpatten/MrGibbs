@@ -35,7 +35,6 @@ THE SOFTWARE.
 */
 
 using System;
-using System.IO;
 using uint8_t = System.Byte;
 using int8_t = System.SByte;
 using int16_t = System.Int16;
@@ -44,13 +43,14 @@ using uint32_t = System.UInt32;
 using define = System.Byte;
 using System.Linq;
 using MrGibbs.Contracts.Infrastructure;
-using QuadroschrauberSharp;
-using QuadroschrauberSharp.Linux;
 using QuadroschrauberSharp.Hardware;
 using MrGibbs.Models;
 
 namespace MrGibbs.MPU9250
 {
+    /// <summary>
+    /// Mpu implementation for mpu9250
+    /// </summary>
     public partial class Mpu9250
     {
         const define MPU9250_ADDRESS_AD0_LOW = 0x68; // address pin low (GND), default for InvenSense evaluation board

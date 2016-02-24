@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
-using QuadroschrauberSharp;
 using QuadroschrauberSharp.Hardware;
 
 namespace MrGibbs.HMC5883
 {
+    /// <summary>
+    /// plugin for reading magnetic heading from an HMC5883 magnetometer
+    /// </summary>
 	public partial class Hmc5883Plugin:IPlugin
 	{
 		private bool _initialized = false;
@@ -20,6 +22,7 @@ namespace MrGibbs.HMC5883
 			_logger = logger;
 		}
 
+        /// <inheritdoc />
         public void Initialize(PluginConfiguration configuration, Action<Action<ISystemController, IRaceController>> queueCommand)
 		{
 			_components = new List<IPluginComponent>();
@@ -30,16 +33,19 @@ namespace MrGibbs.HMC5883
 		    _initialized = true;
 		}
 
+        /// <inheritdoc />
 		public bool Initialized
 		{
 			get { return _initialized; }
 		}
 
+        /// <inheritdoc />
 		public IList<IPluginComponent> Components
 		{
 			get { return _components; }
 		}
 
+        /// <inheritdoc />
 		public void Dispose()
 		{
 			_initialized = false;

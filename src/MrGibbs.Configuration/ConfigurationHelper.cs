@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace MrGibbs.Configuration
 {
+    /// <summary>
+    /// configuration helper functions
+    /// </summary>
     public static class ConfigurationHelper
     {
 		public class ConfigurationSetting
@@ -20,6 +22,14 @@ namespace MrGibbs.Configuration
 
 		private static IList<ConfigurationSetting> Settings;
 
+        /// <summary>
+        /// record that the application requested a value, what value was defaulted, and what value was used
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="configuredValue"></param>
+        /// <returns></returns>
 		private static T RecordAndReturnSetting<T> (string key, T defaultValue, T configuredValue)
 		{
 			if (Settings == null)
@@ -41,6 +51,10 @@ namespace MrGibbs.Configuration
 			return configuredValue;
 		}
 
+        /// <summary>
+        /// generate a sample appSettings section based on what is currently configured
+        /// </summary>
+        /// <returns></returns>
 		public static string GenerateDefaultConfiguration()
 		{
 			StringBuilder s = new StringBuilder ();
@@ -56,6 +70,12 @@ namespace MrGibbs.Configuration
 			return s.ToString();
 		}
 
+        /// <summary>
+        /// attempt to read a bool appsetting, if it doesn't exist or can't be read, return a default
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
 		public static bool ReadBoolAppSetting(string key, bool defaultValue)
         {
             bool val;
@@ -69,6 +89,12 @@ namespace MrGibbs.Configuration
             }
         }
 
+        /// <summary>
+        /// attempt to read a int appsetting, if it doesn't exist or can't be read, return a default
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
 		public static int ReadIntAppSetting(string key, int defaultValue)
         {
             int val;
@@ -82,6 +108,12 @@ namespace MrGibbs.Configuration
             }
         }
 
+        /// <summary>
+        /// attempt to read a double appsetting, if it doesn't exist or can't be read, return a default
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
 		public static double ReadDoubleAppSetting(string key, int defaultValue)
         {
             double val;
@@ -95,6 +127,12 @@ namespace MrGibbs.Configuration
             }
         }
 
+        /// <summary>
+        /// attempt to read a string appsetting, if it doesn't exist or can't be read, return a default
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
 		public static string ReadStringAppSetting(string key, string defaultValue)
         {
             string configuredValue = ConfigurationManager.AppSettings[key];
@@ -108,6 +146,12 @@ namespace MrGibbs.Configuration
             }
         }
 
+        /// <summary>
+        /// find the newest file in the application folder with a given extension
+        /// useful for loading the most recent version of a data file
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
 		public static string FindNewestFileWithExtension(string extension)
 		{
 			string exePath = System.Reflection.Assembly.GetExecutingAssembly ().CodeBase;

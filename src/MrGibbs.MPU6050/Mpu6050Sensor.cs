@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using MrGibbs.Contracts;
 using MrGibbs.Models;
@@ -13,6 +9,9 @@ using QuadroschrauberSharp.Hardware;
 
 namespace MrGibbs.MPU6050
 {
+    /// <summary>
+    /// represents an i2c connected MPU6050
+    /// </summary>
     public class Mpu6050Sensor:ISensor
     {
         private ILogger _logger;
@@ -46,6 +45,7 @@ namespace MrGibbs.MPU6050
             Calibrate();
         }
 
+        /// <inheritdoc />
         public void Update(State state)
         {
 			if (_lastTime != null) {
@@ -79,17 +79,19 @@ namespace MrGibbs.MPU6050
             _lastTime = state.BestTime;
         }
 
+        /// <inheritdoc />
         public IPlugin Plugin
         {
             get { return _plugin; }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
 			_i2c.Close();
         }
 
-
+        /// <inheritdoc />
         public void Calibrate()
         {
             _imu.Init(_enableDmp);

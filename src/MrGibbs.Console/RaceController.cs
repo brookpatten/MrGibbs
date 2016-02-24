@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
@@ -10,6 +8,9 @@ using MrGibbs.Models;
 
 namespace MrGibbs.Console
 {
+    /// <summary>
+    /// Controller for sailboat race specific logic
+    /// </summary>
     public class RaceController:IRaceController
     {
         private State _state;
@@ -23,6 +24,7 @@ namespace MrGibbs.Console
             _autoRoundMarkDistanceMeters = autoRoundMarkDistanceMeters;
         }
 
+        /// <inheritdoc />
         public State State
         {
             get
@@ -31,6 +33,7 @@ namespace MrGibbs.Console
             }
         }
 
+        /// <inheritdoc />
         public void CountdownAction()
         {
             if (_state.StartTime.HasValue)
@@ -71,18 +74,19 @@ namespace MrGibbs.Console
             }
         }
 
+        /// <inheritdoc />
         public void SetCourseType(int index)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public void SetMarkLocation(MarkType markType)
         {
             if(_state.Course ==null || !(_state.Course is CourseByMarks))
             {
                 _state.Course = new CourseByMarks();
             }
-
 
             if (_state.Location != null)
             {
@@ -118,6 +122,8 @@ namespace MrGibbs.Console
                 }
             }
         }
+
+        /// <inheritdoc />
         public void SetMarkBearing(MarkType markType, double bearing, bool magneticBearing)
         {
             if(markType==MarkType.Course)
@@ -203,16 +209,19 @@ namespace MrGibbs.Console
             }
         }
 
+        /// <inheritdoc />
         public void ClearMark(int markIndex)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public void NewRace()
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public void NextMark()
         {
             if (_state.Course is CourseByMarks)
@@ -222,6 +231,11 @@ namespace MrGibbs.Console
             }
         }
 
+        /// <summary>
+        /// find the mark that is next in the course based on the current mark
+        /// </summary>
+        /// <param name="currentTargetMark">the mark that is prior to the one youre looking for</param>
+        /// <returns>the the mark after the one specified as current</returns>
         private Mark GetNextMark(Mark currentTargetMark)
         {
             if (_state.Course is CourseByMarks)
@@ -254,6 +268,7 @@ namespace MrGibbs.Console
             }
         }
 
+        /// <inheritdoc />
         public void ProcessMarkRoundings()
         {
             if (_state.Course is CourseByMarks)

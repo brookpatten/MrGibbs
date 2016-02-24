@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Reflection;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
 namespace MrGibbs.MagneticVariation
 {
+    /// <summary>
+    /// plugin to load the COF file magnetic variation calculator
+    /// </summary>
     public class MagneticVariationPlugin:IPlugin
     {
         private ILogger _logger;
@@ -43,7 +42,6 @@ namespace MrGibbs.MagneticVariation
         {
             get { return _initialized; }
         }
-
 
         public IList<IPluginComponent> Components
         {

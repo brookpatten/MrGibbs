@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.MagneticVariation",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.MPU9250", "MrGibbs.MPU9250\MrGibbs.MPU9250.csproj", "{C03B4B43-1404-4449-8865-3AFD1FD626E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Core", "lib\PebbleSharp\PebbleSharp.Core.NonPortable\PebbleSharp.Core.csproj", "{E52DCFA6-ED09-4B88-AE50-97072323942C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PebbleSharp.Core", "lib\PebbleSharp\PebbleSharp.Core\PebbleSharp.Core.csproj", "{E52DCFA6-ED09-4B88-AE50-97072323942C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,6 +5,9 @@ using Ninject.Modules;
 
 namespace MrGibbs.MagneticVariation
 {
+    /// <summary>
+    /// configures types releavant to this plugin
+    /// </summary>
 	public class MagneticVariationModule:NinjectModule
 	{
 		public override void Load()

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MrGibbs.Configuration
+﻿namespace MrGibbs.Configuration
 {
+    /// <summary>
+    /// configuration values for the "core" of mr gibbs
+    /// TODO: move plugin specific values to plugins
+    /// </summary>
     public static class AppConfig
     {
         public static string DatabaseConnectionString

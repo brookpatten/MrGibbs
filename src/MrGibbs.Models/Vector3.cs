@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MrGibbs.Models
 {
+    /// <summary>
+    /// vector2 for various math functions
+    /// </summary>
     public class Vector2
     {
         public float X { get; set; }
         public float Y { get; set; }
     }
+    /// <summary>
+    /// vector3 for math functions
+    /// </summary>
     public class Vector3 : Vector2
     {
         public float Z { get; set; }
-
-        
 
         public static Vector3 operator *(Vector3 v, float f)
         {
