@@ -48,10 +48,10 @@
     <Compile Include="IPluginComponent.cs" />
     <Compile Include="IRecorder.cs" />
     <Compile Include="ISensor.cs" />
-    <Compile Include="Persistence\Repositories\IRepository.cs" />
     <Compile Include="PluginConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ICommandable.cs" />
+    <Compile Include="Persistence\Repositories\IStateRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">

@@ -87,13 +87,21 @@
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>MrGibbs.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.StateLogger\MrGibbs.StateLogger.csproj">
+      <Project>{17B81C86-A8FF-46D5-8513-048B0571FDCF}</Project>
+      <Name>MrGibbs.StateLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
+      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
+      <Name>MrGibbs.MPU6050</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
+      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
+      <Name>MrGibbs.HMC5883</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Pebble\MrGibbs.Pebble.csproj">
       <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
       <Name>MrGibbs.Pebble</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.Persistence\MrGibbs.Persistence.csproj">
-      <Project>{17B81C86-A8FF-46D5-8513-048B0571FDCF}</Project>
-      <Name>MrGibbs.Persistence</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -161,21 +161,25 @@ namespace MrGibbs.Console
                     }
                 }
 
-                //foreach (var recorder in _configuration.Recorders)
-                //{
-                //    try
-                //    {
-                //        operationCount++;
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        _logger.Error("Exception updating recorder " + recorder.GetType().Name);
-                //        if (!erroredPlugins.Contains(recorder.Plugin))
-                //        {
-                //            erroredPlugins.Add(recorder.Plugin);
-                //        }
-                //    }
-                //}
+                foreach (var recorder in _configuration.Recorders)
+                {
+                    try
+                    {
+						lock(_state) 
+						{
+							recorder.Record (_state);
+						}
+                        operationCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("Exception updating recorder " + recorder.GetType().Name);
+                        if (!erroredPlugins.Contains(recorder.Plugin))
+                        {
+                            erroredPlugins.Add(recorder.Plugin);
+                        }
+                    }
+                }
 
                 foreach (var viewer in _configuration.DashboardViewers)
                 {

@@ -154,13 +154,7 @@ namespace MrGibbs.Configuration
         /// <returns></returns>
 		public static string FindNewestFileWithExtension(string extension)
 		{
-			string exePath = System.Reflection.Assembly.GetExecutingAssembly ().CodeBase;
-			if (exePath.StartsWith ("file:"))
-			{
-				exePath = exePath.Substring (5);
-			}
-			string exeDir = Path.GetDirectoryName (exePath);
-			var dir = new DirectoryInfo (exeDir);
+			var dir = new DirectoryInfo (GetExecutingAssemblyFolder());
 			var matchingFiles = dir.GetFiles ("*."+extension);
 			var newest = matchingFiles.OrderByDescending (x => x.CreationTimeUtc).FirstOrDefault();
 			if(newest!=null)
@@ -171,6 +165,17 @@ namespace MrGibbs.Configuration
 			{
 				return null;
 			}
+		}
+
+		public static string GetExecutingAssemblyFolder ()
+		{
+			string exePath = System.Reflection.Assembly.GetExecutingAssembly ().CodeBase;
+			if (exePath.StartsWith ("file:"))
+			{
+				exePath = exePath.Substring (5);
+			}
+			string exeDir = Path.GetDirectoryName (exePath);
+			return exeDir;
 		}
     }
 }
