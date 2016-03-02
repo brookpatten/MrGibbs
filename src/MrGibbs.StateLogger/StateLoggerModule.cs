@@ -7,6 +7,9 @@ using Ninject.Modules;
 
 namespace MrGibbs.StateLogger
 {
+	/// <summary>
+	/// A simple plugin to write various state fields to a table in a sqlite db
+	/// </summary>
 	public class StateLoggerModule : NinjectModule
 	{
 		public override void Load ()

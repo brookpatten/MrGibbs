@@ -8,6 +8,9 @@ using Dapper;
 
 namespace MrGibbs.StateLogger
 {
+	/// <summary>
+	/// dapper wrapper over dbconnection to create table and do inserts
+	/// </summary>
 	public class StateRepository:IStateRepository
 	{
 		private IDbConnection _dbConnection;

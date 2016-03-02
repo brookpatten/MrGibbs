@@ -7,6 +7,9 @@ using MrGibbs.Contracts.Persistence;
 
 namespace MrGibbs.StateLogger
 {
+	/// <summary>
+	/// Plugin to write important state fields to sqlite table
+	/// </summary>
 	public class StateLoggerPlugin:IPlugin
 	{
 		private ILogger _logger;
