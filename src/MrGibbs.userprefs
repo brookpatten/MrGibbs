@@ -1,10 +1,12 @@
-﻿<Properties StartupItem="MrGibbs.Console/MrGibbs.Console.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.StateLogger/StateLoggerPlugin.cs">
+﻿<Properties StartupItem="MrGibbs.Console/MrGibbs.csproj">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Console/Properties/AssemblyInfo.cs">
     <Files>
-      <File FileName="MrGibbs.StateLogger/StateLoggerModule.cs" Line="22" Column="3" />
-      <File FileName="MrGibbs.StateLogger/StateLoggerPlugin.cs" Line="11" Column="60" />
-      <File FileName="MrGibbs.StateLogger/StateRecorder.cs" Line="66" Column="6" />
-      <File FileName="MrGibbs.StateLogger/StateRepository.cs" Line="12" Column="69" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="24" Column="21" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs" Line="32" Column="15" />
+      <File FileName="MrGibbs.Console/Program.cs" Line="17" Column="6" />
+      <File FileName="MrGibbs.Console/RaceController.cs" Line="9" Column="18" />
+      <File FileName="MrGibbs.Console/Supervisor.cs" Line="10" Column="18" />
+      <File FileName="MrGibbs.Console/Properties/AssemblyInfo.cs" Line="29" Column="21" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
@@ -14,5 +16,5 @@
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.MrGibbs.Console PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.MrGibbs PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>

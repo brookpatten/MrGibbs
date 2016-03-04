@@ -7,7 +7,7 @@ using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Models;
 
-namespace MrGibbs.Console
+namespace MrGibbs
 {
     /// <summary>
     /// Handles threading and plugin maintenance throughout the execution of the application.

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.Console", "MrGibbs.Console\MrGibbs.Console.csproj", "{0640B87F-A33C-4612-B3D7-AA7363BB1CCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs", "MrGibbs\MrGibbs.csproj", "{0640B87F-A33C-4612-B3D7-AA7363BB1CCC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{E38D5C9B-42CF-48F1-A13E-BC66E00107EF}"
 EndProject

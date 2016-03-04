@@ -6,7 +6,7 @@ using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Models;
 
-namespace MrGibbs.Console
+namespace MrGibbs
 {
     /// <summary>
     /// Controller for sailboat race specific logic

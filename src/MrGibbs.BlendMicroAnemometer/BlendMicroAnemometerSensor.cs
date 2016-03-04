@@ -1,4 +1,7 @@
 ﻿using System;
+
+using Mono.BlueZ.DBus;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
@@ -11,11 +14,14 @@ namespace MrGibbs.BlendMicroAnemometer
     {
         private ILogger _logger;
         private BlendMicroAnemometerPlugin _plugin;
+		private Device1 _device;
+		private GattCharacteristic1 _characteristic;
 
-        public BlendMicroAnemometerSensor(ILogger logger, BlendMicroAnemometerPlugin plugin)
+		public BlendMicroAnemometerSensor(ILogger logger, BlendMicroAnemometerPlugin plugin,Device1 device)
         {
             _plugin = plugin;
             _logger = logger;
+			_device = device;
         }
 
         /// <inheritdoc />

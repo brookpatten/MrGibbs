@@ -29,7 +29,7 @@ namespace MrGibbs.BlendMicroAnemometer
         {
             _components = new List<IPluginComponent>();
             _initialized = false;
-            configuration.Sensors.Add(new BlendMicroAnemometerSensor(_logger,this));
+            //configuration.Sensors.Add(new BlendMicroAnemometerSensor(_logger,this));
             _initialized = true;
         }
 

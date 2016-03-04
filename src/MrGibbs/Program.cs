@@ -8,7 +8,7 @@ using MrGibbs.Configuration;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
-namespace MrGibbs.Console
+namespace MrGibbs
 {
     /// <summary>
     /// Bootstrap for the MrGibbs application
