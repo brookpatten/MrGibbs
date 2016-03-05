@@ -69,11 +69,11 @@ namespace MrGibbs.StateLogger
 				    BestTime = state.BestTime,
 				    LocationLatitudeValue = state.Location.Latitude.Value,
 				    LocationLongitudeValue = state.Location.Longitude.Value,
-				    CourseOverGroundByLocation = state.CourseOverGroundByLocation,
-				    SpeedInKnots = state.SpeedInKnots,
-				    Heel = state.Heel,
-					Pitch=state.Pitch,
-					Heading=state.MagneticHeadingWithVariation,
+					CourseOverGroundByLocation = state.StateValues[StateValue.CourseOverGroundByLocation],
+					SpeedInKnots = state.StateValues[StateValue.SpeedInKnots],
+					Heel = state.StateValues[StateValue.Heel],
+					Pitch=state.StateValues[StateValue.Pitch],
+					Heading=state.StateValues[StateValue.MagneticHeadingWithVariation],
 				});
 		}
 	}

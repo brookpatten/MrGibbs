@@ -41,7 +41,7 @@ namespace MrGibbs.HMC5883
 		{
 		    short x=0, y=0, z=0;
             _hmc5883.GetHeading(ref x,ref y,ref z);
-            state.Magneto = new Vector3(x, y, z);
+            //state.Magneto = new Vector3(x, y, z);
 
             double heading = Math.Atan2(y, x);
             if (heading < 0)
@@ -55,7 +55,7 @@ namespace MrGibbs.HMC5883
 	        heading = 360-heading;
 
             _logger.Debug("HMC5883L Heading(" + x + "," + y + "," + z + ") (" + heading + ")");
-            state.MagneticHeading = heading;
+			state.StateValues[StateValue.MagneticHeading] = heading;
 		}
 
         /// <inheritdoc />

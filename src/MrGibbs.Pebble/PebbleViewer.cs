@@ -40,70 +40,69 @@ namespace MrGibbs.Pebble
         }
     }
 
-    /// <summary>
-    /// viewer for a specific pebble.
-    /// </summary>
-    public class PebbleViewer:IViewer
-    {
-        /// <summary>
-        /// commands that the pebble may send
-        /// </summary>
-        private enum UICommand:byte{Button=0,Dash=1,Course=2,Mark=3,NewRace=4,Calibrate=5,Restart=6,Reboot=7,Shutdown=8}
-        /// <summary>
-        /// buttons that the pebble may send from the dashboard
-        /// </summary>
-        private enum Button : byte { Up = 0, Select = 1, Down = 2 }
+	/// <summary>
+	/// viewer for a specific pebble.
+	/// </summary>
+	public class PebbleViewer : IViewer
+	{
+		/// <summary>
+		/// commands that the pebble may send
+		/// </summary>
+		private enum UICommand : byte { Button = 0, Dash = 1, Course = 2, Mark = 3, NewRace = 4, Calibrate = 5, Restart = 6, Reboot = 7, Shutdown = 8 }
+		/// <summary>
+		/// buttons that the pebble may send from the dashboard
+		/// </summary>
+		private enum Button : byte { Up = 0, Select = 1, Down = 2 }
 
-        private ILogger _logger;
-        private PebblePlugin _plugin;
-        private PebbleSharp.Core.Pebble _pebble;
-        private byte _transactionId;
-        private UUID _uuid;
-        
-        private int _lineCount;//number of rows shown on the pebble UI
-        private volatile IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
-        private static IList<LineStateMap> _lineStateMaps;
+		private ILogger _logger;
+		private PebblePlugin _plugin;
+		private PebbleSharp.Core.Pebble _pebble;
+		private byte _transactionId;
+		private UUID _uuid;
+
+		private int _lineCount;//number of rows shown on the pebble UI
+		private volatile IList<int> _lineValueIndexes;//index of which map we're currently showing on each line
+		private static IList<LineStateMap> _lineStateMaps;
 
 		private static Dictionary<UICommand, Action<AppMessagePacket>> _commandMaps;
 
-        private Action<Action<ISystemController, IRaceController>> _queueCommand;
+		private Action<Action<ISystemController, IRaceController>> _queueCommand;
 
-        private TimeSpan _sendTimeout=new TimeSpan(0,0,0,5);
-        private Task _lastSend;
-        private DateTime? _lastSendAt;
+		private TimeSpan _sendTimeout = new TimeSpan (0, 0, 0, 5);
+		private Task _lastSend;
+		private DateTime? _lastSendAt;
 
-		public PebbleViewer(ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, IZip appBundleZip, Action<Action<ISystemController, IRaceController>> queueCommand)
-        {
-            _queueCommand = queueCommand;
-            _plugin = plugin;
-            _logger = logger;
-            _pebble = pebble;
-            _pebble.ConnectAsync().Wait();
+		public PebbleViewer (ILogger logger, PebblePlugin plugin, PebbleSharp.Core.Pebble pebble, IZip appBundleZip, Action<Action<ISystemController, IRaceController>> queueCommand)
+		{
+			_queueCommand = queueCommand;
+			_plugin = plugin;
+			_logger = logger;
+			_pebble = pebble;
+			_pebble.ConnectAsync ().Wait ();
 			_logger.Info ("Connected to pebble " + _pebble.PebbleID);
-            _transactionId = 255;
+			_transactionId = 255;
 
-			var progress = new Progress<ProgressValue>(pv => _logger.Debug("Installing app on pebble "+pebble.PebbleID+", "+pv.ProgressPercentage+"% complete. "+pv.Message));
+			var progress = new Progress<ProgressValue> (pv => _logger.Debug ("Installing app on pebble " + pebble.PebbleID + ", " + pv.ProgressPercentage + "% complete. " + pv.Message));
 			var bundle = new AppBundle ();
 			bundle.Load (appBundleZip, _pebble.Firmware.HardwarePlatform.GetPlatform ());
 			_uuid = bundle.AppMetadata.UUID;
-			_pebble.InstallClient.InstallAppAsync (bundle, progress).Wait();
-			_logger.Info("Installed app on pebble " + pebble.PebbleID);
+			_pebble.InstallClient.InstallAppAsync (bundle, progress).Wait ();
+			_logger.Info ("Installed app on pebble " + pebble.PebbleID);
 
-			_pebble.RegisterCallback<AppMessagePacket>(Receive);
+			_pebble.RegisterCallback<AppMessagePacket> (Receive);
 
-            InitializeViewer();
-        }
+			InitializeViewer ();
+		}
 
-        /// <summary>
-        /// initializes the viewer state to the defaults
-        /// TODO: have this load from whatever the last set of settings was based on pebble id?
-        /// </summary>
-        private void InitializeViewer()
-        {
-            _lineCount = 3;
-            if (_lineStateMaps == null)
-            {
-                /* These indexes MUST match the order used on the pebble otherwise things will get weird
+		/// <summary>
+		/// initializes the viewer state to the defaults
+		/// TODO: have this load from whatever the last set of settings was based on pebble id?
+		/// </summary>
+		private void InitializeViewer ()
+		{
+			_lineCount = 3;
+			if (_lineStateMaps == null) {
+				/* These indexes MUST match the order used on the pebble otherwise things will get weird
                     Speed
                     VMG
                     VMC
@@ -125,48 +124,52 @@ namespace MrGibbs.Pebble
 		VMC %
 Current Tack Delta
 Course Relative*/
-                _lineStateMaps = new List<LineStateMap>();
-                _lineStateMaps.Add(new LineStateMap(s => s.SpeedInKnots.HasValue ? string.Format("{0:0.0}", s.SpeedInKnots.Value) : "", "Speed (kn)"));
-                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGood.HasValue ? string.Format("{0:0.0}", s.VelocityMadeGood.Value) : "", "VMG (kn)"));
-                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGoodOnCourse.HasValue ? string.Format("{0:0.0}", s.VelocityMadeGoodOnCourse.Value) : "", "VMC (kn)"));
-                _lineStateMaps.Add(new LineStateMap(s=>s.CourseOverGroundByLocation.HasValue ? string.Format("{0:0.0}",s.CourseOverGroundByLocation.Value):"","Course Over Ground"));
-                _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeading.HasValue ? string.Format("{0:0.0}", s.MagneticHeading.Value) : "", "Heading (Mag)"));
-                _lineStateMaps.Add(new LineStateMap(s => s.MagneticHeadingWithVariation.HasValue ? string.Format("{0:0.0}", s.MagneticHeadingWithVariation.Value) : "", "Heading (True)"));
-                _lineStateMaps.Add(new LineStateMap(s => s.Heel.HasValue ? string.Format("{0:0.0}", s.Heel.Value) : "", "Heel"));
-                //_lineStateMaps.Add(new LineStateMap(s => s.Pitch.HasValue ? string.Format("{0:0.0}", s.Pitch.Value) : "", "Pitch"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "Wind Speed (Apparant)"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "Wind Speed (True)"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "Wind Direction (Aparant)"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "Wind Direction (True)"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "Nominal Speed"));
-                _lineStateMaps.Add(new LineStateMap(s => "", "% Nominal Speed"));
-                _lineStateMaps.Add(new LineStateMap(s => s.MaximumSpeedInKnots.HasValue ? string.Format("{0:0.0}", s.MaximumSpeedInKnots.Value) : "", "Top Speed (kn)"));
-                _lineStateMaps.Add(new LineStateMap(s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString("00") : "", "Countdown",()=>_queueCommand((s,r)=>r.CountdownAction())));
-                _lineStateMaps.Add(new LineStateMap(s => s.DistanceToTargetMarkInYards.HasValue ? string.Format("{0}{1:0}",s.TargetMark!=null ? s.TargetMark.Abbreviation : "",s.DistanceToTargetMarkInYards.Value) :"?", "Distance to Mark (yds)"));
-                _lineStateMaps.Add(new LineStateMap(s => s.Pitch.HasValue ? string.Format("{0:0.0}", s.Pitch.Value) : "", "Pitch"));
-                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGoodPercent.HasValue ? string.Format("{0:0.0}%", s.VelocityMadeGoodPercent.Value) : "?", "VMG %"));
-                _lineStateMaps.Add(new LineStateMap(s => s.VelocityMadeGoodOnCoursePercent.HasValue ? string.Format("{0:0.0}%", s.VelocityMadeGoodOnCoursePercent.Value) : "?", "VMC %"));
-                _lineStateMaps.Add(new LineStateMap(s => s.CurrentTackCourseOverGroundDelta.HasValue ? string.Format("{0:0.0}", s.CurrentTackCourseOverGroundDelta.Value) : "?", "Current Tack Delta"));
-                _lineStateMaps.Add(new LineStateMap(s => s.CourseOverGroundRelativeToCourse.HasValue ? string.Format("{0:0.0}", s.CourseOverGroundRelativeToCourse.Value) : "?", "Course Relative"));
-            }
+				_lineStateMaps = new List<LineStateMap> ();
+				_lineStateMaps.Add (StateValueMap(StateValue.SpeedInKnots, "Speed (kn)"));
+				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGood, "VMG (kn)",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGoodOnCourse, "VMC (kn)",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.CourseOverGroundByLocation, "Course Over Ground"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeading, "Heading (Mag)"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeadingWithVariation, "Heading (True)"));
+				_lineStateMaps.Add (StateValueMap(StateValue.Heel, "Heel"));
+				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Speed (Apparant)"));
+				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Speed (True)"));
+				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Direction (Aparant)"));
+				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Direction (True)"));
+				_lineStateMaps.Add (new LineStateMap (s => "", "Nominal Speed"));
+				_lineStateMaps.Add (new LineStateMap (s => "", "% Nominal Speed"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MaximumSpeedInKnots, "Top Speed (kn)"));
+				_lineStateMaps.Add (new LineStateMap (s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString ("00") : "", "Countdown", () => _queueCommand ((s, r) => r.CountdownAction ())));
+				_lineStateMaps.Add (new LineStateMap (s => s.StateValues.ContainsKey(StateValue.DistanceToTargetMarkInYards) ? string.Format ("{0}{1:0}", s.TargetMark != null ? s.TargetMark.Abbreviation : "", s.StateValues[StateValue.DistanceToTargetMarkInYards]) : "?", "Distance to Mark (yds)"));
+				_lineStateMaps.Add (StateValueMap(StateValue.Pitch, "Pitch"));
+				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGoodPercent,"VMG %",format:"{0:0.0}%",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGoodOnCoursePercent,"VMC %",format:"{0:0.0}%",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.CurrentTackCourseOverGroundDelta, "Current Tack Delta"));
+				_lineStateMaps.Add (StateValueMap(StateValue.CourseOverGroundRelativeToCourse, "Course Relative"));
+			}
 
-            _lineValueIndexes = new List<int>();
-            _lineValueIndexes.Add(0);//speed
-            _lineValueIndexes.Add(3);//cog
-            _lineValueIndexes.Add(14);//countdown
+			//TODO: remember what the last settings for this pebble were and use those
+			_lineValueIndexes = new List<int> ();
+			_lineValueIndexes.Add (0);//speed
+			_lineValueIndexes.Add (3);//cog
+			_lineValueIndexes.Add (14);//countdown
 
-            if(_commandMaps==null)
-            {
-				_commandMaps = new Dictionary<UICommand, Action<AppMessagePacket>>();
-                _commandMaps.Add(UICommand.Dash, ProcessDashCommand);
-                _commandMaps.Add(UICommand.Button, ProcessButtonCommand);
-                _commandMaps.Add(UICommand.Calibrate, m=>_queueCommand((s,r)=>s.Calibrate()));
-                _commandMaps.Add(UICommand.Restart, m => _queueCommand((s, r) => s.Restart()));
-                _commandMaps.Add(UICommand.Reboot, m => _queueCommand((s, r) => s.Reboot()));
-                _commandMaps.Add(UICommand.Shutdown, m => _queueCommand((s, r) => s.Shutdown()));
-                _commandMaps.Add(UICommand.Mark, ProcessMarkCommand);
-            }
-        }
+			if (_commandMaps == null) {
+				_commandMaps = new Dictionary<UICommand, Action<AppMessagePacket>> ();
+				_commandMaps.Add (UICommand.Dash, ProcessDashCommand);
+				_commandMaps.Add (UICommand.Button, ProcessButtonCommand);
+				_commandMaps.Add (UICommand.Calibrate, m => _queueCommand ((s, r) => s.Calibrate ()));
+				_commandMaps.Add (UICommand.Restart, m => _queueCommand ((s, r) => s.Restart ()));
+				_commandMaps.Add (UICommand.Reboot, m => _queueCommand ((s, r) => s.Reboot ()));
+				_commandMaps.Add (UICommand.Shutdown, m => _queueCommand ((s, r) => s.Shutdown ()));
+				_commandMaps.Add (UICommand.Mark, ProcessMarkCommand);
+			}
+		}
+
+		private LineStateMap StateValueMap(StateValue val, string name,string format="{0:0.0}",string missing="")
+		{
+			return new LineStateMap (s=>s.StateValues.ContainsKey(val) ? string.Format(format,s.StateValues[val]) : missing,name);
+		}
 
         /// <summary>
         /// invoked when data is received by the pebble
@@ -278,19 +281,6 @@ Course Relative*/
                 //or if it has exceeded the send timeout
                 || !_lastSendAt.HasValue || state.SystemTime - _lastSendAt.Value > _sendTimeout)
             {
-#if WINDOWS
-                //give us some smooth numbers to look at when we're testing on 'doze
-                if(!state.MagneticHeading.HasValue)
-                {
-                    state.MagneticHeading = 0;
-                }
-                else
-                {
-                    state.MagneticHeading += 1;
-                    state.MagneticHeading = state.MagneticHeading % 360;
-                }
-#endif
-
                 _transactionId--;
 				AppMessagePacket message = new AppMessagePacket();
                 message.ApplicationId = _uuid;

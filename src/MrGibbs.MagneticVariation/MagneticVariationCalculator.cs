@@ -25,17 +25,20 @@ namespace MrGibbs.MagneticVariation
         /// <inheritdoc />
         public void Calculate(State state)
         {
-            if (state.Location!=null && state.Location.Latitude!=null && state.Location.Longitude!=null && state.AltitudeInMeters.HasValue)
+            if (state.Location!=null 
+			    && state.Location.Latitude!=null 
+			    && state.Location.Longitude!=null 
+			    && state.StateValues.ContainsKey(StateValue.AltitudeInMeters))
             {
                 double now = TSAGeoMag.decimalYear(state.BestTime);
-                state.MagneticDeviation = _tsaGeoMag.getDeclination(state.Location.Latitude.Value, state.Location.Longitude.Value, now,state.AltitudeInMeters.Value/1000.0);
+				state.StateValues[StateValue.MagneticDeviation] = _tsaGeoMag.getDeclination(state.Location.Latitude.Value, state.Location.Longitude.Value, now,state.StateValues[StateValue.AltitudeInMeters]/1000.0);
 
-                if(state.MagneticHeading.HasValue)
+				if(state.StateValues.ContainsKey(StateValue.MagneticHeading))
                 {
-                    state.MagneticHeadingWithVariation = state.MagneticHeading + state.MagneticDeviation;
+					state.StateValues[StateValue.MagneticHeadingWithVariation] = state.StateValues[StateValue.MagneticHeading] + state.StateValues[StateValue.MagneticDeviation];
                 }
 
-                _logger.Debug("Calculated Magnetic Deviation as " + state.MagneticDeviation + " for " + state.Location.Latitude.Value + "," + state.Location.Longitude.Value + " altitude " + state.AltitudeInMeters.Value);
+				_logger.Debug("Calculated Magnetic Deviation as " + state.StateValues[StateValue.MagneticDeviation] + " for " + state.Location.Latitude.Value + "," + state.Location.Longitude.Value + " altitude " + state.StateValues[StateValue.AltitudeInMeters]);
             }
         }
 

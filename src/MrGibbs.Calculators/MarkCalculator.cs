@@ -46,14 +46,10 @@ namespace MrGibbs.Calculators
             {
                 double meters = CoordinatePoint.HaversineDistance(state.Location, state.TargetMark.Location);
                 if (meters < _distanceCutoff)//if the reported distance is more than this threshold, it's probably garbage data
-                {
-                    state.DistanceToTargetMarkInYards = meters * MetersToYards;
+				{
+					state.StateValues[StateValue.DistanceToTargetMarkInYards] = meters * MetersToYards;
                 }
-                else
-                {
-                    state.DistanceToTargetMarkInYards = null;
-                }
-
+                
                 var calculation = new MarkCalculation();
                 calculation.Location = state.Location;
                 calculation.Time = state.BestTime;
@@ -76,41 +72,33 @@ namespace MrGibbs.Calculators
                     var vmcMetersPerSecond = distanceDelta/duration.TotalSeconds;
                     var vmcKnots = MetersPerSecondToKnots * vmcMetersPerSecond;
                     calculation.VelocityMadeGoodOnCourse = vmcKnots;
-                    state.VelocityMadeGoodOnCourse = vmcKnots;//_previousCalculations.Average(x => x.VelocityMadeGoodOnCourse);
+					state.StateValues[StateValue.VelocityMadeGoodOnCourse] = vmcKnots;//_previousCalculations.Average(x => x.VelocityMadeGoodOnCourse);
 
-                    state.VelocityMadeGoodOnCoursePercent = vmcKnots / state.SpeedInKnots * 100;
+					state.StateValues[StateValue.VelocityMadeGoodOnCoursePercent] = vmcKnots / state.StateValues[StateValue.SpeedInKnots] * 100;
 
                     //TODO: calculate vmg
-                    if (state.PreviousMark != null && state.SpeedInKnots.HasValue)
+					if (state.PreviousMark != null && state.StateValues.ContainsKey(StateValue.SpeedInKnots))
                     {
                         calculation.VelocityMadeGood = VelocityMadeGood(state.TargetMark, state.PreviousMark,
-                            calculation.Location, previous.Location, state.SpeedInKnots.Value);
+						                                                calculation.Location, previous.Location, state.StateValues[StateValue.SpeedInKnots]);
 
-                        state.VelocityMadeGoodPercent = calculation.VelocityMadeGood / state.SpeedInKnots * 100;
+						state.StateValues[StateValue.VelocityMadeGoodPercent] = calculation.VelocityMadeGood.Value / state.StateValues[StateValue.SpeedInKnots] * 100;
 
                         var relativeAngle = RelativeAngleToCourse(state.TargetMark, state.PreviousMark, calculation.Location, previous.Location);
-                        state.CourseOverGroundRelativeToCourse = AngleUtilities.RadiansToDegrees(relativeAngle);
+						state.StateValues[StateValue.CourseOverGroundRelativeToCourse] = AngleUtilities.RadiansToDegrees(relativeAngle);
                     }
                 }
 
             }
-            else if(state.Course is CourseByAngle && state.CourseOverGroundByLocation.HasValue && state.SpeedInKnots.HasValue)
+			else if(state.Course is CourseByAngle && state.StateValues.ContainsKey(StateValue.CourseOverGroundByLocation) && state.StateValues.ContainsKey(StateValue.SpeedInKnots))
             {
-                state.VelocityMadeGood = VelocityMadeGood((state.Course as CourseByAngle).CourseAngle, state.CourseOverGroundByLocation.Value, state.SpeedInKnots.Value);
-                state.VelocityMadeGoodPercent = state.VelocityMadeGood / state.SpeedInKnots * 100;
+				state.StateValues[StateValue.VelocityMadeGood] = VelocityMadeGood((state.Course as CourseByAngle).CourseAngle, state.StateValues[StateValue.CourseOverGroundByLocation], state.StateValues[StateValue.SpeedInKnots]);
+				state.StateValues[StateValue.VelocityMadeGoodPercent] = state.StateValues[StateValue.VelocityMadeGood] / state.StateValues[StateValue.SpeedInKnots] * 100;
 
-                var relativeAngle = AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians((state.Course as CourseByAngle).CourseAngle), AngleUtilities.DegreestoRadians(state.CourseOverGroundByLocation.Value));
-                state.CourseOverGroundRelativeToCourse = AngleUtilities.RadiansToDegrees(relativeAngle);
+				var relativeAngle = AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians((state.Course as CourseByAngle).CourseAngle), AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundByLocation]));
+				state.StateValues[StateValue.CourseOverGroundRelativeToCourse] = AngleUtilities.RadiansToDegrees(relativeAngle);
             }
-            else
-            {
-                state.DistanceToTargetMarkInYards = null;
-                state.VelocityMadeGoodOnCourse = null;
-                state.VelocityMadeGood = null;
-                state.VelocityMadeGoodOnCoursePercent = null;
-                state.VelocityMadeGoodPercent = null;
-                state.CourseOverGroundRelativeToCourse = null;
-            }
+            
         }
 
         /// <summary>

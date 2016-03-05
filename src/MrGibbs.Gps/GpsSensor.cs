@@ -318,16 +318,12 @@ namespace MrGibbs.Gps
                     }
                     if (speed != double.MinValue)
                     {
-                        state.SpeedInKnots = speed;
+						state.StateValues[StateValue.SpeedInKnots] = speed;
 
                         //don't set COG if we're not really moving
                         if (courseOverGroundByLocation != double.MinValue && speed>_minimumSpeed)
                         {
-                            state.CourseOverGroundByLocation = courseOverGroundByLocation;
-                        }
-                        else
-                        {
-                            state.CourseOverGroundByLocation = null;
+							state.StateValues[StateValue.CourseOverGroundByLocation] = courseOverGroundByLocation;
                         }
                     }
                     
@@ -338,11 +334,11 @@ namespace MrGibbs.Gps
 
                     if (trueCourseMadeGood != double.MinValue)
                     {
-                        state.TrueCourseMadeGood = trueCourseMadeGood;
+						state.StateValues[StateValue.TrueCourseMadeGood] = trueCourseMadeGood;
                     }
                     if (magneticCourseMadeGood != double.MinValue)
                     {
-                        state.MagneticCourseMadeGood = magneticCourseMadeGood;
+						state.StateValues[StateValue.MagneticCourseMadeGood] = magneticCourseMadeGood;
                     }
                     //if (magneticDeviation != double.MinValue)
                     //{
@@ -353,7 +349,7 @@ namespace MrGibbs.Gps
                     if (altitude != double.MinValue)
                     {
                         //_logger.Info("GPS set altitude to " + altitude);
-                        state.AltitudeInMeters = altitude;
+						state.StateValues[StateValue.AltitudeInMeters] = altitude;
                     }
                 }
                 //update the state

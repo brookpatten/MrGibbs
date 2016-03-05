@@ -58,8 +58,8 @@ namespace MrGibbs.MPU6050
 				var gyro = _imu.GetGyro ();
 
                 //these probably need to be normalized to some known scale
-			    state.Accel = new Vector3(accel.x, accel.y, accel.z);
-			    state.Gyro = new Vector3(gyro.x,gyro.y,gyro.z);
+			    //state.Accel = new Vector3(accel.x, accel.y, accel.z);
+			    //state.Gyro = new Vector3(gyro.x,gyro.y,gyro.z);
 
 			    //var rpy = _imu.GetRollYawPitch ();
 
@@ -68,8 +68,8 @@ namespace MrGibbs.MPU6050
 
 
 			    //_logger.Info ("Heel:" + (accel.x * 360.0)); 
-			    state.Heel = accel.x * (360.0/4.0);//((double)accel.y).ToDegrees();
-                state.Pitch = accel.y * (360.0 / 4.0);//((double)accel.x).ToDegrees();
+				state.StateValues[StateValue.Heel] = accel.x * (360.0/4.0);//((double)accel.y).ToDegrees();
+				state.StateValues[StateValue.Pitch] = accel.y * (360.0 / 4.0);//((double)accel.x).ToDegrees();
 
 			    //if (framecounter++ == 100 && imu != null)
 			    //_imu.Calibrate ();

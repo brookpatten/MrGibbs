@@ -222,8 +222,7 @@ namespace MrGibbs
 
                         _raceController.ProcessMarkRoundings();
 
-                        _logger.Info(string.Format("Speed: {0:0.0}\tHeading: {1:0.0}\tVMG: {2:0.0}\tTack:{3:0.0}", _state.SpeedInKnots, _state.CourseOverGroundByLocation, _state.VelocityMadeGood, _state.CurrentTackCourseOverGroundDelta));
-                        if(_state.Message!=null)
+						if(_state.Message!=null)
                         {
                             _logger.Info(_state.Message.Text);
                         }

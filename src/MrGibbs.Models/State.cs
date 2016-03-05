@@ -21,65 +21,18 @@ namespace MrGibbs.Models
         //gps provided data
         public DateTime? GpsTime { get; set; }
         public CoordinatePoint Location { get; set; }
-        public double? CourseOverGroundByLocation { get; set; }
-        public double? SpeedInKnots { get; set; }
-        public double? MagneticCourseMadeGood { get; set; }
-
+		public IDictionary<StateValue, double> StateValues { get; set; }
+        
         public static void Run()
         {
             throw new NotImplementedException();
         }
 
-        public double? TrueCourseMadeGood { get; set; }
-        public double? AltitudeInMeters { get; set; }
-        
-        //accel provided data
-        public Vector3 Accel { get; set; }
-        public Vector3 Gyro { get; set; }
-        public double? Heel { get; set; }
-        public double? Pitch { get; set; }
-
-        //magneto provided data
-        public Vector3 Magneto { get; set; }
-        public double? MagneticHeading { get; set; }
-
-        //calculated values
-        public double? MagneticDeviation { get; set; }
-        public double? MagneticHeadingWithVariation { get; set; }
-        public double? DistanceToTargetMarkInYards { get; set; }
-        public double? MaximumSpeedInKnots { get; set; }
-        public double? VelocityMadeGoodOnCourse { get; set; }
-        public double? VelocityMadeGood { get; set; }
-        public double? VelocityMadeGoodPercent { get; set; }
-        public double? VelocityMadeGoodOnCoursePercent { get; set; }
-        public double? CurrentTackCourseOverGroundDelta { get; set; }
-        public double? CourseOverGroundRelativeToCourse { get; set; }
-
         public void Clear()
         {
             GpsTime = null;
             Location = null;
-            CourseOverGroundByLocation = null;
-            SpeedInKnots = null;
-            MagneticCourseMadeGood = null;
-            TrueCourseMadeGood = null;
-            AltitudeInMeters = null;
-            Accel = null;
-            Gyro = null;
-            Heel = null;
-            Pitch = null;
-            Magneto = null;
-            MagneticHeading = null;
-            MagneticDeviation = null;
-            MagneticHeadingWithVariation = null;
-            DistanceToTargetMarkInYards = null;
-            MaximumSpeedInKnots = null;
-            VelocityMadeGoodOnCourse = null;
-            VelocityMadeGood = null;
-            VelocityMadeGoodPercent = null;
-            VelocityMadeGoodOnCoursePercent = null;
-            CurrentTackCourseOverGroundDelta = null;
-            CourseOverGroundRelativeToCourse = null;
+			StateValues.Clear ();
         }
         
         //race state

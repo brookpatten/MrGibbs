@@ -134,9 +134,9 @@ namespace MrGibbs
 
                     if(magneticBearing)
                     {
-                        if(_state.MagneticDeviation.HasValue)
+						if(_state.StateValues.ContainsKey(StateValue.MagneticDeviation))
                         {
-                            (_state.Course as CourseByAngle).CourseAngle = bearing + _state.MagneticDeviation.Value;
+							(_state.Course as CourseByAngle).CourseAngle = bearing + _state.StateValues[StateValue.MagneticDeviation];
                         }
                         else
                         {
@@ -162,9 +162,9 @@ namespace MrGibbs
                 //compensate for magnetic deviation
                 if (magneticBearing)
                 {
-                    if (_state.MagneticDeviation.HasValue)
+					if (_state.StateValues.ContainsKey(StateValue.MagneticDeviation))
                     {
-                        fullBearing.CompassHeading = fullBearing.CompassHeading + _state.MagneticDeviation.Value;
+						fullBearing.CompassHeading = fullBearing.CompassHeading + _state.StateValues[StateValue.MagneticDeviation];
                     }
                     else
                     {
@@ -173,7 +173,7 @@ namespace MrGibbs
                     }
                 }
 
-                _logger.Info(string.Format("Received bearing for {0} of {1:0.00} ({2:0.00} true) from {3},{4}, altitude {5}, deviation {6}", markType, bearing, fullBearing.CompassHeading, fullBearing.Location.Latitude.Value, fullBearing.Location.Longitude.Value, _state.AltitudeInMeters, _state.MagneticDeviation));
+				_logger.Info(string.Format("Received bearing for {0} of {1:0.00} ({2:0.00} true) from {3},{4}, altitude {5}, deviation {6}", markType, bearing, fullBearing.CompassHeading, fullBearing.Location.Latitude.Value, fullBearing.Location.Longitude.Value, _state.StateValues[StateValue.AltitudeInMeters], _state.StateValues[StateValue.MagneticDeviation]));
 
                 Mark mark;
 

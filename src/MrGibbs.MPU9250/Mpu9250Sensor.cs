@@ -55,22 +55,21 @@ namespace MrGibbs.MPU9250
                 
 
                 //these probably need to be normalized to some known scale
-                state.Accel = _imu.GetAccel();
-                state.Gyro = _imu.GetGyro();
-                state.Magneto = _imu.GetMagneto();
+                var accel = _imu.GetAccel();
+                var gyro = _imu.GetGyro();
+                var magneto = _imu.GetMagneto();
                 
 			    //var rpy = _imu.GetRollYawPitch ();
 
-                _logger.Debug("MPU-9250: Acceleration(" + string.Format("{0:0.00}", state.Accel.X) + "," + string.Format("{0:0.00}", state.Accel.Y) + "," + string.Format("{0:0.00}", state.Accel.Z) + ") Gyro(" + string.Format("{0:0.00}", state.Gyro.X) + "," + string.Format("{0:0.00}", state.Gyro.Y) + "," + string.Format("{0:0.00}", state.Gyro.Z) + ")");
+                _logger.Debug("MPU-9250: Acceleration(" + string.Format("{0:0.00}", accel.X) + "," + string.Format("{0:0.00}", accel.Y) + "," + string.Format("{0:0.00}", accel.Z) + ") Gyro(" + string.Format("{0:0.00}", gyro.X) + "," + string.Format("{0:0.00}", gyro.Y) + "," + string.Format("{0:0.00}", gyro.Z) + ")");
 			    //_logger.Debug ("MPU-9250: Roll/Pitch/Yaw(" + string.Format ("{0:0.00}", rpy.x*360.0) + "," + string.Format ("{0:0.00}", gyro.y*360.0) + "," + string.Format ("{0:0.00}", gyro.z*360.0) + ")");
 
-                state.Heel = state.Accel.Y * (360.0 / 4.0);
-                state.Pitch = state.Accel.X * (360.0 / 4.0);
-                _logger.Info("Heel:" +state.Heel+", Pitch:"+state.Pitch);
+				state.StateValues[StateValue.Heel] = accel.Y * (360.0 / 4.0);
+				state.StateValues[StateValue.Pitch] = accel.X * (360.0 / 4.0);
+                
 
 
-
-                double heading = Math.Atan2(state.Magneto.X, state.Magneto.Y);
+                double heading = Math.Atan2(magneto.X, magneto.Y);
                 if (heading < 0)
                 {
                     heading += 2.0 * Math.PI;
@@ -78,13 +77,13 @@ namespace MrGibbs.MPU9250
 
                 //convert to degrees
                 heading = heading * (180.0 / Math.PI);
-                state.MagneticHeading = 360 - heading;
+				state.StateValues[StateValue.MagneticHeading] = 360 - heading;
                 
                 
                 //float N = 256;
                 //state.MagneticHeading = state.Magneto.X * state.Magneto.X / N + state.Magneto.Y * state.Magneto.Y / N + state.Magneto.Z * state.Magneto.Z / N;
                 
-                _logger.Info("MPU-9250 Heading(" + state.Magneto.X + "," + state.Magneto.Y + "," + state.Magneto.Z + ") (" + state.MagneticHeading + ")");
+				_logger.Info("MPU-9250 Heading(" + magneto.X + "," + magneto.Y + "," + magneto.Z + ") (" + state.StateValues[StateValue.MagneticHeading] + ")");
 
 
 			   
