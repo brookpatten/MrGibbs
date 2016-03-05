@@ -44,6 +44,18 @@ namespace MrGibbs.StateLogger
 			}
 		}
 
+		private double? CoalesceStateValue (State state, StateValue val)
+		{
+			if (state.StateValues.ContainsKey (val)) 
+			{
+				return state.StateValues [val];
+			} 
+			else 
+			{
+				return null;
+			}
+		}
+
 		public void Save (State state)
 		{
 			_dbConnection.Execute ("insert into StateLog(" +
@@ -69,11 +81,11 @@ namespace MrGibbs.StateLogger
 				    BestTime = state.BestTime,
 				    LocationLatitudeValue = state.Location.Latitude.Value,
 				    LocationLongitudeValue = state.Location.Longitude.Value,
-					CourseOverGroundByLocation = state.StateValues[StateValue.CourseOverGroundByLocation],
-					SpeedInKnots = state.StateValues[StateValue.SpeedInKnots],
-					Heel = state.StateValues[StateValue.Heel],
-					Pitch=state.StateValues[StateValue.Pitch],
-					Heading=state.StateValues[StateValue.MagneticHeadingWithVariation],
+					CourseOverGroundByLocation = CoalesceStateValue(state,StateValue.CourseOverGroundByLocation),
+					SpeedInKnots = CoalesceStateValue(state,StateValue.SpeedInKnots),
+					Heel = CoalesceStateValue(state,StateValue.Heel),
+					Pitch=CoalesceStateValue(state,StateValue.Pitch),
+					Heading=CoalesceStateValue(state,StateValue.MagneticHeadingWithVariation)
 				});
 		}
 	}

@@ -48,6 +48,7 @@ namespace MrGibbs.Models
         public State()
         {
             _messages = new List<Message>();
+			StateValues = new Dictionary<StateValue, double> ();
             Course = null;
         }
 
