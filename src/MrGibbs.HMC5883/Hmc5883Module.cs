@@ -1,6 +1,10 @@
 ﻿using System;
-using MrGibbs.Contracts;
+
+using Ninject;
 using Ninject.Modules;
+
+using MrGibbs.Contracts;
+using MrGibbs.Configuration;
 
 namespace MrGibbs.HMC5883
 {
@@ -11,6 +15,8 @@ namespace MrGibbs.HMC5883
 	{
 		public override void Load()
 		{
+			Kernel.LoadIfNotLoaded<I2CModule> ();
+
 			Kernel.Bind<IPlugin> ()
 				.To<Hmc5883Plugin> ()
 				.InSingletonScope ();

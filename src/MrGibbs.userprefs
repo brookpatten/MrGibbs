@@ -1,18 +1,32 @@
-﻿<Properties StartupItem="MrGibbs.Console/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Console/Properties/AssemblyInfo.cs">
+﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs">
     <Files>
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="24" Column="21" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs" Line="32" Column="15" />
-      <File FileName="MrGibbs.Console/Program.cs" Line="17" Column="6" />
-      <File FileName="MrGibbs.Console/RaceController.cs" Line="9" Column="18" />
-      <File FileName="MrGibbs.Console/Supervisor.cs" Line="10" Column="18" />
-      <File FileName="MrGibbs.Console/Properties/AssemblyInfo.cs" Line="29" Column="21" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs" Line="67" Column="27" />
+      <File FileName="MrGibbs/Supervisor.cs" Line="68" Column="14" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="63" Column="9" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/ProfileManager1.cs" Line="1" Column="1" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/Profile1.cs" Line="1" Column="1" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/GattService1.cs" Line="18" Column="1" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/GattProfile1.cs" Line="1" Column="1" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/GattManager1.cs" Line="1" Column="1" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/Adapter1.cs" Line="16" Column="30" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/Device1.cs" Line="24" Column="20" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerModule.cs" Line="19" Column="1" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/GattDescriptor1.cs" Line="8" Column="34" />
+      <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/GattCharacteristic1.cs" Line="17" Column="29" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.Console/Supervisor.cs" line="177" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="176" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="136" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="111" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="105" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="110" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="102" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="55" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

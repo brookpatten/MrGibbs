@@ -6,10 +6,6 @@
     /// </summary>
     public static class AppConfig
     {
-        public static string DatabaseConnectionString
-        {
-            get { return ConfigurationHelper.ReadStringAppSetting("Database", @"URI=file:gibbs.db"); }
-        }
         public static int SleepTime
         {
             get { return ConfigurationHelper.ReadIntAppSetting("SleepTime", 1000); }

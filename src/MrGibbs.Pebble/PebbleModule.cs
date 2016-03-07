@@ -1,7 +1,10 @@
 ﻿using System;
+
+using Ninject;
+using Ninject.Modules;
+
 using MrGibbs.Contracts;
 using MrGibbs.Configuration;
-using Ninject.Modules;
 
 namespace MrGibbs.Pebble
 {
@@ -12,11 +15,13 @@ namespace MrGibbs.Pebble
 	{
 		public override void Load()
 		{
+			Kernel.LoadIfNotLoaded<BluetoothModule> ();
+
 			Kernel.Bind<IPlugin> ().To<PebblePlugin> ()
 				.InSingletonScope ()
 				.WithConstructorArgument ("pbwPath", ConfigurationHelper.ReadStringAppSetting("PbwPath"
 					,ConfigurationHelper.FindNewestFileWithExtension("pbw")))
-				.WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting("BtAdapterName",""));
+				.WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting("BtAdapterName","hci0"));
 
 		}
 	}

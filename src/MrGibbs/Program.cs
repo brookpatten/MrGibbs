@@ -66,15 +66,15 @@ namespace MrGibbs
         static IKernel Configure()
         {
             var kernel = new StandardKernel();
+
             //infrastructure modules
 			kernel.Load(new List<NinjectModule>()
             {
-				new GenericHardwareModule(),
-                new LoggingModule(new List<string>(){"Log.config"}),
-                new PersistenceModule(),
+				new LoggingModule(new List<string>(){"Log.config"})
             });
 
 			var logger = kernel.Get<ILogger> ();
+
 			logger.Info ("Loading Plugins...");
 			//plugins
 			kernel.Load (new string[] { "*.Plugin.dll" });

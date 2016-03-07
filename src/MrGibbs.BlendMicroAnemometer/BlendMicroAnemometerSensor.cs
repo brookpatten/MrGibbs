@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Mono.BlueZ.DBus;
 using DBus;
@@ -18,8 +19,6 @@ namespace MrGibbs.BlendMicroAnemometer
     {
         private ILogger _logger;
         private BlendMicroAnemometerPlugin _plugin;
-		private Device1 _device;
-		private DBusConnection _connection;
 
 		private double? _speed;
 		private double? _direction;
@@ -31,11 +30,12 @@ namespace MrGibbs.BlendMicroAnemometer
 		private string _charAck = "713D0004-503E-4C75-BA94-3148F18D941E";
 		private string _charVersion = "713D0005-503E-4C75-BA94-3148F18D941E";
 		private string _clientCharacteristic = "00002902-0000-1000-8000-00805f9b34fb";
-		private string _service = "org.bluez";
 
+		private Device1 _device;
+		private DBusConnection _connection;
 		private ObjectPath _gattProfilePath = new ObjectPath ("/gattprofiles");
-		private ObjectPath _blueZPath = new ObjectPath ("/org/bluez");
-
+		private ObjectPath _servicePath;
+		private GattService1 _service;
 		private ObjectPath _readCharPath; //= new ObjectPath("/org/bluez/hci0/dev_F6_58_7F_09_5D_E6/service000c/char000f");
 		private GattCharacteristic1 _readChar;//= GetObject<GattCharacteristic1>(Service,readCharPath);
 		private Properties _properties;// = GetObject<Properties>(Service,readCharPath);
@@ -52,7 +52,7 @@ namespace MrGibbs.BlendMicroAnemometer
 		{
 			_properties.PropertiesChanged += new PropertiesChangedHandler(
 				new Action<string,IDictionary<string,object>,string[]>((@interface,changed,invalidated)=>{
-					System.Console.WriteLine("Properties Changed on "+@interface);
+					_logger.Debug ("Properties Changed on " + @interface);
 					if(changed!=null)
 					{
 						foreach(var prop in changed.Keys)
@@ -60,10 +60,6 @@ namespace MrGibbs.BlendMicroAnemometer
 							if(changed[prop] is byte[])
 							{
 								DeserializeSensorValue ((byte[])changed [prop]);
-							}
-							else
-							{
-								System.Console.WriteLine("{0}={1}",prop,changed[prop]);
 							}
 						}
 					}
@@ -93,11 +89,25 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Start()
         {
-			//find service
-			//find readChar
-
 			_device.Connect();
-			_readChar.StartNotify ();
+			string name = _device.Name;
+			var servicePaths = _device.GattServices;
+			_servicePath = servicePaths.Single();
+			_service = _connection.System.GetObject<GattService1> (BlueZPath.Service, _servicePath);
+			var charPaths = _service.Characteristics;
+			foreach (var charPath in charPaths) 
+			{
+				var vChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, charPath);
+
+				if (vChar.UUID.ToUpper() == _charRead) 
+				{
+					_readChar = vChar;
+					_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, charPath);
+					break;
+				}
+			}
+
+			_readChar.StartNotify();
 			InitializePropertyListener ();
         }
 
@@ -117,12 +127,21 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Dispose()
         {
-			try {
+			try 
+			{
 				_readChar.StopNotify ();
-			} catch { }
-			try {
+			} 
+			catch 
+			{ 
+			}
+			try 
+			{
 				_device.Disconnect ();
-			} catch { }
+			} 
+			catch 
+			{ 
+			}
+
         }
 
         /// <inheritdoc />
