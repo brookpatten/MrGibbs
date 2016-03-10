@@ -22,8 +22,10 @@ namespace MrGibbs.BlendMicroAnemometer
 		private string _btAdapterName;
 		private string _deviceAddress;
 		private ObjectPath _devicePath;
+		private IClock _clock;
+		private TimeSpan _maximumDataAge;
 
-        public BlendMicroAnemometerPlugin(ILogger logger,DBusConnection connection,string btAdapterName,string deviceAddress)
+		public BlendMicroAnemometerPlugin(ILogger logger,IClock clock,TimeSpan maximumDataAge,DBusConnection connection,string btAdapterName,string deviceAddress)
         {
 			if (string.IsNullOrWhiteSpace (deviceAddress)) 
 			{
@@ -33,6 +35,8 @@ namespace MrGibbs.BlendMicroAnemometer
 			_deviceAddress = deviceAddress;
 			_connection = connection;
             _logger = logger;
+			_clock = clock;
+			_maximumDataAge = maximumDataAge;
 		}
 
         /// <inheritdoc />
@@ -44,7 +48,8 @@ namespace MrGibbs.BlendMicroAnemometer
 			_devicePath = BlueZPath.Device (_btAdapterName, _deviceAddress);
 			var device = _connection.System.GetObject<Device1> (BlueZPath.Service, _devicePath);
 
-			var sensor = new BlendMicroAnemometerSensor (_logger, this, device, _connection);
+			//TODO: maybe use the container or child container for this?
+			var sensor = new BlendMicroAnemometerSensor (_logger,_clock,_maximumDataAge, this, device, _connection);
 			sensor.Start ();
 			_components.Add (sensor);
 			configuration.Sensors.Add (sensor);

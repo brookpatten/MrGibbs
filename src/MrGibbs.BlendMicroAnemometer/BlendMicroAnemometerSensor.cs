@@ -19,9 +19,15 @@ namespace MrGibbs.BlendMicroAnemometer
     {
         private ILogger _logger;
         private BlendMicroAnemometerPlugin _plugin;
+		private IClock _clock;
 
 		private double? _speed;
 		private double? _direction;
+		private double? _heel;
+		private double? _pitch;
+		private DateTime? _lastReceivedAt;
+		private TimeSpan _maximumDataAge;
+		private const double MphToKnots = 0.868976;
 
 		private string _serviceUUID="713d0000-503e-4c75-ba94-3148f18d941e";
 		private string _charVendorName = "713D0001-503E-4C75-BA94-3148F18D941E";
@@ -40,24 +46,26 @@ namespace MrGibbs.BlendMicroAnemometer
 		private GattCharacteristic1 _readChar;//= GetObject<GattCharacteristic1>(Service,readCharPath);
 		private Properties _properties;// = GetObject<Properties>(Service,readCharPath);
 
-		public BlendMicroAnemometerSensor(ILogger logger, BlendMicroAnemometerPlugin plugin,Device1 device, DBusConnection connection)
+		public BlendMicroAnemometerSensor(ILogger logger,IClock clock,TimeSpan maximumDataAge, BlendMicroAnemometerPlugin plugin,Device1 device, DBusConnection connection)
         {
             _plugin = plugin;
             _logger = logger;
 			_device = device;
 			_connection = connection;
+			_clock = clock;
+			_maximumDataAge = maximumDataAge;
 		}
 
 		private void InitializePropertyListener ()
 		{
-			_properties.PropertiesChanged += new PropertiesChangedHandler(
-				new Action<string,IDictionary<string,object>,string[]>((@interface,changed,invalidated)=>{
-					_logger.Debug ("Properties Changed on " + @interface);
+			_properties.PropertiesChanged += (@interface,changed,invalidated)=>{
+					_logger.Debug ("GATT Properties Changed on " + @interface);
 					if(changed!=null)
 					{
 						foreach(var prop in changed.Keys)
 						{
-							if(changed[prop] is byte[])
+							_logger.Debug (prop + " changed");
+							if(changed[prop] is byte[] && prop=="Value")
 							{
 								DeserializeSensorValue ((byte[])changed [prop]);
 							}
@@ -68,16 +76,38 @@ namespace MrGibbs.BlendMicroAnemometer
 					{
 						foreach(var prop in invalidated)
 						{
-							System.Console.WriteLine(prop+" Invalidated");
+						_logger.Debug (prop + " invalidated");
 						}
 					}
-				}));
+				};
 		}
 
 		private void DeserializeSensorValue (byte [] bytes)
 		{
-			_direction = 0;
-			_speed = 0;
+			_lastReceivedAt = _clock.GetUtcTime ();
+			uint anemometerDifference;
+			uint vaneDifference;
+			short x;
+			short y;
+			short z;
+
+			anemometerDifference = BitConverter.ToUInt32(new byte [] {bytes[3],bytes[2],bytes[1],bytes[0] }, 0);
+			vaneDifference = BitConverter.ToUInt32(new byte [] {bytes[7],bytes[6],bytes[5],bytes[4] }, 0);
+
+			x = BitConverter.ToInt16(new byte [] {bytes[8],bytes[9] }, 0);
+			y = BitConverter.ToInt16(new byte [] {bytes[10],bytes[11] }, 0);
+			z = BitConverter.ToInt16(new byte [] {bytes[13],bytes[12] }, 0);
+
+			_logger.Debug ("Received BLE Data from Blend Micro");
+			_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
+
+			_direction = CalculateAngle(vaneDifference,anemometerDifference);
+			_speed = CalculateSpeedInKnots(anemometerDifference);
+
+			_heel = x * (360.0 / 4.0);
+			_pitch = y * (360.0 / 4.0);
+
+			_logger.Debug (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
 		}
 
         /// <inheritdoc />
@@ -85,6 +115,53 @@ namespace MrGibbs.BlendMicroAnemometer
         {
             get { return _plugin; }
         }
+
+		/// <summary>
+		/// given ms between closures, returns speed in mph
+		/// per peet bros ultimeter pro documentation
+		/// </summary>
+		/// <returns>The speed.</returns>
+		/// <param name="closureRate">Closure rate.</param>
+		private double CalculateSpeedInKnots(long closureRate)
+		{
+			double rps = 1000.0/(double)closureRate;
+
+			double mph;
+
+			//initial calculations are all mph, so that constants match peet bros documentation
+			if(0.010 < rps && rps < 3.23)
+			{
+				mph = -0.1095*(rps*rps) + 2.9318*rps - 0.1412;
+			}
+			else if(3.23 <= rps && rps <54.362)
+			{
+				mph = 0.0052 * (rps * rps) + 2.1980 * rps + 1.1091;
+			}
+			else if(54.362 <= rps && rps < 66.332)
+			{
+				mph = 0.1104 * (rps * rps) - 9.5685 * rps + 329.87;
+			}
+			else
+			{
+				mph = 0.0;
+			}
+
+			//convert to knots
+			//TODO: move conversions like this to somewhere handy
+			double knots = mph * MphToKnots;
+			return knots;
+		}
+
+		/// <summary>
+		/// Calculates the angle of the vane based on when it was passed by the anemometer
+		/// </summary>
+		/// <returns>The angle.</returns>
+		/// <param name="vaneDifference">Vane difference.</param>
+		/// <param name="anemometerDifference">Anemometer difference.</param>
+		private double CalculateAngle(long vaneDifference,long anemometerDifference)
+		{
+			return ((double)vaneDifference/(double)anemometerDifference)*360.0;
+		}
 
         /// <inheritdoc />
         public void Start()
@@ -112,15 +189,34 @@ namespace MrGibbs.BlendMicroAnemometer
         }
 
         /// <inheritdoc />
-        public void Update(Models.State state)
+        public void Update(State state)
         {
-			if (_direction.HasValue) 
+			if (_lastReceivedAt.HasValue 
+			    && _clock.GetUtcTime () - _lastReceivedAt < _maximumDataAge) 
 			{
-				state.StateValues [StateValue.ApparentWindDirection] = _direction.Value;
-			}
-			if (_speed.HasValue) 
+				if (_direction.HasValue) 
+				{
+					state.StateValues [StateValue.ApparentWindDirection] = _direction.Value;
+				}
+				if (_speed.HasValue) 
+				{
+					state.StateValues [StateValue.ApparentWindSpeedKnots] = _speed.Value;
+				}
+				if (_heel.HasValue) 
+				{
+					state.StateValues [StateValue.MastHeel] = _heel.Value;
+				}
+				if (_pitch.HasValue) 
+				{
+					state.StateValues [StateValue.MastPitch] = _pitch.Value;
+				}
+			} 
+			else 
 			{
-				state.StateValues [StateValue.ApparentWindSpeedKnots] = _speed.Value;
+				_direction = null;
+				_speed = null;
+				_heel = null;
+				_pitch = null;
 			}
         }
 
@@ -147,6 +243,7 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Calibrate()
         {
+			//TODO: send some sort of calibration message to the blend to tell it the accel is centered
         }
     }
 }

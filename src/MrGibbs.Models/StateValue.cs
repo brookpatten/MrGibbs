@@ -25,6 +25,8 @@ namespace MrGibbs.Models
 		CourseOverGroundRelativeToCourse ,
 		TrueWindDirection ,
 		TrueWindSpeedKnots ,
+		MastHeel,
+		MastPitch,
 	}
 }
 

@@ -7,6 +7,7 @@ using Ninject.Modules;
 using MrGibbs.Configuration;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
+using MrGibbs.Infrastructure;
 
 namespace MrGibbs
 {
@@ -66,6 +67,9 @@ namespace MrGibbs
         static IKernel Configure()
         {
             var kernel = new StandardKernel();
+
+			//TODO: Move this to a module
+			kernel.Bind<IClock> ().To<LinuxSystemClock> ().InSingletonScope ();
 
             //infrastructure modules
 			kernel.Load(new List<NinjectModule>()
