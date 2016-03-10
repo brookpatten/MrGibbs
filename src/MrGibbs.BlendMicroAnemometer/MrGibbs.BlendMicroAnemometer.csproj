@@ -46,6 +46,7 @@
     <Compile Include="BlendMicroAnemometerSensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BlendMicroAnemometerModule.cs" />
+    <Compile Include="TrueWindCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">

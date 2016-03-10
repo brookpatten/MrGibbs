@@ -5,7 +5,7 @@ namespace MrGibbs.Models
     /// <summary>
     /// angle helper functions, function names should be self explanatory
     /// </summary>
-    public class AngleUtilities
+    public static class AngleUtilities
     {
         public static double DegreestoRadians(double val)
         {
@@ -33,6 +33,13 @@ namespace MrGibbs.Models
             result.Y += origin.Y;
             return result;
         }
+		public static Vector2 PolarToCartesian(this Vector2Polar p)
+		{
+			Vector2 result = new Vector2();
+			result.X = (float)(p.Radius * Math.Cos(p.Theta));
+			result.Y = (float)(p.Radius * Math.Sin(p.Theta));
+			return result;
+		}
         public static ProjectedPoint PolarToRectangular(ProjectedPoint origin, double theta, double r)
         {
             ProjectedPoint result = new ProjectedPoint();
@@ -42,6 +49,23 @@ namespace MrGibbs.Models
             result.Northing += origin.Northing;
             return result;
         }
+
+		public static Vector2Polar CartesianToPolar (this Vector2 a)
+		{
+			var theta = Math.Atan2(a.Y,a.X);
+			var radius = Math.Sqrt (a.X * a.X + a.Y * a.Y);
+			return new Vector2Polar () { Theta = (float)theta, Radius = (float)radius };
+		}
+
+		public static Vector2Polar Add(this Vector2Polar a,Vector2Polar b)
+		{
+			var X = Math.Cos(a.Theta)*a.Radius + Math.Cos(b.Theta)*b.Radius;
+			var Y = Math.Sin (a.Theta) * a.Radius + Math.Sin (b.Theta) * b.Radius;
+			var theta = Math.Atan2(Y,X);
+			var radius = Math.Sqrt (X * X + Y * Y);
+			return new Vector2Polar () { Theta = (float)theta, Radius = (float)radius };
+		}
+
         public static double FindHalfwayCounterClockwiseAngle(double previous, double next)
         {
             double roundingAngle = 0f;

@@ -2,6 +2,14 @@
 
 namespace MrGibbs.Models
 {
+	/// <summary>
+	/// vector2 for various math functions
+	/// </summary>
+	public class Vector2Polar
+	{
+		public float Radius { get; set; }
+		public float Theta { get; set; }
+	}
     /// <summary>
     /// vector2 for various math functions
     /// </summary>
