@@ -9,7 +9,7 @@ namespace MrGibbs.Configuration
 	{
 		public static void LoadIfNotLoaded<T> (this IKernel kernel) where T : INinjectModule,new()
 		{
-			if (!kernel.HasModule (typeof (T).Name)) 
+			if (!kernel.HasModule (typeof (T).FullName)) 
 			{
 				kernel.Load<T>();
 			}

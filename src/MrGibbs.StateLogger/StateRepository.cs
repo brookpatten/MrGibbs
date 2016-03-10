@@ -34,13 +34,14 @@ namespace MrGibbs.StateLogger
 				_dbConnection.Execute("create table StateLog(" +
 				                      "time DATETIME," +
 				                      "latitude NUMERIC," +
-				                      "longitude NUMERIC," +
-				                      "courseoverground NUMERIC," +
-				                      "speed NUMERIC," +
-				                      "heel NUMERIC,"+
-				                      "pitch NUMERIC,"+
-				                      "heading NUMERIC"+
+				                      "longitude NUMERIC" +
 				                      ")");
+
+				_dbConnection.Execute ("create table StateValue(" +
+									  "time DATETIME," +
+									  "key integer," +
+				                       "value NUMERIC"+
+									  ")");
 			}
 		}
 
@@ -61,32 +62,35 @@ namespace MrGibbs.StateLogger
 			_dbConnection.Execute ("insert into StateLog(" +
 								   "time," +
 								   "latitude," +
-								   "longitude," +
-								   "courseoverground," +
-								   "speed," +
-								   "heel," +
-								   "pitch," +
-			                       "heading" +
+								   "longitude" +
 								   ") values (" +
 								   "@BestTime," +
 								   "@LocationLatitudeValue," +
-								   "@LocationLongitudeValue," +
-								   "@CourseOverGroundByLocation," +
-								   "@SpeedInKnots," +
-								   "@Heel," +
-								   "@Pitch," +
-			                       "@Heading" + 
+								   "@LocationLongitudeValue" +
 								   ")",
 			   new {
 				    BestTime = state.BestTime,
 				    LocationLatitudeValue = state.Location.Latitude.Value,
 				    LocationLongitudeValue = state.Location.Longitude.Value,
-					CourseOverGroundByLocation = CoalesceStateValue(state,StateValue.CourseOverGroundByLocation),
-					SpeedInKnots = CoalesceStateValue(state,StateValue.SpeedInKnots),
-					Heel = CoalesceStateValue(state,StateValue.Heel),
-					Pitch=CoalesceStateValue(state,StateValue.Pitch),
-					Heading=CoalesceStateValue(state,StateValue.MagneticHeadingWithVariation)
 				});
+
+			foreach (var key in state.StateValues.Keys) 
+			{
+				_dbConnection.Execute ("insert into StateValue(" +
+				                       "time," +
+				                       "key," +
+				                       "value" +
+				                       ") values (" +
+				                       "@BestTime," +
+				                       "@Key," +
+				                       "@Value" +
+				                       ")",
+				                       new {
+					BestTime = state.BestTime,
+					Key = (int)key,
+					Value = state.StateValues[key],
+				});
+			}
 		}
 	}
 }
