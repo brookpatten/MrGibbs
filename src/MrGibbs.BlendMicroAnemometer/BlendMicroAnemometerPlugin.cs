@@ -54,6 +54,10 @@ namespace MrGibbs.BlendMicroAnemometer
 			_components.Add (sensor);
 			configuration.Sensors.Add (sensor);
 
+			var trueCalculator = new TrueWindCalculator (_logger, this);
+			_components.Add (trueCalculator);
+			configuration.Calculators.Add (trueCalculator);
+
             _initialized = true;
         }
 

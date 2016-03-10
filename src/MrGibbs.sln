@@ -197,7 +197,7 @@ Global
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.inheritsSet = null
-		$1.scope = application/config+xml
+		$1.scope = text/x-csharp
 		$1.FileWidth = 120
 		$1.TabsToSpaces = False
 		$1.inheritsScope = text/plain

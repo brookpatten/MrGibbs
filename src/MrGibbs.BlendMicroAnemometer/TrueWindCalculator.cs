@@ -20,21 +20,41 @@ namespace MrGibbs.BlendMicroAnemometer
 		/// <inheritdoc />
 		public void Calculate(State state)
 		{
-			if (state.Location != null 
-			    && state.StateValues.ContainsKey(StateValue.ApparentWindDirection)
+			if (state.StateValues.ContainsKey(StateValue.ApparentWindDirection)
 			    && state.StateValues.ContainsKey(StateValue.ApparentWindSpeedKnots)
-			    && state.StateValues.ContainsKey(StateValue.SpeedInKnots)) 
+			    && state.StateValues.ContainsKey(StateValue.SpeedInKnots)
+			    && (state.StateValues.ContainsKey(StateValue.CourseOverGroundByLocation)
+			        || state.StateValues.ContainsKey(StateValue.MagneticHeading)
+			        || state.StateValues.ContainsKey(StateValue.MagneticHeadingWithVariation))) 
 			{
 				var boatPolar = new Vector2Polar ();
 				var apparantWindPolar = new Vector2Polar ();
 
-				boatPolar.Radius = state.StateValues [StateValue.SpeedInKnots];
-				boatPolar.Theta = AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundByLocation]);
+				boatPolar.Radius = (float)state.StateValues [StateValue.SpeedInKnots];
 
-				apparantWindPolar.Radius = state.StateValues [StateValue.ApparentWindSpeedKnots];
-				apparantWindPolar.Theta = AngleUtilities.DegreestoRadians (state.StateValues [StateValue.ApparentWindDirection]);
+				double boatHeading=0;
+				if (state.StateValues.ContainsKey (StateValue.CourseOverGroundByLocation)) 
+				{
+					boatHeading = state.StateValues [StateValue.CourseOverGroundByLocation];
+				} 
+				else if (state.StateValues.ContainsKey (StateValue.MagneticHeadingWithVariation)) 
+				{
+					boatHeading = state.StateValues [StateValue.MagneticHeadingWithVariation];
+				} 
+				else if (state.StateValues.ContainsKey (StateValue.MagneticHeading)) 
+				{
+					boatHeading = state.StateValues [StateValue.MagneticHeading];
+				}
 
-				var trueWindPolar = 
+				boatPolar.Theta = (float)AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundByLocation]);
+
+				apparantWindPolar.Radius = (float)state.StateValues[StateValue.ApparentWindSpeedKnots];
+				apparantWindPolar.Theta = (float)AngleUtilities.DegreestoRadians(boatHeading);
+
+				var trueWindPolar = boatPolar.Add(apparantWindPolar);
+
+				state.StateValues[StateValue.TrueWindDirection] = AngleUtilities.RadiansToDegrees(trueWindPolar.Theta);
+				state.StateValues[StateValue.TrueWindSpeedKnots] = trueWindPolar.Radius;
 			}
 		}
 
