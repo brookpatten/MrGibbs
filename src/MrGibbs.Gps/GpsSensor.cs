@@ -361,7 +361,9 @@ namespace MrGibbs.Gps
         public virtual void Dispose()
         {
             _run = false;
-            _task.Wait(1000);
+			if (_task != null) {
+				_task.Wait (1000);
+			}
 
             if (_port != null)
             {

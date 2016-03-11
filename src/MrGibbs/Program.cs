@@ -18,46 +18,42 @@ namespace MrGibbs
     {
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Initializing Mr. Gibbs Kernel...");
+			System.Console.WriteLine("Initializing Mr. Gibbs Kernel...");
 
-            IKernel kernel;
-            try
-            {
-                kernel = Configure();
-            }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine("Exception during startup, "+ex.Message);
-                System.Console.WriteLine(ex.StackTrace);
-                return;
-            }
+			using (var kernel = Configure ()) 
+			{
+				var logger = kernel.Get<ILogger> ();
+				logger.Info ("Kernel Configuration Complete");
 
-            var logger = kernel.Get<ILogger>();
-			logger.Info ("Kernel Configuration Complete");
+				AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
+					logger.Fatal ("Unhandled Application Exception", e.ExceptionObject);
+				};
 
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            {
-                logger.Fatal("Unhandled Application Exception", e.ExceptionObject);
-            };
+				//catch ctrl-c so that we can do a proper dispose & cleanup
+				Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
+					logger.Info ("Received Cancel Key, exiting");
+					e.Cancel = true;
+					kernel.Get<Supervisor> ().Exit ();
+				};
 
-			logger.Info ("Configuring Supervisor");
-			bool isFirst = true;
-			using (var supervisor = kernel.Get<Supervisor> ()) {
-                do
-                {
-                    logger.Info("Initializing Supervisor");
-                    supervisor.Initialize();
-					if(isFirst)
-					{
-						var config = ConfigurationHelper.GenerateDefaultConfiguration();
-						logger.Info("Default Configuration"+System.Environment.NewLine+config);
-						isFirst=false;
+				logger.Info ("Configuring Supervisor");
+				bool isFirst = true;
+				using (var supervisor = kernel.Get<Supervisor> ()) {
+					do {
+						logger.Info ("Initializing Supervisor");
+						supervisor.Initialize ();
+						if (isFirst) {
+							var config = ConfigurationHelper.GenerateDefaultConfiguration ();
+							logger.Info ("Default Configuration" + System.Environment.NewLine + config);
+							isFirst = false;
+						}
 					}
-                }
-                while (supervisor.Run());//if run returns true then we need to restart, if false then it wants to close
-            }
+					while (supervisor.Run ());//if run returns true then we need to restart, if false then it wants to close
+				}
 
-            logger.Info("Shutting down");
+				logger.Info ("Shutting down");
+			}
+			Console.WriteLine ("Done");
         }
 
         /// <summary>

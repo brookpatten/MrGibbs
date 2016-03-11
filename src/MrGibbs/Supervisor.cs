@@ -320,6 +320,15 @@ namespace MrGibbs
             _run = false;
         }
 
+		/// <inheritdoc />
+		public void Exit()
+		{
+			_logger.Info("Exit");
+
+			_restart = false;
+			_run = false;
+		}
+
         /// <inheritdoc />
         public void Shutdown()
         {

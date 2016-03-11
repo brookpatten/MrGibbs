@@ -26,8 +26,10 @@ namespace MrGibbs.BlendMicroAnemometer
 		private double? _heel;
 		private double? _pitch;
 		private DateTime? _lastReceivedAt;
+		private DateTime? _lastReconnectAttempt;
 		private TimeSpan _maximumDataAge;
 		private const double MphToKnots = 0.868976;
+		private const double AccelFactor = 1.0 / 16384.0;
 
 		private string _serviceUUID="713d0000-503e-4c75-ba94-3148f18d941e";
 		private string _charVendorName = "713D0001-503E-4C75-BA94-3148F18D941E";
@@ -59,55 +61,61 @@ namespace MrGibbs.BlendMicroAnemometer
 		private void InitializePropertyListener ()
 		{
 			_properties.PropertiesChanged += (@interface,changed,invalidated)=>{
+				try {
 					_logger.Debug ("GATT Properties Changed on " + @interface);
-					if(changed!=null)
-					{
-						foreach(var prop in changed.Keys)
-						{
+					if (changed != null) {
+						foreach (var prop in changed.Keys) {
 							_logger.Debug (prop + " changed");
-							if(changed[prop] is byte[] && prop=="Value")
-							{
-								DeserializeSensorValue ((byte[])changed [prop]);
+							if (changed [prop] is byte [] && prop == "Value") {
+								DeserializeSensorValue ((byte [])changed [prop]);
 							}
 						}
 					}
 
-					if(invalidated!=null)
-					{
-						foreach(var prop in invalidated)
-						{
-						_logger.Debug (prop + " invalidated");
+					if (invalidated != null) {
+						foreach (var prop in invalidated) {
+							_logger.Debug (prop + " invalidated");
 						}
 					}
-				};
+				} 
+				catch (Exception ex) 
+				{
+					//we do not want to bubble any exceptions back into dbus-sharp because it will crash
+					//the dbus event loop
+					_logger.Warn ("Exception Processing GATT Change", ex);
+				}
+			};
 		}
 
 		private void DeserializeSensorValue (byte [] bytes)
 		{
-			_lastReceivedAt = _clock.GetUtcTime ();
-			uint anemometerDifference;
-			uint vaneDifference;
-			short x;
-			short y;
-			short z;
+			if (bytes.Length == 15) 
+			{
+				_lastReceivedAt = _clock.GetUtcTime ();
+				uint anemometerDifference;
+				uint vaneDifference;
+				short x;
+				short y;
+				short z;
 
-			anemometerDifference = BitConverter.ToUInt32(new byte [] {bytes[3],bytes[2],bytes[1],bytes[0] }, 0);
-			vaneDifference = BitConverter.ToUInt32(new byte [] {bytes[7],bytes[6],bytes[5],bytes[4] }, 0);
+				anemometerDifference = BitConverter.ToUInt32 (new byte [] { bytes [3], bytes [2], bytes [1], bytes [0] }, 0);
+				vaneDifference = BitConverter.ToUInt32 (new byte [] { bytes [7], bytes [6], bytes [5], bytes [4] }, 0);
 
-			x = BitConverter.ToInt16(new byte [] {bytes[8],bytes[9] }, 0);
-			y = BitConverter.ToInt16(new byte [] {bytes[10],bytes[11] }, 0);
-			z = BitConverter.ToInt16(new byte [] {bytes[13],bytes[12] }, 0);
+				x = BitConverter.ToInt16 (bytes, 8);
+				y = BitConverter.ToInt16 (bytes, 10);
+				z = BitConverter.ToInt16 (bytes, 12);
 
-			_logger.Debug ("Received BLE Data from Blend Micro");
-			_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
+				_logger.Info ("Received BLE Data from Blend Micro");
+				_logger.Info (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
 
-			_direction = CalculateAngle(vaneDifference,anemometerDifference);
-			_speed = CalculateSpeedInKnots(anemometerDifference);
+				_direction = CalculateAngle (vaneDifference, anemometerDifference);
+				_speed = CalculateSpeedInKnots (anemometerDifference);
 
-			_heel = x * (360.0 / 4.0);
-			_pitch = y * (360.0 / 4.0);
+				_heel = (double)x * AccelFactor * (360.0 / 4.0);
+				_pitch = (double)y * AccelFactor * (360.0 / 4.0);
 
-			_logger.Debug (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
+				_logger.Info (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
+			}
 		}
 
         /// <inheritdoc />
@@ -166,7 +174,12 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Start()
         {
-			_device.Connect();
+			while (!_device.Connected) 
+			{
+				_device.Connect ();
+				System.Threading.Thread.Sleep (3000);
+			}
+
 			string name = _device.Name;
 			var servicePaths = _device.GattServices;
 			_servicePath = servicePaths.Single();
@@ -217,6 +230,16 @@ namespace MrGibbs.BlendMicroAnemometer
 				_speed = null;
 				_heel = null;
 				_pitch = null;
+
+				//if we're not getting data attempt to reconnect
+				if (!_device.Connected
+				    && (!_lastReconnectAttempt.HasValue 
+				        || _clock.GetUtcTime()-_lastReconnectAttempt > new TimeSpan(0,0,3))) 
+				{
+					_logger.Warn("BLE Connection to Anemometer Lost, Attempting to Reconnect");
+					_lastReconnectAttempt = _clock.GetUtcTime ();
+					_device.Connect ();
+				}
 			}
         }
 

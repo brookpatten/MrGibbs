@@ -76,17 +76,11 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_components != null)
-            {
-                foreach (var component in _components)
-                {
-                    component.Dispose();
-                }
-            }
-			if (_devicePath != null) 
-			{
-				_connection.System.Unregister (_devicePath);
-			}
+			if (_components != null) {
+				foreach (var component in _components) {
+					component.Dispose ();
+				}
+			} 
         }
     }
 }

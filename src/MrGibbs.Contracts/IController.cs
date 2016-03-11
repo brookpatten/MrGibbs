@@ -65,6 +65,10 @@ namespace MrGibbs.Contracts
         /// reboot the entire system (OS and all)
         /// </summary>
         void Reboot();
+		/// <summary>
+		/// Exit the app
+		/// </summary>
+		void Exit ();
         /// <summary>
         /// shutdown the entire system (OS and all)
         /// </summary>
