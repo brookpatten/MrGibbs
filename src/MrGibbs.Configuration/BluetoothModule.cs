@@ -1,5 +1,6 @@
 ﻿using Mono.BlueZ.DBus;
 using Ninject.Modules;
+using Ninject;
 
 namespace MrGibbs.Configuration
 {
@@ -10,6 +11,13 @@ namespace MrGibbs.Configuration
 			Kernel.Bind<DBusConnection> ()
 			      .ToSelf ()
 			      .InSingletonScope ();
+		}
+
+		public override void Unload ()
+		{
+			var connection = Kernel.Get<DBusConnection> ();
+			connection.Dispose ();
+			base.Unload ();
 		}
 	}
 }

@@ -58,6 +58,10 @@ namespace MrGibbs.BlendMicroAnemometer
 			_components.Add (trueCalculator);
 			configuration.Calculators.Add (trueCalculator);
 
+			var mastBendCalculator = new MastBendCalculator (_logger, this);
+			_components.Add (mastBendCalculator);
+			configuration.Calculators.Add (mastBendCalculator);
+
             _initialized = true;
         }
 

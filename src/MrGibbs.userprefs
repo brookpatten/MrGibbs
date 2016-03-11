@@ -1,9 +1,9 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs">
     <Files>
       <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="31" Column="3" />
       <File FileName="MrGibbs.StateLogger/StateRepository.cs" Line="54" Column="5" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs" Line="43" Column="5" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs" Line="42" Column="21" />
       <File FileName="MrGibbs.Models/AngleUtilities.cs" Line="15" Column="10" />
       <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs" Line="60" Column="4" />
     </Files>

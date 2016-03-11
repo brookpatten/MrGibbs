@@ -27,6 +27,8 @@ namespace MrGibbs.Models
 		TrueWindSpeedKnots ,
 		MastHeel,
 		MastPitch,
+		MastBendBeam,
+		MastBendCenterline
 	}
 }
 

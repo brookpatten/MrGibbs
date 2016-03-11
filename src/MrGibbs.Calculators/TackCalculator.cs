@@ -136,8 +136,11 @@ namespace MrGibbs.Calculators
         /// <inheritdoc />
         public void Dispose()
         {
-            _history.Clear();
-            _history = null;
+			if (_history != null) 
+			{
+				_history.Clear ();
+				_history = null;
+			}
         }
     }
 }
