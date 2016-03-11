@@ -30,6 +30,9 @@ namespace MrGibbs.BlendMicroAnemometer
 		private TimeSpan _maximumDataAge;
 		private const double MphToKnots = 0.868976;
 		private const double AccelFactor = 1.0 / 16384.0;
+		private short? _calibrateX;
+		private short? _calibrateY;
+		private short? _calibrateZ;
 
 		private string _serviceUUID="713d0000-503e-4c75-ba94-3148f18d941e";
 		private string _charVendorName = "713D0001-503E-4C75-BA94-3148F18D941E";
@@ -50,7 +53,7 @@ namespace MrGibbs.BlendMicroAnemometer
 
 		public BlendMicroAnemometerSensor(ILogger logger,IClock clock,TimeSpan maximumDataAge, BlendMicroAnemometerPlugin plugin,Device1 device, DBusConnection connection)
         {
-            _plugin = plugin;
+			_plugin = plugin;
             _logger = logger;
 			_device = device;
 			_connection = connection;
@@ -98,23 +101,31 @@ namespace MrGibbs.BlendMicroAnemometer
 				short y;
 				short z;
 
-				anemometerDifference = BitConverter.ToUInt32 (new byte [] { bytes [3], bytes [2], bytes [1], bytes [0] }, 0);
-				vaneDifference = BitConverter.ToUInt32 (new byte [] { bytes [7], bytes [6], bytes [5], bytes [4] }, 0);
+				anemometerDifference = BitConverter.ToUInt32 (bytes, 0);
+				vaneDifference = BitConverter.ToUInt32 (bytes, 4);
 
 				x = BitConverter.ToInt16 (bytes, 8);
 				y = BitConverter.ToInt16 (bytes, 10);
 				z = BitConverter.ToInt16 (bytes, 12);
 
-				_logger.Info ("Received BLE Data from Blend Micro");
-				_logger.Info (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
+				//if there's no calibration, assume this reading is the "zero"
+				if (!_calibrateX.HasValue || !_calibrateY.HasValue || !_calibrateZ.HasValue) 
+				{
+					_calibrateX = x;
+					_calibrateY = y;
+					_calibrateZ = z;
+				}
+
+				_logger.Debug ("Received BLE Data from Blend Micro");
+				_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
 
 				_direction = CalculateAngle (vaneDifference, anemometerDifference);
 				_speed = CalculateSpeedInKnots (anemometerDifference);
 
-				_heel = (double)x * AccelFactor * (360.0 / 4.0);
-				_pitch = (double)y * AccelFactor * (360.0 / 4.0);
+				_heel = (double)(x-_calibrateX.Value) * AccelFactor * (360.0 / 4.0);
+				_pitch = (double)(y-_calibrateY.Value) * AccelFactor * (360.0 / 4.0);
 
-				_logger.Info (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
+				_logger.Debug (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
 			}
 		}
 
@@ -266,7 +277,10 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Calibrate()
         {
-			//TODO: send some sort of calibration message to the blend to tell it the accel is centered
-        }
+			//reset calibration to null, the next reading will be used as the calibration
+			_calibrateX = null;
+			_calibrateY = null;
+			_calibrateZ = null;
+		}
     }
 }

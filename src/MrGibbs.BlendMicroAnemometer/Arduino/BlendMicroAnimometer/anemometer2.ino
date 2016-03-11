@@ -84,7 +84,7 @@ void setup() {
 
 void loop()
 {
-  //if(heartbeat!=lastPrintHeartbeat)
+  if(heartbeat!=lastPrintHeartbeat)
   {
     if(!enableBle || ble_connected())
     {
@@ -116,7 +116,7 @@ void loop()
   
   //digitalWrite(vaneLedPin, LOW); 
   //digitalWrite(anemometerLedPin, LOW); 
-  delay(1000);
+  delay(500);
 }
 
 void writeSerialData()
@@ -148,14 +148,14 @@ void writeSerialData()
 void writeBleData()
 {
       //make a byte array that we can send via uart, terminate with 1s
-      buffer[0] = (byte) anemometerDifference;
-      buffer[1] = (byte) anemometerDifference >> 8;
-      buffer[2] = (byte) anemometerDifference >> 16;
-      buffer[3] = (byte) anemometerDifference >> 24;
-      buffer[4] = (byte) vaneDifference;
-      buffer[5] = (byte) vaneDifference >> 8;
-      buffer[6] = (byte) vaneDifference >> 16;
-      buffer[7] = (byte) vaneDifference >> 24;
+      buffer[0] = (byte) anemometerDifference >> 24;
+      buffer[1] = (byte) anemometerDifference >> 16;
+      buffer[2] = (byte) anemometerDifference >> 8;
+      buffer[3] = (byte) anemometerDifference;
+      buffer[4] = (byte) vaneDifference >> 24;
+      buffer[5] = (byte) vaneDifference >> 16;
+      buffer[6] = (byte) vaneDifference >> 8;
+      buffer[7] = (byte) vaneDifference;
       buffer[8] = (byte) lowByte(AcX);
       buffer[9] = (byte) highByte(AcX);
       buffer[10] = (byte) lowByte(AcY);
