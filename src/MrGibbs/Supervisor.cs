@@ -236,16 +236,16 @@ namespace MrGibbs
                 }
 
 				DateTime finishedAt = DateTime.UtcNow;
-				var elapsed = _state.SystemTime - finishedAt;
+				var elapsed =  finishedAt - _state.SystemTime;
 				if (elapsed.TotalMilliseconds > _cycleTime) 
 				{
 					_logger.Warn ("Cycle exceeded target cycle time: " + elapsed.TotalMilliseconds);
 				} 
 				else 
 				{
-					var sleepTime = _cycleTime - elapsed.TotalMilliseconds;
-					_logger.Debug("Sleeping");
-					Thread.Sleep(_cycleTime);
+					var sleepTime = _cycleTime - (int)elapsed.TotalMilliseconds;
+					_logger.Debug("Sleeping for "+sleepTime);
+					Thread.Sleep(sleepTime);
 				}
 			}
 
