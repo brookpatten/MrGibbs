@@ -86,7 +86,7 @@ namespace MrGibbs
                 .WithConstructorArgument("autoRoundMarkDistanceMeters", AppConfig.AutoRoundMarkDistanceMeters);
 			kernel.Bind<Supervisor>().ToSelf()
                 .InSingletonScope()
-                .WithConstructorArgument("sleepTime", AppConfig.SleepTime);
+                .WithConstructorArgument("cycleTime", AppConfig.TargetCycleTime);
                 
             return kernel;
         }

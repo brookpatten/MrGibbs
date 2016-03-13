@@ -14,7 +14,7 @@ namespace MrGibbs.Gps
 		{
 			Kernel.Bind<IPlugin> ().To<GpsPlugin> ()
 				.InSingletonScope ()
-				.WithConstructorArgument("simulated",ConfigurationHelper.ReadBoolAppSetting("simulatedGps",false))
+			      .WithConstructorArgument("simulated",AppConfig.SimulateSensorData)
 				.WithConstructorArgument ("gpsPort", AppConfig.GpsPort)
 				.WithConstructorArgument ("gpsBaud", AppConfig.GpsBaud);
 		}

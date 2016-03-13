@@ -63,6 +63,7 @@
     <Compile Include="I2CModule.cs" />
     <Compile Include="BluetoothModule.cs" />
     <Compile Include="ModuleHelpers.cs" />
+    <Compile Include="DatabaseModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

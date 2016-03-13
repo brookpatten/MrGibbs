@@ -20,6 +20,7 @@ namespace MrGibbs.BlendMicroAnemometer
 			Kernel.Bind<IPlugin> ()
 				.To<BlendMicroAnemometerPlugin> ()
 				  .InSingletonScope ()
+			      .WithConstructorArgument("simulated",AppConfig.SimulateSensorData)
 				  .WithConstructorArgument ("maximumDataAge", new TimeSpan (0, 0, 3))
 			      .WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting("BtAdapterName","hci0"))
 			      .WithConstructorArgument ("deviceAddress", ConfigurationHelper.ReadStringAppSetting("BlendMicroAnemometerAddress",""));

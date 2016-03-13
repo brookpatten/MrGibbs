@@ -47,24 +47,20 @@ namespace MrGibbs.Calculators
             {
 				var cogRads = AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundByLocation]);
 
-                //make sure whe're not in an "exclusion" aka a few seconds before/after a known tack
-                if (!_lastTackAt.HasValue || (_lastTackAt.Value + _dataExclusionTime < state.BestTime))
-                {
-                    if (!_currentTackStartCourseOverGroundRadians.HasValue)
-                    {
-                        _currentTackStartCourseOverGroundRadians = cogRads;
-                    }
-                    _history.Add(new CourseHistory() { Time = state.BestTime, CourseOverGroundRadians = cogRads });
+				//make sure whe're not in an "exclusion" aka a few seconds before/after a known tack
+				if (!_lastTackAt.HasValue || (_lastTackAt.Value + _dataExclusionTime < state.BestTime)) {
+					if (!_currentTackStartCourseOverGroundRadians.HasValue) {
+						_currentTackStartCourseOverGroundRadians = cogRads;
+					}
+					_history.Add (new CourseHistory () { Time = state.BestTime, CourseOverGroundRadians = cogRads });
 
-                    //make sure we have enough data to do the calculation accurately
-                    if (_history.Count > 1)
-                    {
-                        if (_history.Max(x => x.Time) - _history.Min(x => x.Time) > _tackThresholdTime)
-                        {
-                            CheckForTack(state);
-                        }
-                    }
-                }
+					//make sure we have enough data to do the calculation accurately
+					if (_history.Count > 1) {
+						if (_history.Max (x => x.Time) - _history.Min (x => x.Time) > _tackThresholdTime) {
+							CheckForTack (state);
+						}
+					}
+				} 
 
                 //calculate the delta on the current tack
 				if (state.StateValues.ContainsKey(StateValue.CourseOverGroundByLocation) && _currentTackStartCourseOverGroundRadians.HasValue)

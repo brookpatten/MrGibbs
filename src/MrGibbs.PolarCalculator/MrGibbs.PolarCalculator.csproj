@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9109FAAA-849B-4FDA-973C-847275353B5E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>MrGibbs.PolarCalculator</RootNamespace>
+    <AssemblyName>MrGibbs.PolarCalculator.Plugin</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PolarRecorder.cs" />
+    <Compile Include="PolarModule.cs" />
+    <Compile Include="PolarPlugin.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
+      <Name>MrGibbs.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
+      <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
+      <Name>MrGibbs.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
+      <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
+      <Name>MrGibbs.Configuration</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

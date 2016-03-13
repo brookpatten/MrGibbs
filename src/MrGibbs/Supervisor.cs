@@ -18,7 +18,7 @@ namespace MrGibbs
     {
         private ILogger _logger;
         private PluginConfiguration _configuration;
-        private int _sleepTime;
+		private int _cycleTime;
         private IRaceController _raceController;
         private State _state;
         private IList<IPlugin> _allPlugins;
@@ -26,10 +26,10 @@ namespace MrGibbs
         private bool _restart;
         private Queue<Action<ISystemController, IRaceController>> _commands;
 
-        public Supervisor(ILogger logger,IList<IPlugin> plugins, int sleepTime, IRaceController raceController)
+		public Supervisor(ILogger logger,IList<IPlugin> plugins, int cycleTime, IRaceController raceController)
         {
             _raceController = raceController;
-            _sleepTime = sleepTime;
+            _cycleTime = cycleTime;
             _logger = logger;
             _allPlugins = plugins;
 
@@ -110,7 +110,7 @@ namespace MrGibbs
             int operationCount = 1;
             while (_run && operationCount>0)
             {
-                _state.Clear();
+				_state.Clear();
                 _state.SystemTime = DateTime.UtcNow;
                 
                 operationCount = 0;
@@ -235,9 +235,19 @@ namespace MrGibbs
                     EvictPlugin(_configuration,plugin,true);
                 }
 
-                _logger.Debug("Sleeping");
-                Thread.Sleep(_sleepTime);
-            }
+				DateTime finishedAt = DateTime.UtcNow;
+				var elapsed = _state.SystemTime - finishedAt;
+				if (elapsed.TotalMilliseconds > _cycleTime) 
+				{
+					_logger.Warn ("Cycle exceeded target cycle time: " + elapsed.TotalMilliseconds);
+				} 
+				else 
+				{
+					var sleepTime = _cycleTime - elapsed.TotalMilliseconds;
+					_logger.Debug("Sleeping");
+					Thread.Sleep(_cycleTime);
+				}
+			}
 
             return _restart;
         }

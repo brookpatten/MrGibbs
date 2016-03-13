@@ -33,7 +33,7 @@ namespace MrGibbs.Models
             GpsTime = null;
             Location = null;
 			StateValues.Clear ();
-        }
+		}
         
         //race state
         public DateTime? StartTime { get; set; }

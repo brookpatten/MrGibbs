@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data;
 using System.IO;
+using System.Linq;
 
 using Mono.Data.Sqlite;
+using Dapper;
 
 using MrGibbs.Models;
 using MrGibbs.Contracts;
@@ -18,14 +20,11 @@ namespace MrGibbs.StateLogger
 	public class StateRecorder:IRecorder
 	{
 		private IPlugin _plugin;
-		private IStateRepository _stateRepository;
-		private string _dataPath;
-		private const string _sqliteConnectionStringFormat = "Data Source={0};Version=3;";
+		private IDbConnection _connection;
 
-		public StateRecorder (IPlugin plugin,string dataPath)
+		public StateRecorder (IDbConnection connection)
 		{
-			_dataPath = dataPath;
-			_plugin = plugin;
+			_connection = connection;
 
 			Initialize ();
 		}
@@ -36,52 +35,70 @@ namespace MrGibbs.StateLogger
 			{
 				return _plugin;
 			}
+			set 
+			{
+				_plugin = value;
+			}
 		}
 
 		public void Dispose ()
 		{
-			_stateRepository.Dispose ();
+			//the connection might be used by other plugins so we do NOT dispose it
 		}
 
 		private void Initialize ()
 		{
-			if (_stateRepository != null) 
+			if(!_connection.Query<string> ("SELECT name FROM sqlite_master WHERE type='table' and name='StateLog';").Any())
 			{
-				_stateRepository.Dispose ();
+				//if the table doesn't exist, create it
+				_connection.Execute("create table StateLog(" +
+				                      "time DATETIME," +
+				                      "latitude NUMERIC," +
+				                      "longitude NUMERIC" +
+				                      ")");
+
+				_connection.Execute ("create table StateValue(" +
+				                       "time DATETIME," +
+				                       "key integer," +
+				                       "value NUMERIC"+
+				                       ")");
 			}
-
-			var now = DateTime.UtcNow;
-			string dataFilePath = Path.Combine (_dataPath, string.Format ("{0:0000}{1:00}{2:00}-{3:00}{4:00}.db",now.Year,now.Month,now.Day,now.Hour,now.Minute));
-
-			IDbConnection connection = null;
-			if (File.Exists (dataFilePath)) 
-			{
-				try 
-				{
-					connection = new SqliteConnection (string.Format (_sqliteConnectionStringFormat,dataFilePath));
-				} 
-				catch (Exception ex) 
-				{
-					File.Move (dataFilePath, dataFilePath + ".bad");
-				}
-			}
-
-			if (connection == null) 
-			{
-				SqliteConnection.CreateFile (dataFilePath);
-				connection = new SqliteConnection (string.Format (_sqliteConnectionStringFormat,dataFilePath));
-			}
-
-			_stateRepository = new StateRepository (connection);
-
-			_stateRepository.Initialize ();
 		}
 
 		public void Record (State state)
 		{
-			//TODO: store the id of the last time it was saved?
-			//TODO: add some logic to break out races into another table?
-			_stateRepository.Save(state);
+			_connection.Execute ("insert into StateLog(" +
+			                    "time," +
+			                    "latitude," +
+			                    "longitude" +
+			                    ") values (" +
+			                    "@BestTime," +
+			                    "@LocationLatitudeValue," +
+			                    "@LocationLongitudeValue" +
+			                    ")",
+			                    new {
+				BestTime = state.BestTime,
+				LocationLatitudeValue = state.Location.Latitude.Value,
+				LocationLongitudeValue = state.Location.Longitude.Value,
+			});
+
+			foreach (var key in state.StateValues.Keys) 
+			{
+				_connection.Execute ("insert into StateValue(" +
+				                       "time," +
+				                       "key," +
+				                       "value" +
+				                       ") values (" +
+				                       "@BestTime," +
+				                       "@Key," +
+				                       "@Value" +
+				                       ")",
+				                       new {
+					BestTime = state.BestTime,
+					Key = (int)key,
+					Value = state.StateValues[key],
+				});
+			}
 		}
 	}
 }

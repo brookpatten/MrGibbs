@@ -28,7 +28,9 @@ namespace MrGibbs.Models
 		MastHeel,
 		MastPitch,
 		MastBendBeam,
-		MastBendCenterline
+		MastBendCenterline,
+		PeakSpeedInKnotsForWind,
+		PeakSpeedPercentForWind
 	}
 }
 
