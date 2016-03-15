@@ -1,1 +1,1 @@
-mono --debug MrGibbs.Console/bin/Debug/Gibbs.exe
+mono --debug MrGibbs/bin/Debug/Gibbs.exe

@@ -82,7 +82,10 @@ namespace QuadroschrauberSharp.Linux
         {
             int ret = LunixNatives.ioctl(fd, LunixNatives.I2C_SLAVE, devAddr);
             if (ret < 0)
-                throw new IOException(device + ": ioctl");
+            {
+				var exception = new System.ComponentModel.Win32Exception (Marshal.GetLastWin32Error ());
+				throw exception;
+			}
         }
 
         public byte readBytes(byte devAddr, byte regAddr, byte length, byte[] data, int offset, ushort timeout = 0)
