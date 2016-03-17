@@ -12,7 +12,7 @@ using Mono.Unix.Native;
 
 namespace QuadroschrauberSharp.Linux
 {
-    public static class LunixNatives
+    public static class LinuxNatives
     {
         public const int O_RDWR = 2;
 
@@ -25,7 +25,25 @@ namespace QuadroschrauberSharp.Linux
         [DllImport("libc.so.6")]
         extern public static int ioctl(int fd, int request, byte x);
 
+		public static string strerror(int error)
+		{
+			try
+			{
+				var buffer = new StringBuilder(256);
+				var result = strerror(error, buffer, (ulong)buffer.Capacity);
+				return (result != -1) ? buffer.ToString() : null;
+			}
+			catch (EntryPointNotFoundException)
+			{
+				return null;
+			}
+		}
+
+		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_Syscall_strerror_r", SetLastError = true)]
+		private static extern int strerror(int error, [Out] StringBuilder buffer, ulong length);
+
         public const int I2C_SLAVE = 0x0703;
+
 
     }
 
@@ -80,11 +98,16 @@ namespace QuadroschrauberSharp.Linux
 
         void IoCtl(byte devAddr)
         {
-            int ret = LunixNatives.ioctl(fd, LunixNatives.I2C_SLAVE, devAddr);
+			Console.WriteLine ("fd=" + fd);
+			Console.WriteLine ("devAddr=" + devAddr);
+            int ret = LinuxNatives.ioctl(fd, LinuxNatives.I2C_SLAVE, devAddr);
             if (ret < 0)
             {
-				var exception = new System.ComponentModel.Win32Exception (Marshal.GetLastWin32Error ());
-				throw exception;
+				Console.WriteLine ("ret=" + ret);
+				var errno = Marshal.GetLastWin32Error ();
+				var message = LinuxNatives.strerror (errno);
+				Console.WriteLine ("errno=" + errno);
+				throw new Mono.Unix.UnixIOException (errno);
 			}
         }
 
