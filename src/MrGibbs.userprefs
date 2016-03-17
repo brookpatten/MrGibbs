@@ -1,24 +1,26 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="lib/QuadroschrauberSharp.Linux/I2CLinux.cs">
     <Files>
       <File FileName="MrGibbs.Pebble/PebblePlugin.cs" Line="41" Column="1" />
-      <File FileName="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" Line="121" Column="29" />
+      <File FileName="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" Line="119" Column="2" />
       <File FileName="MrGibbs/App.config" Line="9" Column="15" />
+      <File FileName="lib/QuadroschrauberSharp.Linux/I2CLinux.cs" Line="15" Column="10" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MrGibbs" expanded="True">
+            <Node name="Lib" expanded="True">
+              <Node name="QuadroschrauberSharp.Linux" expanded="True" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.Console/Supervisor.cs" line="177" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="199" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="157" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="137" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="177" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" line="75" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" line="79" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" line="89" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" line="117" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" line="121" column="1" />
-    <Breakpoint file="/home/brook/Desktop/MrGibbs/src/lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" line="122" column="1" />
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.MrGibbs PreferredExecutionTarget="MonoDevelop.Default" />

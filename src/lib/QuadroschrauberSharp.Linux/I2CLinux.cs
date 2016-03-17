@@ -16,13 +16,13 @@ namespace QuadroschrauberSharp.Linux
     {
         public const int O_RDWR = 2;
 
-        [DllImport("libc.so.6")]
+        [DllImport("libc.so.6",SetLastError=true)]
         extern public static int open(string file, int mode);
 
-        [DllImport("libc.so.6")]
+		[DllImport("libc.so.6",SetLastError=true)]
         extern public static int close(int fd);
 
-        [DllImport("libc.so.6")]
+		[DllImport("libc.so.6",SetLastError=true)]
         extern public static int ioctl(int fd, int request, byte x);
 
 		public static string strerror(int error)
@@ -98,15 +98,11 @@ namespace QuadroschrauberSharp.Linux
 
         void IoCtl(byte devAddr)
         {
-			Console.WriteLine ("fd=" + fd);
-			Console.WriteLine ("devAddr=" + devAddr);
-            int ret = LinuxNatives.ioctl(fd, LinuxNatives.I2C_SLAVE, devAddr);
+			int ret = LinuxNatives.ioctl(fd, LinuxNatives.I2C_SLAVE, devAddr);
             if (ret < 0)
             {
-				Console.WriteLine ("ret=" + ret);
 				var errno = Marshal.GetLastWin32Error ();
 				var message = LinuxNatives.strerror (errno);
-				Console.WriteLine ("errno=" + errno);
 				throw new Mono.Unix.UnixIOException (errno);
 			}
         }
