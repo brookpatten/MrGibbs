@@ -95,14 +95,6 @@
       <Project>{9109FAAA-849B-4FDA-973C-847275353B5E}</Project>
       <Name>MrGibbs.PolarCalculator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
-      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
-      <Name>MrGibbs.HMC5883</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
-      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
-      <Name>MrGibbs.MPU6050</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.MagneticVariation\MrGibbs.MagneticVariation.csproj">
       <Project>{2BE5501B-FA4A-408F-8269-F2D6E7A02699}</Project>
       <Name>MrGibbs.MagneticVariation</Name>
@@ -110,6 +102,14 @@
     <ProjectReference Include="..\MrGibbs.Pebble\MrGibbs.Pebble.csproj">
       <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
       <Name>MrGibbs.Pebble</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
+      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
+      <Name>MrGibbs.HMC5883</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
+      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
+      <Name>MrGibbs.MPU6050</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
