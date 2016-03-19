@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 
-using QuadroschrauberSharp.Hardware;
-
 namespace MrGibbs.MPU6050
 {
     /// <summary>
@@ -16,12 +14,14 @@ namespace MrGibbs.MPU6050
         private bool _initialized = false;
         private ILogger _logger;
         private IList<IPluginComponent> _components;
-		private I2C _i2c;
-        
-        public Mpu6050Plugin(ILogger logger,I2C i2c)
+		private Mpu6050 _mpu;
+		private Imu6050 _imu;
+
+		public Mpu6050Plugin(ILogger logger,Mpu6050 mpu, Imu6050 imu)
         {
             _logger = logger;
-			_i2c = i2c;
+			_mpu = mpu;
+			_imu = imu;
         }
 
         /// <inheritdoc />
@@ -29,7 +29,7 @@ namespace MrGibbs.MPU6050
         {
             _components = new List<IPluginComponent>();
             _initialized = false;
-            var sensor = new Mpu6050Sensor(_i2c,_logger,this,true);
+			var sensor = new Mpu6050Sensor(_mpu,_imu,_logger,this,true);
             configuration.Sensors.Add(sensor);
             _components.Add(sensor);
             _initialized = true;

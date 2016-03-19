@@ -39,20 +39,13 @@
     <Compile Include="Hmc5883Sensor.cs" />
     <Compile Include="Hmc5883Plugin.cs" />
     <Compile Include="Hmc5883Module.cs" />
+    <Compile Include="I2C.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
       <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>MrGibbs.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\QuadroschrauberSharp\QuadroschrauberSharp.csproj">
-      <Project>{6C5550E5-299E-43C8-8E03-825E024DB764}</Project>
-      <Name>QuadroschrauberSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
-      <Project>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</Project>
-      <Name>QuadroschrauberSharp.Linux</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
@@ -61,6 +54,10 @@
     <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
       <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
       <Name>MrGibbs.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\Mono.Linux.I2C\src\Mono.Linux.I2C\Mono.Linux.I2C.csproj">
+      <Project>{B70915EA-3F00-492D-8011-E01B746DD050}</Project>
+      <Name>Mono.Linux.I2C</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

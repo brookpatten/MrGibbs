@@ -1,11 +1,10 @@
 ﻿using System;
 
+using Mono.Linux.I2C;
+
 using MrGibbs.Contracts;
 using MrGibbs.Models;
 using MrGibbs.Contracts.Infrastructure;
-
-using QuadroschrauberSharp;
-using QuadroschrauberSharp.Hardware;
 
 namespace MrGibbs.MPU6050
 {
@@ -17,30 +16,20 @@ namespace MrGibbs.MPU6050
         private ILogger _logger;
         private Mpu6050Plugin _plugin;
 
-        private I2C _i2c;
-        private QuadroschrauberSharp.Hardware.MPU6050 _mpu;
-        private IMU_MPU6050 _imu;
+        private Mpu6050 _mpu;
+        private Imu6050 _imu;
 
 		private DateTime? _lastTime;
         private bool _enableDmp;
 
-		public Mpu6050Sensor(I2C i2c,ILogger logger, Mpu6050Plugin plugin, bool dmp)
+		public Mpu6050Sensor(Mpu6050 mpu, Imu6050 imu,ILogger logger, Mpu6050Plugin plugin, bool dmp)
         {
             _enableDmp = dmp;
             _logger = logger;
             _plugin = plugin;
 
-			//original pi is 0, pi rev 2 is 1
-            //this probably DOES need to be configurable
-			_i2c = i2c;//new I2C(1);
-
-
-			//address is dependent upon the voltage to the ADO pin
-			//low=0x68 for the raw data
-			//hi=0x69 for the vologic
-			//this probably does NOT need to be configurable since it won't change
-			_mpu = new QuadroschrauberSharp.Hardware.MPU6050(_i2c, 0x69,_logger);
-            _imu = new IMU_MPU6050(_mpu,_logger);
+			_mpu = _mpu;
+			_imu = _imu;
 
             Calibrate();
         }
@@ -88,8 +77,7 @@ namespace MrGibbs.MPU6050
         /// <inheritdoc />
         public void Dispose()
         {
-			_i2c.Close();
-        }
+		}
 
         /// <inheritdoc />
         public void Calibrate()

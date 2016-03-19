@@ -1,17 +1,14 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="lib/QuadroschrauberSharp.Linux/I2CLinux.cs">
-    <Files>
-      <File FileName="MrGibbs.Pebble/PebblePlugin.cs" Line="41" Column="1" />
-      <File FileName="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" Line="119" Column="2" />
-      <File FileName="MrGibbs/App.config" Line="9" Column="15" />
-      <File FileName="lib/QuadroschrauberSharp.Linux/I2CLinux.cs" Line="15" Column="10" />
-    </Files>
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="MrGibbs" expanded="True">
+          <Node name="MrGibbs" expanded="True" selected="True">
             <Node name="Lib" expanded="True">
-              <Node name="QuadroschrauberSharp.Linux" expanded="True" selected="True" />
+              <Node name="QuadroschrauberSharp.Linux" expanded="True" />
+            </Node>
+            <Node name="Plugins" expanded="True">
+              <Node name="MrGibbs.Pebble" expanded="True" />
             </Node>
           </Node>
         </State>
@@ -19,9 +16,7 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.MrGibbs PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>

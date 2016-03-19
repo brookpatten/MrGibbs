@@ -1,4 +1,4 @@
-﻿using QuadroschrauberSharp.Hardware;
+﻿using Mono.Linux.I2C;
 using Ninject.Modules;
 
 namespace MrGibbs.Configuration
@@ -7,11 +7,10 @@ namespace MrGibbs.Configuration
 	{
         public override void Load()
 		{
-			Kernel.Bind<I2C> ()
+			Kernel.Bind<I2CBus> ()
 				.ToSelf()
 				.InSingletonScope()
 				.WithConstructorArgument("index", AppConfig.I2CAddress);
 		}
 	}
 }
-

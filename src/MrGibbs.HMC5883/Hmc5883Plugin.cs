@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Mono.Linux.I2C;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
-using QuadroschrauberSharp.Hardware;
 
 namespace MrGibbs.HMC5883
 {
@@ -14,11 +16,11 @@ namespace MrGibbs.HMC5883
 		private bool _initialized = false;
 		private ILogger _logger;
 		private IList<IPluginComponent> _components;
-		private I2C _i2c;
+		private Hmc5883 _compass;
 
-		public Hmc5883Plugin(I2C i2c,ILogger logger)
+		public Hmc5883Plugin(Hmc5883 compass,ILogger logger)
 		{
-			_i2c = i2c;
+			_compass = compass;
 			_logger = logger;
 		}
 
@@ -27,7 +29,7 @@ namespace MrGibbs.HMC5883
 		{
 			_components = new List<IPluginComponent>();
 			_initialized = false;
-			var sensor = new Hmc5883Sensor(_logger,this,_i2c);
+			var sensor = new Hmc5883Sensor(_logger,this,_compass);
 			configuration.Sensors.Add(sensor);
 			_components.Add(sensor);
 		    _initialized = true;
