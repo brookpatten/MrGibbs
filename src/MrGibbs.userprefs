@@ -1,29 +1,26 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs/Supervisor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="lib/QuadroschrauberSharp.Linux/I2CLinux.cs">
     <Files>
-      <File FileName="MrGibbs.Configuration/AppConfig.cs" Line="11" Column="87" />
-      <File FileName="MrGibbs.Gps/GpsModule.cs" Line="17" Column="75" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs" Line="59" Column="19" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/SimulatedWindSensor.cs" Line="14" Column="18" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerModule.cs" Line="27" Column="4" />
-      <File FileName="MrGibbs/Supervisor.cs" Line="249" Column="6" />
-      <File FileName="MrGibbs.StateLogger/StateRecorder.cs" Line="79" Column="29" />
-      <File FileName="MrGibbs.StateLogger/StateLoggerPlugin.cs" Line="39" Column="4" />
-      <File FileName="MrGibbs.PolarCalculator/PolarRecorder.cs" Line="76" Column="6" />
-      <File FileName="MrGibbs/Program.cs" Line="41" Column="1" />
-      <File FileName="MrGibbs.PolarCalculator/PolarPlugin.cs" Line="24" Column="4" />
+      <File FileName="MrGibbs.Pebble/PebblePlugin.cs" Line="41" Column="1" />
+      <File FileName="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" Line="119" Column="2" />
       <File FileName="MrGibbs/App.config" Line="9" Column="15" />
+      <File FileName="lib/QuadroschrauberSharp.Linux/I2CLinux.cs" Line="15" Column="10" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MrGibbs" expanded="True">
+            <Node name="Lib" expanded="True">
+              <Node name="QuadroschrauberSharp.Linux" expanded="True" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.Console/Supervisor.cs" line="177" column="1" />
-      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="199" column="1" />
-      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="157" column="1" />
-      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="137" column="1" />
-      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs/Supervisor.cs" line="177" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.MrGibbs PreferredExecutionTarget="MonoDevelop.Default" />
