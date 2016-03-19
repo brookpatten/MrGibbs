@@ -28,8 +28,8 @@ namespace MrGibbs.MPU6050
             _logger = logger;
             _plugin = plugin;
 
-			_mpu = _mpu;
-			_imu = _imu;
+			_mpu = mpu;
+			_imu = imu;
 
             Calibrate();
         }

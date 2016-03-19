@@ -34,7 +34,7 @@ namespace MrGibbs.BlendMicroAnemometer
 		private short? _calibrateY;
 		private short? _calibrateZ;
 
-		private string _serviceUUID="713d0000-503e-4c75-ba94-3148f18d941e";
+		//private string _serviceUUID="713d0000-503e-4c75-ba94-3148f18d941e";
 		private string _charVendorName = "713D0001-503E-4C75-BA94-3148F18D941E";
 		private string _charRead = "713D0002-503E-4C75-BA94-3148F18D941E";//rx
 		private string _charWrite = "713D0003-503E-4C75-BA94-3148F18D941E";//tx

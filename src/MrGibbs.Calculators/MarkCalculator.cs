@@ -33,6 +33,7 @@ namespace MrGibbs.Calculators
         public MarkCalculator(ILogger logger, IPlugin plugin)
         {
             _plugin = plugin;
+			_logger = logger;
             _previousCalculations = new List<MarkCalculation>();
         }
 

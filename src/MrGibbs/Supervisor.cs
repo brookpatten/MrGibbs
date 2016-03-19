@@ -173,7 +173,7 @@ namespace MrGibbs
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Exception updating recorder " + recorder.GetType().Name);
+                        _logger.Error("Exception updating recorder " + recorder.GetType().Name,ex);
                         if (!erroredPlugins.Contains(recorder.Plugin))
                         {
                             erroredPlugins.Add(recorder.Plugin);
