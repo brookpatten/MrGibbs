@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+using Mono.Linux.I2C;
+
 using MrGibbs.Contracts;
 using MrGibbs.Models;
 using MrGibbs.Contracts.Infrastructure;
-
-using QuadroschrauberSharp.Hardware;
 
 namespace MrGibbs.HMC5883
 {
@@ -20,14 +20,12 @@ namespace MrGibbs.HMC5883
 
 		private DateTime? _lastTime;
 
-		public Hmc5883Sensor(ILogger logger, Hmc5883Plugin plugin,I2C i2c)
+		public Hmc5883Sensor(ILogger logger, Hmc5883Plugin plugin,Hmc5883 hmc)
 		{
 			_logger = logger;
 			_plugin = plugin;
 
-			//original pi is 0, pi rev 2 is 1
-			//this probably DOES need to be configurable
-			_hmc5883 = new Hmc5883(i2c);
+			_hmc5883 = hmc;
             _hmc5883.Initialize();
 
 		    if (!_hmc5883.TestConnection())

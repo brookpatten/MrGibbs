@@ -21,6 +21,11 @@ namespace MrGibbs.Infrastructure
             _logger.Debug(message);
         }
 
+		public void Debug(string message,params object[] parms)
+		{
+			_logger.Debug(message,parms);
+		}
+
         public void Debug(string message, Exception exception)
         {
             _logger.Debug(message, exception);
@@ -30,6 +35,11 @@ namespace MrGibbs.Infrastructure
         {
             _logger.Info(message);
         }
+
+		public void Info(string message,params object[] parms)
+		{
+			_logger.Info(message,parms);
+		}
 
         public void Info(string message, Exception exception)
         {
@@ -41,6 +51,11 @@ namespace MrGibbs.Infrastructure
             _logger.Warn(message);
         }
 
+		public void Warn(string message,params object[] parms)
+		{
+			_logger.Warn(message,parms);
+		}
+
         public void Warn(string message, Exception exception)
         {
             _logger.Warn(message, exception);
@@ -51,6 +66,11 @@ namespace MrGibbs.Infrastructure
             _logger.Error(message);
         }
 
+		public void Error(string message,params object[] parms)
+		{
+			_logger.Error(message,parms);
+		}
+
         public void Error(string message, Exception exception)
         {
             _logger.Error(message, exception);
@@ -60,6 +80,11 @@ namespace MrGibbs.Infrastructure
         {
             _logger.Fatal(message);
         }
+
+		public void Fatal(string message,params object[] parms)
+		{
+			_logger.Fatal(message,parms);
+		}
 
         public void Fatal(string message, Exception exception)
         {

@@ -77,14 +77,6 @@
       <Project>{860DCFBC-164C-4BCA-A112-AF0439A60211}</Project>
       <Name>MrGibbs.Infrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\lib\QuadroschrauberSharp.Linux\QuadroschrauberSharp.Linux.csproj">
-      <Project>{CEFF9E98-6499-4D7B-B523-BB1959674E79}</Project>
-      <Name>QuadroschrauberSharp.Linux</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lib\QuadroschrauberSharp\QuadroschrauberSharp.csproj">
-      <Project>{6C5550E5-299E-43C8-8E03-825E024DB764}</Project>
-      <Name>QuadroschrauberSharp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\Mono.BlueZ.DBus\Mono.BlueZ.DBus.csproj">
       <Project>{68E6EB3B-4076-48F6-9EB6-1181057C0977}</Project>
       <Name>Mono.BlueZ.DBus</Name>
@@ -92,6 +84,10 @@
     <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\dbus-sharp\src\dbus-sharp.csproj">
       <Project>{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C}</Project>
       <Name>dbus-sharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\Mono.Linux.I2C\src\Mono.Linux.I2C\Mono.Linux.I2C.csproj">
+      <Project>{B70915EA-3F00-492D-8011-E01B746DD050}</Project>
+      <Name>Mono.Linux.I2C</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

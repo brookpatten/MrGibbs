@@ -26,7 +26,7 @@ namespace MrGibbs
 				logger.Info ("Kernel Configuration Complete");
 
 				AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
-					logger.Fatal ("Unhandled Application Exception", e.ExceptionObject);
+					logger.Fatal ("Why is the rum gone?\nUnhandled Application Exception", e.ExceptionObject);
 				};
 
 				//catch ctrl-c so that we can do a proper dispose & cleanup
@@ -38,6 +38,7 @@ namespace MrGibbs
 
 				logger.Info ("Configuring Supervisor");
 				bool isFirst = true;
+
 				using (var supervisor = kernel.Get<Supervisor> ()) {
 					do {
 						logger.Info ("Initializing Supervisor");

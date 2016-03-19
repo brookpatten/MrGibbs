@@ -1,5 +1,5 @@
 ﻿using System;
-using QuadroschrauberSharp.Hardware;
+using Mono.Linux.I2C;
 
 using uint8_t = System.Byte;
 using int8_t = System.SByte;
@@ -19,7 +19,7 @@ namespace MrGibbs.HMC5883
     public class Hmc5883:IDisposable
     {
         private byte HMC5883L_ADDRESS = 0x1E;
-        private byte HMC5883L_DEFAULT_ADDRESS = 0x1E;
+        public const byte Hmc5883l_Default_Address = 0x1E;
 
         private byte HMC5883L_RA_CONFIG_A = 0x00;
         private byte HMC5883L_RA_CONFIG_B = 0x01;
@@ -81,31 +81,14 @@ namespace MrGibbs.HMC5883
         private byte HMC5883L_STATUS_LOCK_BIT = 1;
         private byte HMC5883L_STATUS_READY_BIT = 0;
 
-        private byte _devAddr;
         private byte[] _buffer=new byte[6];
         private byte _mode;
-        private I2C _i2c;
+		private I2CDevice _i2c;
         private int _i2cAddress;
 
-        public Hmc5883(int i2cAddress)
+		public Hmc5883(I2CDevice device)
         {
-            _i2cAddress = i2cAddress;
-            _i2c = new I2C(_i2cAddress);
-            _devAddr = HMC5883L_DEFAULT_ADDRESS;
-        }
-
-		public Hmc5883(I2C i2c)
-		{
-			_i2cAddress = 0;
-			_i2c = i2c;
-			_devAddr = HMC5883L_DEFAULT_ADDRESS;
-		}
-
-        public Hmc5883(int i2cAddress, byte deviceAddress)
-        {
-            _i2cAddress = i2cAddress;
-            _i2c = new I2C(_i2cAddress);
-            _devAddr = deviceAddress;
+			_i2c = device;
         }
 
         public void Initialize()
@@ -116,7 +99,7 @@ namespace MrGibbs.HMC5883
                         ((byte) (HMC5883L_RATE_15 << (HMC5883L_CRA_RATE_BIT - HMC5883L_CRA_RATE_LENGTH + 1))) |
                         ((byte) (HMC5883L_BIAS_NORMAL << (HMC5883L_CRA_BIAS_BIT - HMC5883L_CRA_BIAS_LENGTH + 1))));
 
-            _i2c.writeByte(_devAddr, HMC5883L_RA_CONFIG_A,data);
+            _i2c.WriteByte(HMC5883L_RA_CONFIG_A,data);
 
             // write CONFIG_B register
             SetGain(HMC5883L_GAIN_1370);
@@ -127,7 +110,7 @@ namespace MrGibbs.HMC5883
 
         public bool TestConnection()
         {
-            if (_i2c.readBytes(_devAddr, HMC5883L_RA_ID_A, 3, _buffer) == 3) 
+            if (_i2c.ReadBytes(HMC5883L_RA_ID_A, 3, _buffer) == 3) 
             {
                 return (_buffer[0] == 'H' && _buffer[1] == '4' && _buffer[2] == '3');
             }
@@ -137,69 +120,69 @@ namespace MrGibbs.HMC5883
         // CONFIG_A register
         public byte GetSampleAveraging()
         {
-            var result = _i2c.readBits(_devAddr, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_AVERAGE_BIT, HMC5883L_CRA_AVERAGE_LENGTH);
+            var result = _i2c.ReadBits(HMC5883L_RA_CONFIG_A, HMC5883L_CRA_AVERAGE_BIT, HMC5883L_CRA_AVERAGE_LENGTH);
             return result;
         }
 
         public void SetSampleAveraging(byte averaging)
         {
-            _i2c.writeBits(_devAddr, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_AVERAGE_BIT, HMC5883L_CRA_AVERAGE_LENGTH, averaging);
+            _i2c.WriteBits(HMC5883L_RA_CONFIG_A, HMC5883L_CRA_AVERAGE_BIT, HMC5883L_CRA_AVERAGE_LENGTH, averaging);
         }
 
         public byte GetDataRate()
         {
-            var result = _i2c.readBits(_devAddr, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_RATE_BIT, HMC5883L_CRA_RATE_LENGTH);
+            var result = _i2c.ReadBits(HMC5883L_RA_CONFIG_A, HMC5883L_CRA_RATE_BIT, HMC5883L_CRA_RATE_LENGTH);
             return result;
         }
 
         public void SetDataRate(byte rate)
         {
-            _i2c.writeBits(_devAddr, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_RATE_BIT, HMC5883L_CRA_RATE_LENGTH, rate);
+            _i2c.WriteBits(HMC5883L_RA_CONFIG_A, HMC5883L_CRA_RATE_BIT, HMC5883L_CRA_RATE_LENGTH, rate);
         }
 
         public byte GetMeasurementBias()
         {
-            var result = _i2c.readBits(_devAddr, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_BIAS_BIT, HMC5883L_CRA_BIAS_LENGTH);
+            var result = _i2c.ReadBits(HMC5883L_RA_CONFIG_A, HMC5883L_CRA_BIAS_BIT, HMC5883L_CRA_BIAS_LENGTH);
             return result;
         }
 
         public void SetMeasurementBias(byte bias)
         {
-            _i2c.writeBits(_devAddr, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_BIAS_BIT, HMC5883L_CRA_BIAS_LENGTH, bias);
+            _i2c.WriteBits(HMC5883L_RA_CONFIG_A, HMC5883L_CRA_BIAS_BIT, HMC5883L_CRA_BIAS_LENGTH, bias);
         }
 
         // CONFIG_B register
         public byte GetGain()
         {
-            var result = _i2c.readBits(_devAddr, HMC5883L_RA_CONFIG_B, HMC5883L_CRB_GAIN_BIT, HMC5883L_CRB_GAIN_LENGTH);
+            var result = _i2c.ReadBits(HMC5883L_RA_CONFIG_B, HMC5883L_CRB_GAIN_BIT, HMC5883L_CRB_GAIN_LENGTH);
             return result;
         }
 
         public void SetGain(byte gain)
         {
-            _i2c.writeByte(_devAddr, HMC5883L_RA_CONFIG_B, (byte)(gain << (HMC5883L_CRB_GAIN_BIT - HMC5883L_CRB_GAIN_LENGTH + 1)));
+            _i2c.WriteByte(HMC5883L_RA_CONFIG_B, (byte)(gain << (HMC5883L_CRB_GAIN_BIT - HMC5883L_CRB_GAIN_LENGTH + 1)));
         }
 
         // MODE register
         public byte GetMode()
         {
-            var result =_i2c.readBits(_devAddr, HMC5883L_RA_MODE, HMC5883L_MODEREG_BIT, HMC5883L_MODEREG_LENGTH);
+            var result =_i2c.ReadBits(HMC5883L_RA_MODE, HMC5883L_MODEREG_BIT, HMC5883L_MODEREG_LENGTH);
             return result;
         }
 
         public void SetMode(byte newMode)
         {
-            _i2c.writeByte(_devAddr, HMC5883L_RA_MODE, (byte)(newMode << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
+            _i2c.WriteByte(HMC5883L_RA_MODE, (byte)(newMode << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
             _mode = newMode; // track to tell if we have to clear bit 7 after a read
         }
 
         // DATA* registers
         public void GetHeading(ref short x, ref short y, ref short z)
         {
-            _i2c.readBytes(_devAddr, HMC5883L_RA_DATAX_H, 6, _buffer);
+            _i2c.ReadBytes(HMC5883L_RA_DATAX_H, 6, _buffer);
             if (_mode == HMC5883L_MODE_SINGLE)
             {
-                _i2c.writeByte(_devAddr, HMC5883L_RA_MODE, (byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
+                _i2c.WriteByte(HMC5883L_RA_MODE, (byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
             }
 
             x= (short)((((int16_t)_buffer[0]) << 8) | _buffer[1]);
@@ -214,30 +197,30 @@ namespace MrGibbs.HMC5883
 
         public short GetHeadingX()
         {
-            _i2c.readBytes(_devAddr, HMC5883L_RA_DATAX_H, 6, _buffer);
+            _i2c.ReadBytes(HMC5883L_RA_DATAX_H, 6, _buffer);
             if (_mode == HMC5883L_MODE_SINGLE)
             {
-                _i2c.writeByte(_devAddr, HMC5883L_RA_MODE, (byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
+                _i2c.WriteByte(HMC5883L_RA_MODE, (byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
             }
             return BitConverter.ToInt16(_buffer, 0);
         }
 
         public short GetHeadingY()
         {
-            _i2c.readBytes(_devAddr, HMC5883L_RA_DATAX_H, 6, _buffer);
+            _i2c.ReadBytes(HMC5883L_RA_DATAX_H, 6, _buffer);
             if (_mode == HMC5883L_MODE_SINGLE)
             {
-                _i2c.writeByte(_devAddr, HMC5883L_RA_MODE, (byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
+                _i2c.WriteByte(HMC5883L_RA_MODE, (byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
             }
             return BitConverter.ToInt16(_buffer, 4);
         }
 
         public short GetHeadingZ()
         {
-            _i2c.readBytes(_devAddr, HMC5883L_RA_DATAX_H, 6, _buffer);
+            _i2c.ReadBytes(HMC5883L_RA_DATAX_H, 6, _buffer);
             if (_mode == HMC5883L_MODE_SINGLE)
             {
-                _i2c.writeByte(_devAddr, HMC5883L_RA_MODE,(byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
+                _i2c.WriteByte(HMC5883L_RA_MODE,(byte)(HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1)));
             }
             return BitConverter.ToInt16(_buffer, 2);
         }
@@ -245,41 +228,38 @@ namespace MrGibbs.HMC5883
         // STATUS register
         public bool GetLockStatus()
         {
-            var result = _i2c.readBit(_devAddr, HMC5883L_RA_STATUS, HMC5883L_STATUS_LOCK_BIT);
+            var result = _i2c.ReadBit(HMC5883L_RA_STATUS, HMC5883L_STATUS_LOCK_BIT);
             return ReadBit(result, 1);
         }
 
         public bool GetReadyStatus()
         {
-            var result = _i2c.readBit(_devAddr, HMC5883L_RA_STATUS, HMC5883L_STATUS_READY_BIT);
+            var result = _i2c.ReadBit(HMC5883L_RA_STATUS, HMC5883L_STATUS_READY_BIT);
             return ReadBit(result, 1);
         }
 
         // ID_* registers
         public byte GetIDA()
         {
-            var result = _i2c.readByte(_devAddr, HMC5883L_RA_ID_A);
+            var result = _i2c.ReadByte(HMC5883L_RA_ID_A);
             return result;
         }
 
         public byte GetIDB()
         {
-            var result = _i2c.readByte(_devAddr, HMC5883L_RA_ID_B);
+            var result = _i2c.ReadByte(HMC5883L_RA_ID_B);
             return result;
         }
 
         public byte GetIDC()
         {
-            var result = _i2c.readByte(_devAddr, HMC5883L_RA_ID_C);
+            var result = _i2c.ReadByte(HMC5883L_RA_ID_C);
             return result;
         }
 
         public void Dispose()
         {
-            if (_i2c != null)
-            {
-                _i2c.Close();
-            }
+            
         }
 
         private bool ReadBit(byte b, int bitNumber)
