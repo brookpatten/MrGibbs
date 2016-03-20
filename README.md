@@ -4,7 +4,7 @@
 
 [Project Blog](http://blog.mrgibbs.io/)
 
-[(bad) Circuit Diagrams](https://github.com/brookpatten/MrGibbs/tree/jessie/hw)
+[(bad) Circuit Diagrams](https://github.com/brookpatten/MrGibbs/tree/master/hw)
 
 Configuration Options(forthcoming)
 
