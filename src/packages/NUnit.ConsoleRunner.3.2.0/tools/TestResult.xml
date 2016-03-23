@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-run id="2" testcasecount="4" result="Failed" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="6" engine-version="3.2.0.0" clr-version="4.6.57.0" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:48Z" duration="0.167864">
+  <command-line><![CDATA[/home/brook/Desktop/MrGibbs/src/packages/NUnit.ConsoleRunner.3.2.0/tools/nunit3-console.exe ../../../MrGibbs.Test/bin/Debug/MrGibbs.Test.dll]]></command-line>
+  <test-suite type="Assembly" id="0-1006" name="MrGibbs.Test.dll" fullname="/home/brook/Desktop/MrGibbs/src/MrGibbs.Test/bin/Debug/MrGibbs.Test.dll" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.090980" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="6">
+    <environment framework-version="3.2.0.0" clr-version="4.6.57.0" os-version="Unix 4.2.0.34" platform="Unix" cwd="/home/brook/Desktop/MrGibbs/src/packages/NUnit.ConsoleRunner.3.2.0/tools" machine-name="Hoth" user="brook" user-domain="Hoth" culture="en-US" uiculture="en-US" os-architecture="x64" />
+    <settings>
+      <setting name="WorkDirectory" value="/home/brook/Desktop/MrGibbs/src/packages/NUnit.ConsoleRunner.3.2.0/tools" />
+      <setting name="ImageRuntimeVersion" value="4.0.30319" />
+      <setting name="ImageRequiresX86" value="False" />
+      <setting name="ImageRequiresDefaultAppDomainAssemblyResolver" value="False" />
+      <setting name="NumberOfTestWorkers" value="2" />
+    </settings>
+    <properties>
+      <property name="_PID" value="2430" />
+      <property name="_APPDOMAIN" value="test-domain-" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="TestSuite" id="0-1007" name="MrGibbs" fullname="MrGibbs" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.082287" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="6">
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="0-1008" name="Test" fullname="MrGibbs.Test" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.082209" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="6">
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestFixture" id="0-1000" name="StateTest" fullname="MrGibbs.Test.StateTest" classname="MrGibbs.Test.StateTest" runstate="Runnable" testcasecount="2" result="Passed" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.040768" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="4">
+          <test-case id="0-1001" name="HighPriorityMessagesShouldShowBeforeNormalPriority" fullname="MrGibbs.Test.StateTest.HighPriorityMessagesShouldShowBeforeNormalPriority" methodname="HighPriorityMessagesShouldShowBeforeNormalPriority" classname="MrGibbs.Test.StateTest" runstate="Runnable" seed="798259755" result="Passed" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.022838" asserts="3" />
+          <test-case id="0-1002" name="MessagesShouldExpire" fullname="MrGibbs.Test.StateTest.MessagesShouldExpire" methodname="MessagesShouldExpire" classname="MrGibbs.Test.StateTest" runstate="Runnable" seed="1630670862" result="Passed" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.000607" asserts="1" />
+        </test-suite>
+        <test-suite type="TestFixture" id="0-1003" name="TrueWindCalculatorTests" fullname="MrGibbs.Test.TrueWindCalculatorTests" classname="MrGibbs.Test.TrueWindCalculatorTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.039993" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="2">
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="0-1004" name="SailingNorthIntoSouthWindShouldCombineSpeeds" fullname="MrGibbs.Test.TrueWindCalculatorTests.SailingNorthIntoSouthWindShouldCombineSpeeds" methodname="SailingNorthIntoSouthWindShouldCombineSpeeds" classname="MrGibbs.Test.TrueWindCalculatorTests" runstate="Runnable" seed="17143493" result="Passed" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.009826" asserts="1" />
+          <test-case id="0-1005" name="SailingNorthIntoSouthWindShouldShowSouthWind" fullname="MrGibbs.Test.TrueWindCalculatorTests.SailingNorthIntoSouthWindShouldShowSouthWind" methodname="SailingNorthIntoSouthWindShouldShowSouthWind" classname="MrGibbs.Test.TrueWindCalculatorTests" runstate="Runnable" seed="458445963" result="Failed" start-time="2016-03-23 00:44:47Z" end-time="2016-03-23 00:44:47Z" duration="0.024214" asserts="1">
+            <failure>
+              <message><![CDATA[  Expected: 180
+  But was:  0.0d
+]]></message>
+              <stack-trace><![CDATA[at MrGibbs.Test.TrueWindCalculatorTests.SailingNorthIntoSouthWindShouldShowSouthWind () <0x41a63610 + 0x0015b> in <filename unknown>:0
+]]></stack-trace>
+            </failure>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

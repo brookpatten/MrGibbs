@@ -45,6 +45,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.PolarCalculator", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Linux.I2C", "lib\Mono.Linux.I2C\src\Mono.Linux.I2C\Mono.Linux.I2C.csproj", "{B70915EA-3F00-492D-8011-E01B746DD050}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{57FE80A8-BBC9-40CD-B0D6-81F35BAB254C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.Test", "MrGibbs.Test\MrGibbs.Test.csproj", "{22546F50-64C4-4491-91DC-C79BE2F5DBE6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeAnalysis|Any CPU = CodeAnalysis|Any CPU
@@ -166,6 +170,12 @@ Global
 		{B70915EA-3F00-492D-8011-E01B746DD050}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B70915EA-3F00-492D-8011-E01B746DD050}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B70915EA-3F00-492D-8011-E01B746DD050}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
@@ -182,6 +192,7 @@ Global
 		{17B81C86-A8FF-46D5-8513-048B0571FDCF} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{9109FAAA-849B-4FDA-973C-847275353B5E} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{B70915EA-3F00-492D-8011-E01B746DD050} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
+		{22546F50-64C4-4491-91DC-C79BE2F5DBE6} = {57FE80A8-BBC9-40CD-B0D6-81F35BAB254C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MrGibbs.Console\MrGibbs.Console.csproj

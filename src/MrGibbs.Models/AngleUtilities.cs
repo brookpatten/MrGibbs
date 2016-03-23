@@ -62,6 +62,7 @@ namespace MrGibbs.Models
 			var X = Math.Cos(a.Theta)*a.Radius + Math.Cos(b.Theta)*b.Radius;
 			var Y = Math.Sin (a.Theta) * a.Radius + Math.Sin (b.Theta) * b.Radius;
 			var theta = Math.Atan2(Y,X);
+			theta = NormalizeAngle (theta);
 			var radius = Math.Sqrt (X * X + Y * Y);
 			return new Vector2Polar () { Theta = (float)theta, Radius = (float)radius };
 		}
