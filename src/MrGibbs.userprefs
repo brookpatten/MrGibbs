@@ -1,21 +1,23 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Test/Plugins/BlendMicroAnemometer/TrueWindCalculatorTests.cs">
+    <Files>
+      <File FileName="MrGibbs.Test/Plugins/BlendMicroAnemometer/TrueWindCalculatorTests.cs" Line="64" Column="15" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs" Line="55" Column="36" />
+      <File FileName="MrGibbs.Models/AngleUtilities.cs" Line="65" Column="35" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/MastBendCalculator.cs" Line="1" Column="1" />
+    </Files>
     <Pads>
-      <Pad Id="ProjectPad">
+      <Pad Id="MonoDevelop.NUnit.TestPad">
         <State name="__root__">
-          <Node name="MrGibbs" expanded="True" selected="True">
-            <Node name="Lib" expanded="True">
-              <Node name="QuadroschrauberSharp.Linux" expanded="True" />
-            </Node>
-            <Node name="Plugins" expanded="True">
-              <Node name="MrGibbs.Pebble" expanded="True" />
-            </Node>
-          </Node>
+          <Node name="MrGibbs" selected="True" />
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.MrGibbs PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
