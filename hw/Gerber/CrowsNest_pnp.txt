@@ -1,0 +1,39 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=CrowsNest
+*Date=11:35:10
+*CreatedBy=Fritzing 0.9.2b.11.19.8d2d5970658f0bed09c661c9ea9a515b5f40f44c
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;57.9981;-10.4015;0;Bottom;Via8
+2;;;24.3619;-14.4339;0;Bottom;Via13
+3;;;71.9718;-9.0439;0;Bottom;Via11
+4;220;THT;11.6619;-10.6239;0;Bottom;R3
+5;;1x16_machine-pin-header_lock.004;20.5519;-16.8723;0;Bottom;JP4
+6;;THT;73.7719;-12.9939;0;Bottom;-/+
+7;;;63.5718;-4.24392;0;Bottom;Via3
+8;;THT;73.7719;-7.9139;0;Bottom;R/B/Y/G
+9;;lte-302;24.9529;-6.57391;-90;Bottom;D1
+10;;;55.1719;-11.4439;0;Bottom;Via10
+11;;;50.3719;-6.04391;0;Bottom;Via1
+12;;lte-302;29.7529;-6.57391;-90;Bottom;D3
+13;;THT;67.0618;-1.84392;-90;Bottom;J8
+14;;THT;73.7719;-2.8339;0;Bottom;Wind 2
+15;;THT;56.9019;-1.84392;-90;Bottom;J6
+16;;;63.5907;-7.84375;0;Bottom;Via9
+17;;;24.3542;-13.1639;0;Bottom;Via14
+18;;THT;51.8219;-1.84392;-90;Bottom;MPU-6050
+19;220;THT;11.6619;-8.08391;0;Bottom;R4
+20;;1x16_machine-pin-header_lock.004;20.5519;-1.63231;0;Bottom;JP3
+21;;;65.3718;-10.2439;0;Bottom;Via4
+22;;lte-302;27.3529;-6.57391;-90;Bottom;D2
+23;;;71.9718;-1.84391;0;Bottom;Via12
+24;;THT;61.9818;-1.84392;-90;Bottom;J7
