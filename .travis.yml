@@ -1,13 +1,8 @@
-#our build is dependent upon mono head.  Some men just want to watch the world burn
-before_install: 
- - git submodule update --init --recursive
- - sudo apt-get install git autoconf libtool automake build-essential gettext
- - git clone --recursive https://github.com/mono/mono.git
- - cd mono
- - ./autogen.sh --prefix=/usr/local
- - make get-monolite-latest
- - make
- - sudo make install
- - cd ..
+addons:
+  apt:
+    sources:
+    - mono-nightly
+    packages:
+    - mono-devel
 script:
  - xbuild /p:Configuration=Debug src/MrGibbs.sln
