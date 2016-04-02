@@ -1,5 +1,7 @@
 # MrGibbs
 
+[![Build Status](https://travis-ci.org/brookpatten/MrGibbs.svg?branch=master)](https://travis-ci.org/brookpatten/MrGibbs)
+
 [Project Website](http://mrgibbs.io/)
 
 [Project Blog](http://blog.mrgibbs.io/)
