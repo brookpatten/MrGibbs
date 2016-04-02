@@ -1,5 +1,7 @@
 # MrGibbs
 
+[![Build Status](https://travis-ci.org/brookpatten/MrGibbs.svg?branch=master)](https://travis-ci.org/brookpatten/MrGibbs)
+
 [Project Website](http://mrgibbs.io/)
 
 [Project Blog](http://blog.mrgibbs.io/)
@@ -36,7 +38,8 @@ As of this writing, a weekly build of mono is required as the necassary changes 
 * sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 * echo "deb http://download.mono-project.com/repo/debian nightly main" | sudo tee /etc/apt/sources.list.d/mono-nightly.list
 * sudo apt-get update
-* sudo apt-get install mono-complete
+* sudo apt-get install mono-snapshot-latest
+* . mono-snapshot mono
  
 #3B (Raspberry Pi A/B/+/Zero) Mono Compilation 
 * git clone https://github.com/mono/mono.git
