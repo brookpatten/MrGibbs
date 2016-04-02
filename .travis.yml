@@ -4,5 +4,7 @@ addons:
     - mono-nightly
     packages:
     - mono-devel
+before_install: 
+ - git submodule update --init --recursive
 script:
  - xbuild /p:Configuration=Debug src/MrGibbs.sln
