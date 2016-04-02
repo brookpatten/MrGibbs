@@ -1,15 +1,19 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
   <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Test/Plugins/BlendMicroAnemometer/TrueWindCalculatorTests.cs">
     <Files>
-      <File FileName="MrGibbs.Test/Plugins/BlendMicroAnemometer/TrueWindCalculatorTests.cs" Line="64" Column="15" />
+      <File FileName="MrGibbs.Test/Plugins/BlendMicroAnemometer/TrueWindCalculatorTests.cs" Line="60" Column="8" />
       <File FileName="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs" Line="55" Column="36" />
       <File FileName="MrGibbs.Models/AngleUtilities.cs" Line="65" Column="35" />
       <File FileName="MrGibbs.BlendMicroAnemometer/MastBendCalculator.cs" Line="1" Column="1" />
     </Files>
     <Pads>
-      <Pad Id="MonoDevelop.NUnit.TestPad">
+      <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="MrGibbs" selected="True" />
+          <Node name="MrGibbs" expanded="True" selected="True">
+            <Node name="Lib" expanded="True" />
+            <Node name="Plugins" expanded="True" />
+            <Node name="Tests" expanded="True" />
+          </Node>
         </State>
       </Pad>
     </Pads>
