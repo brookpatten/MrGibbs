@@ -1,23 +1,13 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs/App.config">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.StateLogger/StateRecorder.cs">
     <Files>
       <File FileName="MrGibbs.Test/Plugins/BlendMicroAnemometer/TrueWindCalculatorTests.cs" Line="60" Column="8" />
       <File FileName="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs" Line="55" Column="36" />
       <File FileName="MrGibbs.Models/AngleUtilities.cs" Line="65" Column="35" />
       <File FileName="MrGibbs.BlendMicroAnemometer/MastBendCalculator.cs" Line="1" Column="1" />
       <File FileName="MrGibbs/App.config" Line="1" Column="1" />
+      <File FileName="MrGibbs.StateLogger/StateRecorder.cs" Line="76" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="MrGibbs" expanded="True">
-            <Node name="MrGibbs" expanded="True">
-              <Node name="App.config" selected="True" />
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

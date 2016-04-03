@@ -50,6 +50,8 @@ namespace MrGibbs.StateLogger
 		{
 			if(!_connection.Query<string> ("SELECT name FROM sqlite_master WHERE type='table' and name='StateLog';").Any())
 			{
+				//TODO: implement schema versioning somehow, migrations?
+
 				//if the table doesn't exist, create it
 				_connection.Execute("create table StateLog(" +
 				                      "time DATETIME," +
@@ -62,6 +64,17 @@ namespace MrGibbs.StateLogger
 				                       "key integer," +
 				                       "value NUMERIC"+
 				                       ")");
+
+				_connection.Execute ("create table StateKey(" +
+				                     "key integer," +
+				                     "name text"+
+				                     ")");
+
+				var values = Enum.GetValues (typeof (StateValue)).Cast<StateValue> ().ToList ();
+				foreach (var val in values) 
+				{
+					_connection.Execute ("insert into StateKey(key,name) values(@key,@name)", new {key=(int)val,name=val.ToString() });
+				}
 			}
 		}
 
