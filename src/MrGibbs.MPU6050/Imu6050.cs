@@ -34,18 +34,18 @@ namespace MrGibbs.MPU6050
         public void Init(bool dmp)
         {
             use_dmp = dmp;
-            _logger.Info("Initializing MPU-6050");
+			_logger.Debug("Initializing MPU-6050");
             mpu.Initialize();
 
 
             // verify connection
             if (mpu.TestConnection())
             {
-                _logger.Info("MPU6050 connection successful");
+				_logger.Debug("MPU6050 connection successful");
             }
             else
             {
-                _logger.Info("MPU6050 connection failed");
+				_logger.Warn("MPU6050 connection failed");
             }
 
 
@@ -58,9 +58,9 @@ namespace MrGibbs.MPU6050
                 if (devStatus == 0)
                 {
                     // turn on the DMP, now that it's ready
-                    _logger.Info("DMP Initialized");
+                    _logger.Debug("DMP Initialized");
                     mpu.SetDMPEnabled(true);
-                    _logger.Info("DMP Enabled");
+					_logger.Debug("DMP Enabled");
 
                     // enable Arduino interrupt detection
                     //Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0)..."));
@@ -68,7 +68,7 @@ namespace MrGibbs.MPU6050
                     mpuIntStatus = mpu.GetIntStatus();
 
                     // set our DMP Ready flag so the main loop() function knows it's okay to use it
-                    _logger.Info("DMP Ready");
+					_logger.Debug("DMP Ready");
                     dmpReady = true;
 
                     // get expected DMP packet size for later comparison
@@ -85,8 +85,8 @@ namespace MrGibbs.MPU6050
                 }
             }
 
-            _logger.Info("Full Accel Range: " + mpu.GetFullScaleAccelRange());
-            _logger.Info("Full Gyro Range: " + mpu.GetFullScaleGyroRange());
+			_logger.Debug("Full Accel Range: " + mpu.GetFullScaleAccelRange());
+			_logger.Debug("Full Gyro Range: " + mpu.GetFullScaleGyroRange());
         }
 
         public void Calibrate()

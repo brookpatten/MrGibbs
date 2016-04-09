@@ -306,7 +306,7 @@ namespace MrGibbs.Gps
                     }
                     catch (Exception ex)
                     {
-                        _logger.Warn("Exception parsing gps line:"+line);
+						_logger.Debug("Exception parsing gps line:"+line);
                     }
                 }
 
