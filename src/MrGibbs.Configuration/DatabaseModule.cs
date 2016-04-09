@@ -10,12 +10,6 @@ namespace MrGibbs.Configuration
 {
 	public class DatabaseModule:NinjectModule
 	{
-		public enum Databases
-		{
-			Current,
-			Today,
-			Persistant
-		}
 		public const string SqliteConnectionStringFormat = "Data Source={0};Version=3;";
 
 		public DatabaseModule ()
@@ -26,17 +20,21 @@ namespace MrGibbs.Configuration
 		{
 			string dataPath = AppConfig.DataPath;
 			DateTime now = DateTime.UtcNow;
-			BindDbConnection(dataPath, Databases.Current.ToString(), now, "{0:yyyyMMdd-hhmmss}.db");
-			BindDbConnection (dataPath, Databases.Today.ToString(), now, "{0:yyyyMMdd}.db");
-			BindDbConnection (dataPath, Databases.Persistant.ToString(), now, "persistant.db");
+			BindDbConnection (dataPath, now, "{0:yyyyMMdd}.db");
 		}
 
-		private void BindDbConnection(string dataPath,string bindingName, DateTime now, string nameFormat)
+		public override void Unload ()
+		{
+			var connection = Kernel.Get<IDbConnection> ();
+			connection.Dispose ();
+			base.Unload ();
+		}
+
+		private void BindDbConnection(string dataPath, DateTime now, string nameFormat)
 		{
 			Kernel.Bind<IDbConnection> ()
-			      .ToMethod (c => CreateConnection(dataPath,now,nameFormat))
-			      .InSingletonScope ()
-			      .Named (bindingName);
+				  .ToMethod (c => CreateConnection (dataPath, now, nameFormat))
+				  .InSingletonScope ();
 		}
 
 		private IDbConnection CreateConnection (string dataPath, DateTime now, string nameFormat)
@@ -62,7 +60,7 @@ namespace MrGibbs.Configuration
 				SqliteConnection.CreateFile (dataFilePath);
 				connection = new SqliteConnection(connectionString);
 			}
-
+			connection.Open ();
 			return connection;
 		}
 	}

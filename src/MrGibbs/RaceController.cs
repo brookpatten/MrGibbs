@@ -63,12 +63,14 @@ namespace MrGibbs
                 {
                     _logger.Info("Countdown Reset");
                     _state.StartTime = null;
+					_state.RaceStarted = false;
                     _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown reset");
                 }
             }
             else
             {
                 _logger.Info("Countdown Started");
+				_state.RaceStarted = false;
                 _state.StartTime = _state.BestTime.AddMinutes(5);
                 _state.AddMessage(MessageCategory.System, MessagePriority.Normal, 5, "Countdown started");
             }
@@ -218,7 +220,7 @@ namespace MrGibbs
         /// <inheritdoc />
         public void NewRace()
         {
-            throw new NotImplementedException();
+			_state = new State ();
         }
 
         /// <inheritdoc />
@@ -277,6 +279,7 @@ namespace MrGibbs
                 //if the race just started, set the line
                 if (_state.StartTime.HasValue && !_state.RaceStarted && _state.BestTime > _state.StartTime)
                 {
+					_logger.Info ("Race Started");
                     _state.RaceStarted = true;
 
                     var line = course.Marks.FirstOrDefault(x => x.MarkType == MarkType.Line);

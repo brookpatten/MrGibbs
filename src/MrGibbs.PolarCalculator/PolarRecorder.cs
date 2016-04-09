@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Transactions;
 
 using Dapper;
 
@@ -39,16 +40,19 @@ namespace MrGibbs.PolarCalculator
 
 		private void Initialize ()
 		{
-			if(!_connection.Query<string> ("SELECT name FROM sqlite_master WHERE type='table' and name='Polar';").Any())
+			//using (var transaction = new TransactionScope()) 
 			{
-				//if the table doesn't exist, create it
-				_connection.Execute("create table Polar(" +
-				                    "Id INTEGER PRIMARY KEY ASC,"+
-				                    "TrueWindDirection NUMERIC," +
-				                    "TrueWindSpeedKnots NUMERIC," +
-				                    "SpeedInKnots NUMERIC,"+
-				                    "Time DATETIME"+
-				                    ")");
+				if (!_connection.Query<string> ("SELECT name FROM sqlite_master WHERE type='table' and name='Polar';").Any ()) {
+					//if the table doesn't exist, create it
+					_connection.Execute ("create table Polar(" +
+										"Id INTEGER PRIMARY KEY ASC," +
+										"TrueWindDirection NUMERIC," +
+										"TrueWindSpeedKnots NUMERIC," +
+										"SpeedInKnots NUMERIC," +
+										"Time DATETIME" +
+										")");
+				}
+				//transaction.Complete ();
 			}
 		}
 
@@ -57,31 +61,35 @@ namespace MrGibbs.PolarCalculator
 			//make sure we have the sensor data we need, otherwise there's no point
 			if (StateHasRequiredValues(state)) 
 			{
-				var existing = FindValue (state);
-
-				if (existing!=null) 
+				//using (var transaction = new TransactionScope()) 
 				{
-					if (existing.SpeedInKnots < state.StateValues[StateValue.SpeedInKnots]) 
+					var existing = FindValue (state);
+
+					if (existing != null) 
 					{
-						existing.SpeedInKnots = state.StateValues [StateValue.SpeedInKnots];
-						existing.Time = state.BestTime;
-						_connection.Execute ("update Polar set SpeedInKnots=@SpeedInKnots,Time=@Time where Id=@Id", existing);
+						if (existing.SpeedInKnots < state.StateValues [StateValue.SpeedInKnots]) 
+						{
+							existing.SpeedInKnots = state.StateValues [StateValue.SpeedInKnots];
+							existing.Time = state.BestTime;
+							_connection.Execute ("update Polar set SpeedInKnots=@SpeedInKnots,Time=@Time where Id=@Id", existing);
+						}
+					} 
+					else 
+					{
+						double speed = state.StateValues [StateValue.TrueWindSpeedKnots];
+						double direction = state.StateValues [StateValue.TrueWindDirection];
+						NormalizeWind (ref direction, ref speed);
+
+						var newValue = new PolarValue () 
+						{
+							Time = state.BestTime,
+							TrueWindDirection = direction,
+							TrueWindSpeedKnots = speed,
+							SpeedInKnots = state.StateValues [StateValue.SpeedInKnots]
+						};
+						_connection.Execute ("insert into Polar(TrueWindDirection,TrueWindSpeedKnots,SpeedInKnots,Time) values (@TrueWindDirection,@TrueWindSpeedKnots,@SpeedInKnots,@Time)", newValue);
 					}
-				} 
-				else 
-				{
-					double speed=state.StateValues[StateValue.TrueWindSpeedKnots];
-					double direction = state.StateValues [StateValue.TrueWindDirection];
-					NormalizeWind (ref direction, ref speed);
-
-					var newValue = new PolarValue () 
-					{
-						Time = state.BestTime,
-						TrueWindDirection = direction,
-						TrueWindSpeedKnots = speed,
-						SpeedInKnots = state.StateValues[StateValue.SpeedInKnots]
-					};
-					_connection.Execute ("insert into Polar(TrueWindDirection,TrueWindSpeedKnots,SpeedInKnots,Time) values (@TrueWindDirection,@TrueWindSpeedKnots,@SpeedInKnots,@Time)", newValue);
+					//transaction.Complete();
 				}
 			}
 		}

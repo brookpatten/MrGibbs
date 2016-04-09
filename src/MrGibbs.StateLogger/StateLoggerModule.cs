@@ -20,8 +20,7 @@ namespace MrGibbs.StateLogger
 
 			Kernel.Bind<StateRecorder> ()
 				  .ToSelf ()
-			      .InSingletonScope ()
-			      .WithConstructorArgument("connection",c=>c.Kernel.Get<IDbConnection>(DatabaseModule.Databases.Current.ToString()));
+			      .InSingletonScope ();
 
 			Kernel.Bind<IPlugin> ()
 				  .To<StateLoggerPlugin> ()

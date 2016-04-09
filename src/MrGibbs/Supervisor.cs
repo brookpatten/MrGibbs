@@ -221,12 +221,7 @@ namespace MrGibbs
                         }
 
                         _raceController.ProcessMarkRoundings();
-
-						if(_state.Message!=null)
-                        {
-                            _logger.Info(_state.Message.Text);
-                        }
-                    }
+					}
                 }
 
                 //attempt to reinitialize any plugins that encountered errors

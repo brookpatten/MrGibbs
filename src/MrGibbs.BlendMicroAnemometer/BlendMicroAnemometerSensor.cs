@@ -185,10 +185,15 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Start()
         {
-			while (!_device.Connected) 
+			for (int i = 0; i < 10 && !_device.Connected;i++)
 			{
 				_device.Connect ();
 				System.Threading.Thread.Sleep (3000);
+			}
+
+			if (!_device.Connected) 
+			{
+				throw new Exception ("Failed to connect to BLE Anemometer");
 			}
 
 			string name = _device.Name;

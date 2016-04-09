@@ -20,8 +20,7 @@ namespace MrGibbs.PolarCalculator
 
 			Kernel.Bind<PolarRecorder> ()
 				  .ToSelf ()
-			      .InSingletonScope ()
-			      .WithConstructorArgument("connection",c=>c.Kernel.Get<IDbConnection>(DatabaseModule.Databases.Persistant.ToString()));
+				  .InSingletonScope ();
 
 			Kernel.Bind<IPlugin> ()
 				  .To<PolarPlugin> ()

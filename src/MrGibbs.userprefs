@@ -1,12 +1,10 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.StateLogger/StateRecorder.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Infrastructure/NLogLogger.cs">
     <Files>
+      <File FileName="MrGibbs/Supervisor.cs" Line="277" Column="18" />
       <File FileName="MrGibbs.Test/Plugins/BlendMicroAnemometer/TrueWindCalculatorTests.cs" Line="60" Column="8" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs" Line="55" Column="36" />
-      <File FileName="MrGibbs.Models/AngleUtilities.cs" Line="65" Column="35" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/MastBendCalculator.cs" Line="1" Column="1" />
-      <File FileName="MrGibbs/App.config" Line="1" Column="1" />
-      <File FileName="MrGibbs.StateLogger/StateRecorder.cs" Line="76" Column="1" />
+      <File FileName="MrGibbs.PolarCalculator/PolarRecorder.cs" Line="97" Column="4" />
+      <File FileName="MrGibbs.Infrastructure/NLogLogger.cs" Line="3" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

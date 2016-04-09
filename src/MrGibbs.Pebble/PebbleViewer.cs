@@ -163,6 +163,7 @@ Course Relative*/
 				_commandMaps.Add (UICommand.Reboot, m => _queueCommand ((s, r) => s.Reboot ()));
 				_commandMaps.Add (UICommand.Shutdown, m => _queueCommand ((s, r) => s.Shutdown ()));
 				_commandMaps.Add (UICommand.Mark, ProcessMarkCommand);
+				_commandMaps.Add (UICommand.NewRace, m => _queueCommand ((s, r) => r.NewRace()));
 			}
 		}
 

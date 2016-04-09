@@ -22,7 +22,7 @@ namespace MrGibbs.MPU6050
 			      .ToSelf ()
 			      .InSingletonScope ()
 			      .Named ("mpu6050")
-			      .WithConstructorArgument ("deviceAddress", Mpu6050.MPU6050_ADDRESS_AD0_HIGH);
+			      .WithConstructorArgument ("deviceAddress", Mpu6050.MPU6050_ADDRESS_AD0_LOW);
 
 			Kernel.Bind<Mpu6050> ()
 			      .ToSelf ()
