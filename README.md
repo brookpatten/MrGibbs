@@ -16,10 +16,26 @@ These instructions are intended to be used on Raspbian Jessie-Lite, although the
 * Expand root partition
 * Enable I2C (sudo raspi-config)
 * Boot to command prompt
-* Install Bluetooth (sudo apt-get install bluetooth)
+* Add Stretch sources to /etc/apt/sources.list
+```
+deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free r$
+# Uncomment line below then 'apt-get update' to enable 'apt-get source'
+deb-src http://archive.raspbian.org/raspbian/ jessie main contrib non-free rpi
+
+deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free $
+# Uncomment line below then 'apt-get update' to enable 'apt-get source'
+deb-src http://archive.raspbian.org/raspbian/ stretch main contrib non-free rpi
+```
+* set Jessie as the default distro by editing /etc/apt/apt.conf.d/40defaultrelease
+```
+APT::Default-Release "jessie";
+```
+* Install bluetooth from stretch
+`apt-get install bluez -t stretch`
 * edit /etc/dbus-1/system.d/bluetooth.conf, add the following
 
-`<policy user="pi">
+```
+<policy user="pi">
     <allow own="org.bluez"/>
     <allow send_destination="org.bluez"/>
     <allow send_interface="org.bluez.Agent1"/>
@@ -27,7 +43,8 @@ These instructions are intended to be used on Raspbian Jessie-Lite, although the
     <allow send_interface="org.bluez.MediaPlayer1"/>
     <allow send_interface="org.bluez.Profile1"/>
     <allow send_interface="org.freedesktop.DBus.ObjectManager"/>
-  </policy>`
+</policy>
+```
 * reboot
 
 #2 Install git
