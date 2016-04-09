@@ -21,7 +21,6 @@ namespace MrGibbs.BlendMicroAnemometer
 		private DBusConnection _connection;
 		private string _btAdapterName;
 		private string _deviceAddress;
-		private ObjectPath _devicePath;
 		private IClock _clock;
 		private TimeSpan _maximumDataAge;
 		private bool _simulated;
@@ -47,15 +46,12 @@ namespace MrGibbs.BlendMicroAnemometer
 			_components = new List<IPluginComponent>();
             _initialized = false;
 
-			_devicePath = BlueZPath.Device (_btAdapterName, _deviceAddress);
-			var device = _connection.System.GetObject<Device1> (BlueZPath.Service, _devicePath);
-
 			//TODO: maybe use the container or child container for this?
 			ISensor sensor;
 			if (_simulated) {
 				sensor = new SimulatedWindSensor (_logger,this);
 			} else {
-				var bmas = new BlendMicroAnemometerSensor (_logger, _clock, _maximumDataAge, this, device, _connection);
+				var bmas = new BlendMicroAnemometerSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_deviceAddress, _connection);
 				bmas.Start ();
 				sensor = bmas;
 			}

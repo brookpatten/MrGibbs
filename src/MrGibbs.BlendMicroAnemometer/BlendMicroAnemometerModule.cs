@@ -25,5 +25,12 @@ namespace MrGibbs.BlendMicroAnemometer
 			      .WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting("BtAdapterName","hci0"))
 			      .WithConstructorArgument ("deviceAddress", ConfigurationHelper.ReadStringAppSetting("BlendMicroAnemometerAddress",""));
 		}
+
+		public override void Unload ()
+		{
+			var connection = Kernel.Get<BlendMicroAnemometerPlugin> ();
+			connection.Dispose ();
+			base.Unload ();
+		}
 	}
 }

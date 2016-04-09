@@ -146,8 +146,8 @@ namespace MrGibbs.StateLogger
 			                     ")",
 			                     new {
 				BestTime = state.BestTime,
-				LocationLatitudeValue = state.Location.Latitude.Value,
-				LocationLongitudeValue = state.Location.Longitude.Value,
+				LocationLatitudeValue = state.Location!=null && state.Location.Latitude!=null ? state.Location.Latitude.Value : 0,
+				LocationLongitudeValue = state.Location!=null && state.Location.Longitude!=null ? state.Location.Longitude.Value : 0,
 			});
 		}
 

@@ -35,27 +35,34 @@ namespace MrGibbs.BlendMicroAnemometer
 		private short? _calibrateZ;
 
 		//private string _serviceUUID="713d0000-503e-4c75-ba94-3148f18d941e";
-		private string _charVendorName = "713D0001-503E-4C75-BA94-3148F18D941E";
-		private string _charRead = "713D0002-503E-4C75-BA94-3148F18D941E";//rx
-		private string _charWrite = "713D0003-503E-4C75-BA94-3148F18D941E";//tx
-		private string _charAck = "713D0004-503E-4C75-BA94-3148F18D941E";
-		private string _charVersion = "713D0005-503E-4C75-BA94-3148F18D941E";
-		private string _clientCharacteristic = "00002902-0000-1000-8000-00805f9b34fb";
+		//private string _charVendorName = "713D0001-503E-4C75-BA94-3148F18D941E";
+		//private string _charRead = "713D0002-503E-4C75-BA94-3148F18D941E";//rx
+		//private string _charWrite = "713D0003-503E-4C75-BA94-3148F18D941E";//tx
+		//private string _charAck = "713D0004-503E-4C75-BA94-3148F18D941E";
+		//private string _charVersion = "713D0005-503E-4C75-BA94-3148F18D941E";
+		//private string _clientCharacteristic = "00002902-0000-1000-8000-00805f9b34fb";
 
+		private string _adapterName;
+		private string _deviceAddress;
 		private Device1 _device;
 		private DBusConnection _connection;
 		private ObjectPath _gattProfilePath = new ObjectPath ("/gattprofiles");
 		private ObjectPath _servicePath;
 		private GattService1 _service;
+
+		private string _serviceId = "000c";
+		private string _readCharId = "000f";
+
 		private ObjectPath _readCharPath; //= new ObjectPath("/org/bluez/hci0/dev_F6_58_7F_09_5D_E6/service000c/char000f");
 		private GattCharacteristic1 _readChar;//= GetObject<GattCharacteristic1>(Service,readCharPath);
 		private Properties _properties;// = GetObject<Properties>(Service,readCharPath);
 
-		public BlendMicroAnemometerSensor(ILogger logger,IClock clock,TimeSpan maximumDataAge, BlendMicroAnemometerPlugin plugin,Device1 device, DBusConnection connection)
+		public BlendMicroAnemometerSensor(ILogger logger,IClock clock,TimeSpan maximumDataAge, BlendMicroAnemometerPlugin plugin,string adapterName,string deviceAddress, DBusConnection connection)
         {
 			_plugin = plugin;
             _logger = logger;
-			_device = device;
+			_adapterName = adapterName;
+			_deviceAddress = deviceAddress;
 			_connection = connection;
 			_clock = clock;
 			_maximumDataAge = maximumDataAge;
@@ -185,9 +192,17 @@ namespace MrGibbs.BlendMicroAnemometer
         /// <inheritdoc />
         public void Start()
         {
-			for (int i = 0; i < 10 && !_device.Connected;i++)
+			_device = _connection.System.GetObject<Device1> (BlueZPath.Service, BlueZPath.Device (_adapterName, _deviceAddress));
+			for (int i = 0; i < 3 && !_device.Connected;i++)
 			{
-				_device.Connect ();
+				try 
+				{
+					_device.Connect ();
+				} 
+				catch 
+				{
+					//we can't really do much other than try again
+				}
 				System.Threading.Thread.Sleep (3000);
 			}
 
@@ -197,24 +212,33 @@ namespace MrGibbs.BlendMicroAnemometer
 			}
 
 			string name = _device.Name;
-			var servicePaths = _device.GattServices;
-			_servicePath = servicePaths.Single();
-			_service = _connection.System.GetObject<GattService1> (BlueZPath.Service, _servicePath);
-			var charPaths = _service.Characteristics;
-			foreach (var charPath in charPaths) 
+			try 
 			{
-				var vChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, charPath);
+				//var servicePaths = _device.GattServices;
+				//_servicePath = servicePaths.Single ();
+				//_service = _connection.System.GetObject<GattService1> (BlueZPath.Service, _servicePath);
+				//var charPaths = _service.Characteristics;
+				//foreach (var charPath in charPaths) {
+				//	var vChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, charPath);
+				//
+				//	if (vChar.UUID.ToUpper () == _charRead) {
+				//		_readChar = vChar;
+				//		_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, charPath);
+				//		break;
+				//	}
+				//}
 
-				if (vChar.UUID.ToUpper() == _charRead) 
-				{
-					_readChar = vChar;
-					_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, charPath);
-					break;
-				}
+				var readCharPath = BlueZPath.GattCharacteristic (_adapterName, _deviceAddress, _serviceId, _readCharId);
+				_readChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, readCharPath);
+				_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, readCharPath);
+
+				_readChar.StartNotify ();
+				InitializePropertyListener ();
+			} 
+			catch (Exception ex) 
+			{
+				throw new Exception ("Are you sure BlueZ is running in experimental mode?", ex);
 			}
-
-			_readChar.StartNotify();
-			InitializePropertyListener ();
         }
 
         /// <inheritdoc />
