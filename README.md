@@ -45,6 +45,11 @@ APT::Default-Release "jessie";
     <allow send_interface="org.freedesktop.DBus.ObjectManager"/>
 </policy>
 ```
+* revert kernel
+```
+sudo apt-get install rpi-update
+sudo rpi-update 46d179597370c5145c7452796acbee0f1ff93392
+```
 * reboot
 
 #2 Install git
