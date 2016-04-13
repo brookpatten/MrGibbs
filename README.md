@@ -61,7 +61,7 @@ As of this writing, a weekly build of mono is required as the necassary changes 
 * . mono-snapshot mono
  
 #4B (Raspberry Pi A/B/+/Zero) Mono Compilation 
-* git clone https://github.com/mono/mono.git
+* git clone --depth=1 https://github.com/mono/mono.git
 * sudo apt-get install autoconf libtool automake build-essential gettext
 * cd mono
 * ./autogen.sh --prefix=/usr/local
