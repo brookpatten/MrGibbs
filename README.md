@@ -15,21 +15,32 @@ These instructions are intended to be used on Raspbian Jessie-Lite, although the
 #1 Raspbian Setup
 * Expand root partition
 * Enable I2C (sudo raspi-config)
+* Fast boot (don't wait for network)
+* Enable SSH (if you want it)
 * Boot to command prompt
+* Update kernel
+```
+sudo apt-get install rpi-update
+sudo rpi-update
+sudo reboot
+```
 
 #2 Install BlueZ from source
-* sudo apt-get update
-* sudo apt-get install build-essential autoconf cmake libtool libglib2.0 libdbus-1-dev libudev-dev libical-dev libreadline-dev
-* wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.39.tar.xz
-* tar xvf bluez-5.39.tar.xz 
-* cd bluez-5.39/
-* ./configure --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd
-* make
-* sudo make install
-* sudo systemctl daemon-reload
-* sudo service bluetooth start
-* sudo hciconfig hci0 up
-* edit /etc/dbus-1/system.d/bluetooth.conf, add the following
+```
+sudo apt-get update
+sudo apt-get install git build-essential autoconf cmake libtool libglib2.0 libdbus-1-dev libudev-dev libical-dev libreadline-dev
+wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.39.tar.xz
+tar xvf bluez-5.39.tar.xz 
+cd bluez-5.39/
+./configure --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd
+make
+sudo make install
+sudo systemctl daemon-reload
+sudo service bluetooth start
+sudo hciconfig hci0 up
+```
+
+edit /etc/dbus-1/system.d/bluetooth.conf, add the following
 
 ```
 <policy user="pi">
@@ -42,41 +53,37 @@ These instructions are intended to be used on Raspbian Jessie-Lite, although the
     <allow send_interface="org.freedesktop.DBus.ObjectManager"/>
 </policy>
 ```
-* update kernel
-```
-sudo apt-get install rpi-update
-sudo rpi-update
-```
-* sudo reboot
 
-#3 Install git
-* sudo apt-get install git
 
-#4A (Raspberry Pi 2/3) Mono Installation
+#3A (Raspberry Pi 2/3) Mono Installation
 As of this writing, a weekly build of mono is required as the necassary changes to mono.posix have not made it into a release yet.  CI builds do not include ArmHF packages so if you're intalling on a Pi, Weekly is the path of least resistance (Compiling mono from git on the pi is very time consuming).
-* sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-* echo "deb http://download.mono-project.com/repo/debian alpha main" | sudo tee /etc/apt/sources.list.d/mono-alpha.list
-* sudo apt-get update
-* sudo apt-get install mono-devel
- 
-#4B (Raspberry Pi A/B/+/Zero) Mono Compilation 
-* sudo apt-get install autoconf libtool automake build-essential gettext libtool-bin
-* git clone --recursive https://github.com/mono/mono.git
-* cd mono
-* ./autogen.sh --prefix=/usr/local
-* make get-monolite-latest
-* make (This will take about 6 hours)
-* sudo make install
-* cd ..
+```
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+echo "deb http://download.mono-project.com/repo/debian alpha main" | sudo tee /etc/apt/sources.list.d/mono-alpha.list
+sudo apt-get update
+sudo apt-get install mono-devel
+```
 
-#5 clone Mr.Gibbs
-* git clone --recursive git://github.com/brookpatten/MrGibbs.git
+#3B (Raspberry Pi A/B/+/Zero) Mono Compilation 
+```
+sudo apt-get install autoconf libtool automake build-essential gettext libtool-bin
+git clone --recursive https://github.com/mono/mono.git
+cd mono
+./autogen.sh --prefix=/usr/local
+make get-monolite-latest
+make (This will take about 6 hours)
+sudo make install
+cd ..
+```
 
-#6 Build
-* cd MrGibbs/src
-* xbuild
+#4 Build Mr.Gibbs
+```
+git clone --recursive git://github.com/brookpatten/MrGibbs.git
+cd MrGibbs/src
+xbuild
+```
 
-#7 Run It
+#5 Run It
 * ./start.sh
 
-#8 [Set it to run at boot](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
+#6 [Set it to run at boot](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
