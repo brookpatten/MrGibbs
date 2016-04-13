@@ -67,11 +67,13 @@ sudo apt-get install mono-devel
 #3B (Raspberry Pi A/B/+/Zero) Mono Compilation 
 ```
 sudo apt-get install autoconf libtool automake build-essential gettext libtool-bin
+#if you want to speed things up you could limit the depth
 git clone --recursive https://github.com/mono/mono.git
 cd mono
 ./autogen.sh --prefix=/usr/local
 make get-monolite-latest
-make (This will take about 6 hours)
+#(This will take about 6 hours)
+make 
 sudo make install
 cd ..
 ```
@@ -84,6 +86,7 @@ xbuild
 ```
 
 #5 Run It
-* ./start.sh
-
+```
+./run.sh
+```
 #6 [Set it to run at boot](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
