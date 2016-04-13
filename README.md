@@ -60,9 +60,9 @@ As of this writing, a weekly build of mono is required as the necassary changes 
 * sudo apt-get install mono-devel
  
 #4B (Raspberry Pi A/B/+/Zero) Mono Compilation 
-* git clone --depth=1 https://github.com/mono/mono.git
+* wget https://github.com/mono/mono/archive/mono-4.4.0.40.tar.gz
 * sudo apt-get install autoconf libtool automake build-essential gettext
-* cd mono
+* cd mono-mono-4.4.0.40
 * ./autogen.sh --prefix=/usr/local
 * make get-monolite-latest
 * make (This will take about 4 hours)
