@@ -52,7 +52,7 @@ sudo rpi-update
 #3 Install git
 * sudo apt-get install git
 
-#4A (Raspberry Pi 2) Mono Installation
+#4A (Raspberry Pi 2/3) Mono Installation
 As of this writing, a weekly build of mono is required as the necassary changes to mono.posix have not made it into a release yet.  CI builds do not include ArmHF packages so if you're intalling on a Pi, Weekly is the path of least resistance (Compiling mono from git on the pi is very time consuming).
 * sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 * echo "deb http://download.mono-project.com/repo/debian alpha main" | sudo tee /etc/apt/sources.list.d/mono-alpha.list
