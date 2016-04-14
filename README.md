@@ -97,3 +97,36 @@ xbuild
 ./run.sh
 ```
 #6 [Set it to run at boot](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
+
+# Gibbs.exe.config Configuration Options
+Most values have sensible defaults, but if you want to tweak things, this is where you do it.
+```
+<appSettings>
+    <!--Enable Bluetooth discovery at startup to find any new devices-->
+	<add key="BtEnableDiscovery" value="True"/>
+	<!--How long to wait for new devices to appear before continuing startup-->
+	<add key="BtDiscoveryWait" value="10"/>
+	<!--which bt adapter to use-->
+	<add key="BtAdapterName" value="hci0"/>
+	<!--simulates sensor data, currently only works with gps and wind-->
+	<add key="SimulateSensorData" value="False"/>
+	<!--mac address of wind vane to use-->
+	<add key="BlendMicroAnemometerAddress" value=""/>
+	<!--device file for gps serial port-->
+	<add key="GpsPort" value="/dev/ttyAMA0"/>
+	<!--gps serial port baud rate-->
+	<add key="GpsBaud" value="9600"/>
+	<!--which i2c bus to use.  Newer pis all use 1, older ones use 0-->
+	<add key="I2CAddress" value="1"/>
+	<!--which file to use for magnetic deviation, defaults to newest cof file in exe dir-->
+	<add key="cofFilePath" value="/home/brook/Desktop/MrGibbs/src/MrGibbs/bin/Debug/WMM.COF"/>
+	<!--which pbw to send to pebbles, defaults ot newest in exe dir-->
+	<add key="PbwPath" value="/home/brook/Desktop/MrGibbs/src/MrGibbs/bin/Debug/Mr._Gibbs.pbw"/>
+	<!--where to write data files (sqlite), defaults to exe dir-->
+	<add key="DataPath" value="/home/brook/Desktop/MrGibbs/src/MrGibbs/bin/Debug"/>
+	<!--distance to mark at which mr gibbs will auto advance the "next" mark-->
+	<add key="AutoRoundMarkDistanceMeters" value="30"/>
+	<!--how long each iteration should take-->
+	<add key="TargetCycleTime" value="1000"/>
+</appSettings>
+```
