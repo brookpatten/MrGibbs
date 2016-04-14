@@ -37,8 +37,8 @@ namespace MrGibbs.Pebble
         {
             _components = new List<IPluginComponent>();
         
-            //scan for pebbles
-			var pebbles = _manager.Detect (_btAdapterName, true);
+            //scan for pebbles, we rely on MrGibbs.Configuration.BluetoothModule to have done discovery
+			var pebbles = _manager.Detect (_btAdapterName, false);
 
 			_logger.Info ("Found " + pebbles.Count + " Pebbles");
 

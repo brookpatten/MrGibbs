@@ -103,10 +103,25 @@ namespace MrGibbs.PolarCalculator
 
 		private void NormalizeWind(ref double direction, ref double speed)
 		{
-			//direction = Math.Floor (direction);
+			//normalize to angle between 0 and 360
+			direction = direction % 360;
+
+			//make it positive
+			if (direction < 0) 
+			{
+				direction = 360 + direction;
+			}
+
+			//normalize to one half of the circle
+			if (direction > 180) 
+			{
+				direction = 360 - direction;
+			}
+
+			//normalize precision
 			direction = direction - (direction % _directionResolution);
-			direction = Math.Abs (direction%180);
-			//speed = Math.Floor (direction);
+
+			//normalize speed precision
 			speed = speed - (speed % _speedResolution);
 		}
 

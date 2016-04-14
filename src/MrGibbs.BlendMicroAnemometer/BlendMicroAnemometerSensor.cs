@@ -197,10 +197,12 @@ namespace MrGibbs.BlendMicroAnemometer
 			{
 				try 
 				{
+					_logger.Info ("Connecting...");
 					_device.Connect ();
 				} 
 				catch 
 				{
+					_logger.Warn ("Failed");
 					//we can't really do much other than try again
 				}
 				System.Threading.Thread.Sleep (3000);
