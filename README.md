@@ -49,8 +49,15 @@ edit /etc/dbus-1/system.d/bluetooth.conf, add the following
     <allow send_interface="org.bluez.Agent1"/>
     <allow send_interface="org.bluez.MediaEndpoint1"/>
     <allow send_interface="org.bluez.MediaPlayer1"/>
+    <allow send_interface="org.bluez.ThermometerWatcher1"/>
+    <allow send_interface="org.bluez.AlertAgent1"/>
     <allow send_interface="org.bluez.Profile1"/>
+    <allow send_interface="org.bluez.HeartRateWatcher1"/>
+    <allow send_interface="org.bluez.CyclingSpeedWatcher1"/>
+    <allow send_interface="org.bluez.GattCharacteristic1"/>
+    <allow send_interface="org.bluez.GattDescriptor1"/>
     <allow send_interface="org.freedesktop.DBus.ObjectManager"/>
+    <allow send_interface="org.freedesktop.DBus.Properties"/>
 </policy>
 ```
 
