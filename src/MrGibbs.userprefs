@@ -1,8 +1,8 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs/App.config">
     <Files>
-      <File FileName="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" Line="162" Column="8" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="203" Column="11" />
+      <File FileName="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" Line="161" Column="1" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="190" Column="4" />
       <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerModule.cs" Line="1" Column="1" />
       <File FileName="MrGibbs.Configuration/BluetoothModule.cs" Line="22" Column="5" />
       <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/BlueZPath.cs" Line="30" Column="34" />
@@ -11,13 +11,15 @@
       <File FileName="lib/PebbleSharp/Mono.BlueZ/dbus-sharp/src/Unix/UnixStream.cs" Line="90" Column="1" />
       <File FileName="lib/PebbleSharp/Mono.BlueZ/dbus-sharp/src/Protocol/Transport.cs" Line="160" Column="1" />
       <File FileName="lib/PebbleSharp/Mono.BlueZ/dbus-sharp/src/Connection.cs" Line="242" Column="5" />
-      <File FileName="MrGibbs/Program.cs" Line="1" Column="1" />
+      <File FileName="MrGibbs/Program.cs" Line="17" Column="18" />
+      <File FileName="MrGibbs/App.config" Line="7" Column="66" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/home/brook/Desktop/MrGibbs/src/MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" line="213" column="1" />
+      <Breakpoint file="/home/brook/Desktop/MrGibbs/src/lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" line="172" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

@@ -71,10 +71,6 @@
       <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
       <Name>MrGibbs.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.Gps\MrGibbs.Gps.csproj">
-      <Project>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</Project>
-      <Name>MrGibbs.Gps</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Infrastructure\MrGibbs.Infrastructure.csproj">
       <Project>{860DCFBC-164C-4BCA-A112-AF0439A60211}</Project>
       <Name>MrGibbs.Infrastructure</Name>
@@ -99,17 +95,13 @@
       <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
       <Name>MrGibbs.Pebble</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
-      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
-      <Name>MrGibbs.HMC5883</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
-      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
-      <Name>MrGibbs.MPU6050</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.BlendMicroAnemometer\MrGibbs.BlendMicroAnemometer.csproj">
       <Project>{26A14CFB-80CB-4D89-9101-10D9E34514B9}</Project>
       <Name>MrGibbs.BlendMicroAnemometer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Gps\MrGibbs.Gps.csproj">
+      <Project>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</Project>
+      <Name>MrGibbs.Gps</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
