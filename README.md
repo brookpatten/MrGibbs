@@ -25,7 +25,7 @@ sudo rpi-update
 sudo reboot
 ```
 
-#2 Install BlueZ from source
+#2 Install & Configure BlueZ from source
 ```
 sudo apt-get update
 sudo apt-get install git build-essential autoconf cmake libtool libglib2.0 libdbus-1-dev libudev-dev libical-dev libreadline-dev
@@ -35,12 +35,9 @@ cd bluez-5.39/
 ./configure --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd
 make
 sudo make install
-sudo systemctl daemon-reload
-sudo service bluetooth start
-sudo hciconfig hci0 up
 ```
 
-edit /etc/dbus-1/system.d/bluetooth.conf, add the following
+Edit /etc/dbus-1/system.d/bluetooth.conf, add the following
 
 ```
 <policy user="pi">
@@ -60,7 +57,24 @@ edit /etc/dbus-1/system.d/bluetooth.conf, add the following
     <allow send_interface="org.freedesktop.DBus.Properties"/>
 </policy>
 ```
+Edit /etc/systemd/system/bluetooth.target.wants/bluetooth.service.
+Change the line
+```
+ExecStart=/usr/libexec/bluetooth/bluetoothd
+```
+to
+```
+ExecStart=/usr/libexec/bluetooth/bluetoothd --experimental
+```
 
+Start up bluetooth
+
+```
+sudo systemctl daemon-reload
+sudo hciconfig hci0 down
+sudo service bluetooth start
+sudo hciconfig hci0 up
+```
 
 #3A (Raspberry Pi 2/3) Mono Installation
 As of this writing, a weekly build of mono is required as the necassary changes to mono.posix have not made it into a release yet.  CI builds do not include ArmHF packages so if you're intalling on a Pi, Weekly is the path of least resistance (Compiling mono from git on the pi is very time consuming).
