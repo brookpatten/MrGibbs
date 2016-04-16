@@ -102,28 +102,10 @@ namespace MrGibbs.Pebble
 		{
 			_lineCount = 3;
 			if (_lineStateMaps == null) {
-				/* These indexes MUST match the order used on the pebble otherwise things will get weird
-                    Speed
-                    VMG
-                    VMC
-                    COG
-                    Heading (mag)
-                    Heading (True)
-                    Heel
-                    Wind Speed (Apparant)
-                    Wind Speed (True)
-                    Wind Direction (Apparant)
-                    Wind Direction (True)
-                    Nominal Speed
-                    % Nominal Speed
-                    Top Speed
-                    Countdown
-                    Distance to Mark
-		Pitch
-		VMG %
-		VMC %
-Current Tack Delta
-Course Relative*/
+				/*
+				 * This order must match https://github.com/brookpatten/MrGibbs-Pebble/blob/master/src/DashboardMapMenu.c
+				 * or things will get weird
+				*/
 				_lineStateMaps = new List<LineStateMap> ();
 				_lineStateMaps.Add (StateValueMap(StateValue.SpeedInKnots, "Speed (kn)"));
 				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGood, "VMG (kn)",missing:"?"));
@@ -132,12 +114,12 @@ Course Relative*/
 				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeading, "Heading (Mag)"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeadingWithVariation, "Heading (True)"));
 				_lineStateMaps.Add (StateValueMap(StateValue.Heel, "Heel"));
-				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Speed (Apparant)"));
-				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Speed (True)"));
-				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Direction (Aparant)"));
-				_lineStateMaps.Add (new LineStateMap (s => "", "Wind Direction (True)"));
-				_lineStateMaps.Add (new LineStateMap (s => "", "Nominal Speed"));
-				_lineStateMaps.Add (new LineStateMap (s => "", "% Nominal Speed"));
+				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindSpeedKnots, "Wind Speed (Apparant)",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindSpeedKnots, "Wind Speed (True)",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindDirection, "Wind Direction (Aparant)"));
+				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindDirection, "Wind Direction (True)",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedInKnotsForWind, "Nominal Speed",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedPercentForWind, "% Nominal Speed",format:"{0:0}%",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MaximumSpeedInKnots, "Top Speed (kn)"));
 				_lineStateMaps.Add (new LineStateMap (s => s.Countdown.HasValue ? s.Countdown.Value.Minutes + ":" + s.Countdown.Value.Seconds.ToString ("00") : "", "Countdown", () => _queueCommand ((s, r) => r.CountdownAction ())));
 				_lineStateMaps.Add (new LineStateMap (s => s.StateValues.ContainsKey(StateValue.DistanceToTargetMarkInYards) ? string.Format ("{0}{1:0}", s.TargetMark != null ? s.TargetMark.Abbreviation : "", s.StateValues[StateValue.DistanceToTargetMarkInYards]) : "?", "Distance to Mark (yds)"));
@@ -146,6 +128,10 @@ Course Relative*/
 				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGoodOnCoursePercent,"VMC %",format:"{0:0.0}%",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.CurrentTackCourseOverGroundDelta, "Current Tack Delta"));
 				_lineStateMaps.Add (StateValueMap(StateValue.CourseOverGroundRelativeToCourse, "Course Relative"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MastHeel, "Mast Heel"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MastPitch, "Mast Pitch"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MastBendBeam, "Mast Bend Port/Starboard"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MastBendCenterline, "Mast Bend Fore/Aft"));
 			}
 
 			//TODO: remember what the last settings for this pebble were and use those
@@ -153,6 +139,11 @@ Course Relative*/
 			_lineValueIndexes.Add (0);//speed
 			_lineValueIndexes.Add (3);//cog
 			_lineValueIndexes.Add (14);//countdown
+
+			//perfect world future defaults:
+			//% target speed
+			//VMC %
+			//Current tack delta
 
 			if (_commandMaps == null) {
 				_commandMaps = new Dictionary<UICommand, Action<AppMessagePacket>> ();

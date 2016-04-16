@@ -5,3 +5,6 @@
 [submodule "src/lib/Mono.Linux.I2C"]
 	path = src/lib/Mono.Linux.I2C
 	url = https://github.com/brookpatten/Mono.Linux.I2C.git
+[submodule "src/MrGibbs.Pebble/Pebble"]
+	path = src/MrGibbs.Pebble/Pebble
+	url = https://github.com/brookpatten/MrGibbs-Pebble.git
