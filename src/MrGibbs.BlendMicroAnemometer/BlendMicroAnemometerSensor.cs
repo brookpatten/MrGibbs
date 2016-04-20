@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Mono.BlueZ.DBus;
 using DBus;
@@ -17,6 +18,7 @@ namespace MrGibbs.BlendMicroAnemometer
     /// </summary>
     public class BlendMicroAnemometerSensor:ISensor
     {
+		private Task _reconnect;
         private ILogger _logger;
         private BlendMicroAnemometerPlugin _plugin;
 		private IClock _clock;
@@ -124,7 +126,7 @@ namespace MrGibbs.BlendMicroAnemometer
 				}
 
 				_logger.Debug ("Received BLE Data from Blend Micro");
-				_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
+				_logger.Info (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
 
 				_direction = CalculateAngle (vaneDifference, anemometerDifference);
 				_speed = CalculateSpeedInKnots (anemometerDifference);
@@ -132,7 +134,7 @@ namespace MrGibbs.BlendMicroAnemometer
 				_heel = (double)(x-_calibrateX.Value) * AccelFactor * (360.0 / 4.0);
 				_pitch = (double)(y-_calibrateY.Value) * AccelFactor * (360.0 / 4.0);
 
-				_logger.Debug (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
+				_logger.Info (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
 			}
 		}
 
@@ -186,7 +188,7 @@ namespace MrGibbs.BlendMicroAnemometer
 		/// <param name="anemometerDifference">Anemometer difference.</param>
 		private double CalculateAngle(long vaneDifference,long anemometerDifference)
 		{
-			return ((double)vaneDifference/(double)anemometerDifference)*360.0;
+			return 360.0-((((double)vaneDifference/(double)anemometerDifference)*360.0) % 360.0);
 		}
 
         /// <inheritdoc />
@@ -216,20 +218,6 @@ namespace MrGibbs.BlendMicroAnemometer
 			string name = _device.Name;
 			try 
 			{
-				//var servicePaths = _device.GattServices;
-				//_servicePath = servicePaths.Single ();
-				//_service = _connection.System.GetObject<GattService1> (BlueZPath.Service, _servicePath);
-				//var charPaths = _service.Characteristics;
-				//foreach (var charPath in charPaths) {
-				//	var vChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, charPath);
-				//
-				//	if (vChar.UUID.ToUpper () == _charRead) {
-				//		_readChar = vChar;
-				//		_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, charPath);
-				//		break;
-				//	}
-				//}
-
 				var readCharPath = BlueZPath.GattCharacteristic (_adapterName, _deviceAddress, _serviceId, _readCharId);
 				_readChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, readCharPath);
 				_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, readCharPath);
@@ -276,14 +264,35 @@ namespace MrGibbs.BlendMicroAnemometer
 				//if we're not getting data attempt to reconnect
 				if (!_device.Connected
 				    && (!_lastReconnectAttempt.HasValue 
-				        || _clock.GetUtcTime()-_lastReconnectAttempt > new TimeSpan(0,0,3))) 
+				        || _clock.GetUtcTime()-_lastReconnectAttempt > new TimeSpan(0,0,5))) 
 				{
-					_logger.Warn("BLE Connection to Anemometer Lost, Attempting to Reconnect");
-					_lastReconnectAttempt = _clock.GetUtcTime ();
-					_device.Connect ();
+					//begin a reconnect thread out of process only if there isn't already one in progress
+					if (_reconnect == null || _reconnect.IsFaulted || _reconnect.IsCanceled || _reconnect.IsCompleted) {
+						_reconnect = BeginReconnect ();
+					}
 				}
 			}
         }
+
+		private Task BeginReconnect ()
+		{
+			return Task.Factory.StartNew (() => {
+				_logger.Warn("BLE Anemometer Lost, Attempting to Reconnect");
+
+				try 
+				{
+					_device.Connect ();
+					_logger.Warn ("BLE Anemometer Reconnected Successfully");
+					_lastReconnectAttempt = null;
+				} 
+				catch 
+				{
+					_logger.Warn ("BLE Anemometer Reconnection Failed");
+					_lastReconnectAttempt = _clock.GetUtcTime ();
+					throw;
+				}
+			});
+		}
 
         /// <inheritdoc />
         public void Dispose()
