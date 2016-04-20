@@ -8,6 +8,7 @@
     <RootNamespace>MrGibbs.PolarCalculator</RootNamespace>
     <AssemblyName>MrGibbs.PolarCalculator.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>2.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

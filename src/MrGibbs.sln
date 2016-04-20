@@ -353,6 +353,7 @@ Global
 		$0.XmlFormattingPolicy = $30
 		$30.inheritsSet = null
 		$30.scope = application/config+xml
+		version = 2.0
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

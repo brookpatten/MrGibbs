@@ -8,6 +8,7 @@
     <RootNamespace>MrGibbs.HMC5883</RootNamespace>
     <AssemblyName>MrGibbs.HMC5883.Plugin</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>2.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
