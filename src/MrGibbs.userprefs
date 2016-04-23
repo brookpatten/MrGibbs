@@ -1,14 +1,20 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs/App.config">
     <Files>
-      <File FileName="MrGibbs.PolarCalculator/PolarRecorder.cs" Line="1" Column="1" />
+      <File FileName="MrGibbs.PolarCalculator/PolarRecorder.cs" Line="23" Column="76" />
       <File FileName="MrGibbs.StateLogger/StateRecorder.cs" Line="1" Column="1" />
       <File FileName="MrGibbs.PolarCalculator/PolarPlugin.cs" Line="1" Column="1" />
       <File FileName="MrGibbs.MPU6050/Mpu6050Sensor.cs" Line="85" Column="20" />
       <File FileName="MrGibbs.MPU6050/Imu6050.cs" Line="27" Column="10" />
       <File FileName="MrGibbs.HMC5883/Hmc5883Sensor.cs" Line="1" Column="1" />
-      <File FileName="MrGibbs/App.config" Line="9" Column="15" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="268" Column="6" />
+      <File FileName="MrGibbs/App.config" Line="24" Column="1" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="273" Column="6" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/TrueWindCalculator.cs" Line="1" Column="1" />
+      <File FileName="MrGibbs.PolarCalculator/PolarModule.cs" Line="24" Column="102" />
+      <File FileName="MrGibbs.Pebble/PebbleModule.cs" Line="1" Column="1" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerModule.cs" Line="1" Column="1" />
+      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs" Line="60" Column="19" />
+      <File FileName="MrGibbs/Program.cs" Line="46" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

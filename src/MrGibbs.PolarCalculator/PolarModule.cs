@@ -20,7 +20,8 @@ namespace MrGibbs.PolarCalculator
 
 			Kernel.Bind<PolarRecorder> ()
 				  .ToSelf ()
-				  .InSingletonScope ();
+				  .InSingletonScope ()
+			      .WithConstructorArgument ("forceSymmetricalPolar", ConfigurationHelper.ReadBoolAppSetting("ForceSymmetricalPolar",true));
 
 			Kernel.Bind<IPlugin> ()
 				  .To<PolarPlugin> ()

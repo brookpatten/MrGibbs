@@ -27,10 +27,7 @@ namespace MrGibbs.BlendMicroAnemometer
 
 		public BlendMicroAnemometerPlugin(ILogger logger,IClock clock,TimeSpan maximumDataAge,DBusConnection connection,string btAdapterName,string deviceAddress,bool simulated)
         {
-			if (string.IsNullOrWhiteSpace (deviceAddress)) 
-			{
-				throw new ArgumentNullException ("deviceAddress");
-			}
+			
 			_btAdapterName = btAdapterName;
 			_deviceAddress = deviceAddress;
 			_connection = connection;
@@ -54,6 +51,11 @@ namespace MrGibbs.BlendMicroAnemometer
 			} 
 			else 
 			{
+				if (string.IsNullOrWhiteSpace (_deviceAddress)) 
+				{
+					throw new ArgumentNullException ("deviceAddress");
+				}
+
 				var bmas = new BlendMicroAnemometerSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_deviceAddress, _connection);
 				bmas.Start ();
 				sensor = bmas;

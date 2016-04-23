@@ -18,9 +18,12 @@ namespace MrGibbs.PolarCalculator
 		private double _directionResolution=2;
 		private double _speedResolution=0.5;
 
-		public PolarRecorder (IDbConnection connection)
+		private bool _forceSymmetricalPolar;
+
+		public PolarRecorder (IDbConnection connection,bool forceSymmetricalPolar)
 		{
 			_connection = connection;
+			_forceSymmetricalPolar = forceSymmetricalPolar;
 			Initialize ();
 		}
 
@@ -113,7 +116,7 @@ namespace MrGibbs.PolarCalculator
 			}
 
 			//normalize to one half of the circle
-			if (direction > 180) 
+			if (_forceSymmetricalPolar && direction > 180) 
 			{
 				direction = 360 - direction;
 			}
