@@ -17,6 +17,7 @@ These instructions are intended to be used on Raspbian Jessie-Lite, although the
 * Enable I2C (sudo raspi-config)
 * Fast boot (don't wait for network)
 * Enable SSH (if you want it)
+* Disable Shell and Kernel Messages on the serial connection
 * Boot to command prompt
 * Update kernel
 ```
