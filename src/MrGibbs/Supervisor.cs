@@ -73,10 +73,10 @@ namespace MrGibbs
 
             //remove any plugins that failed to initialize
             //_configuration.Plugins = _configuration.Plugins.Where(x => x.Initialized).ToList();
-            foreach (var plugin in _configuration.Plugins)
-            {
-                _logger.Info(plugin.GetType().Name + " Initialized OK");
-            }
+            //foreach (var plugin in _configuration.Plugins)
+            //{
+            //    _logger.Info(plugin.GetType().Name + " Initialized OK");
+            //}
             
         }
 

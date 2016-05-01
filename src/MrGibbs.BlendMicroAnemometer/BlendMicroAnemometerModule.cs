@@ -15,7 +15,12 @@ namespace MrGibbs.BlendMicroAnemometer
 	{
 		public override void Load()
 		{
-			Kernel.LoadIfNotLoaded<BluetoothModule> ();
+			string address = ConfigurationHelper.ReadStringAppSetting ("BlendMicroAnemometerAddress", "");
+
+			if (!string.IsNullOrEmpty (address)) 
+			{
+				Kernel.LoadIfNotLoaded<BluetoothModule> ();
+			}
 
 			Kernel.Bind<IPlugin> ()
 				.To<BlendMicroAnemometerPlugin> ()
@@ -23,7 +28,7 @@ namespace MrGibbs.BlendMicroAnemometer
 			      .WithConstructorArgument("simulated",AppConfig.SimulateSensorData)
 				  .WithConstructorArgument ("maximumDataAge", new TimeSpan (0, 0, 3))
 			      .WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting("BtAdapterName","hci0"))
-			      .WithConstructorArgument ("deviceAddress", ConfigurationHelper.ReadStringAppSetting("BlendMicroAnemometerAddress",""));
+			      .WithConstructorArgument ("deviceAddress", address);
 		}
 
 		public override void Unload ()

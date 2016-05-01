@@ -505,7 +505,7 @@ namespace  MrGibbs.MagneticVariation
 
                 sr.Close();
                 sr.Dispose();
-				_logger.Info("Loaded Magnetic Variation Coefficients from File "+_inputFilePath);
+				_logger.Debug("Loaded Magnetic Variation Coefficients from File "+_inputFilePath);
             } 
             catch (Exception ex)
             {

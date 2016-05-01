@@ -78,8 +78,10 @@ namespace MrGibbs.Pebble
 			_plugin = plugin;
 			_logger = logger;
 			_pebble = pebble;
+
 			_pebble.ConnectAsync ().Wait ();
 			_logger.Info ("Connected to pebble " + _pebble.PebbleID);
+			
 			_transactionId = 255;
 
 			var progress = new Progress<ProgressValue> (pv => _logger.Debug ("Installing app on pebble " + pebble.PebbleID + ", " + pv.ProgressPercentage + "% complete. " + pv.Message));

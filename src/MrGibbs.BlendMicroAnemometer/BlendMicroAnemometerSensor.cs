@@ -134,7 +134,7 @@ namespace MrGibbs.BlendMicroAnemometer
 				_heel = (double)(x-_calibrateX.Value) * AccelFactor * (360.0 / 4.0);
 				_pitch = (double)(y-_calibrateY.Value) * AccelFactor * (360.0 / 4.0);
 
-				_logger.Debug (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
+				_logger.Info (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
 			}
 		}
 

@@ -45,7 +45,7 @@ namespace MrGibbs
 						supervisor.Initialize ();
 						if (isFirst) {
 							var config = ConfigurationHelper.GenerateDefaultConfiguration ();
-							logger.Info ("Default Configuration" + System.Environment.NewLine + config);
+							logger.Debug ("Default Configuration" + System.Environment.NewLine + config);
 							isFirst = false;
 						}
 					}
