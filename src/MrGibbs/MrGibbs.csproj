@@ -104,6 +104,14 @@
       <Project>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</Project>
       <Name>MrGibbs.Gps</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
+      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
+      <Name>MrGibbs.MPU6050</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
+      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
+      <Name>MrGibbs.HMC5883</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
