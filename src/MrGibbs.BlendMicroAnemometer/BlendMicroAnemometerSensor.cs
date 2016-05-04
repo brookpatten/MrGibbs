@@ -126,7 +126,7 @@ namespace MrGibbs.BlendMicroAnemometer
 				}
 
 				_logger.Debug ("Received BLE Data from Blend Micro");
-				_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
+				_logger.Info(string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
 
 				_direction = CalculateAngle (vaneDifference, anemometerDifference);
 				_speed = CalculateSpeedInKnots (anemometerDifference);
@@ -152,7 +152,7 @@ namespace MrGibbs.BlendMicroAnemometer
 		/// <param name="closureRate">Closure rate.</param>
 		private double CalculateSpeedInKnots(long closureRate)
 		{
-			double rps = 1000.0/(double)closureRate;
+			double rps = (1000.0 * 1000.0)/(double)closureRate;
 
 			double mph;
 
