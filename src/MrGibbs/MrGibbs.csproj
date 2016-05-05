@@ -80,14 +80,6 @@
       <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
       <Name>MrGibbs.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.StateLogger\MrGibbs.StateLogger.csproj">
-      <Project>{17B81C86-A8FF-46D5-8513-048B0571FDCF}</Project>
-      <Name>MrGibbs.StateLogger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.PolarCalculator\MrGibbs.PolarCalculator.csproj">
-      <Project>{9109FAAA-849B-4FDA-973C-847275353B5E}</Project>
-      <Name>MrGibbs.PolarCalculator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.MagneticVariation\MrGibbs.MagneticVariation.csproj">
       <Project>{2BE5501B-FA4A-408F-8269-F2D6E7A02699}</Project>
       <Name>MrGibbs.MagneticVariation</Name>
@@ -96,21 +88,9 @@
       <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
       <Name>MrGibbs.Pebble</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.BlendMicroAnemometer\MrGibbs.BlendMicroAnemometer.csproj">
-      <Project>{26A14CFB-80CB-4D89-9101-10D9E34514B9}</Project>
-      <Name>MrGibbs.BlendMicroAnemometer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Gps\MrGibbs.Gps.csproj">
       <Project>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</Project>
       <Name>MrGibbs.Gps</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
-      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
-      <Name>MrGibbs.MPU6050</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
-      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
-      <Name>MrGibbs.HMC5883</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

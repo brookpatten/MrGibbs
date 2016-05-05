@@ -45,6 +45,9 @@ namespace MrGibbs.Pebble
 	/// </summary>
 	public class PebbleViewer : IViewer
 	{
+		private Task _reconnect;
+		private DateTime? _lastReconnectAttempt;
+
 		/// <summary>
 		/// commands that the pebble may send
 		/// </summary>
@@ -270,53 +273,74 @@ namespace MrGibbs.Pebble
         public void Update(State state)
         {
 
-            //don't send anything until the last send has completed or errored
-            if (_lastSend == null || _lastSend.IsCanceled || _lastSend.IsCompleted || _lastSend.IsFaulted 
-                //or if it has exceeded the send timeout
-                || !_lastSendAt.HasValue || state.SystemTime - _lastSendAt.Value > _sendTimeout)
-            {
-                _transactionId--;
-				AppMessagePacket message = new AppMessagePacket();
-                message.ApplicationId = _uuid;
-                message.TransactionId = _transactionId;
-                message.Command = (byte) Command.Push;
+			//don't send anything until the last send has completed or errored
+			if (_lastSend == null || _lastSend.IsCanceled || _lastSend.IsCompleted || _lastSend.IsFaulted
+																				   //or if it has exceeded the send timeout
+				|| !_lastSendAt.HasValue || state.SystemTime - _lastSendAt.Value > _sendTimeout) 
+			{
 
-                string captions = "";
+				if (!_pebble.IsAlive) 
+				{
+					//begin a reconnect thread out of process only if there isn't already one in progress
+					if ((!_lastReconnectAttempt.HasValue 
+					     || state.SystemTime -_lastReconnectAttempt > new TimeSpan(0,0,10)) && (_reconnect == null || _reconnect.IsFaulted || _reconnect.IsCanceled || _reconnect.IsCompleted)) {
+						_reconnect = BeginReconnect (state.SystemTime);
+					}
+				} else {
+					_transactionId--;
+					AppMessagePacket message = new AppMessagePacket ();
+					message.ApplicationId = _uuid;
+					message.TransactionId = _transactionId;
+					message.Command = (byte)Command.Push;
 
-                for (int i = 0; i < _lineCount; i++)
-                {
-                    LineStateMap map = null;
-                    lock (_lineValueIndexes)
-                    {
-                        map = _lineStateMaps[_lineValueIndexes[i]];
-                    }
-                    message.Values.Add(new AppMessageString() {Key = (uint) message.Values.Count, Value = map.Caption});
-                    captions = captions + map.Caption + ",";
-                    message.Values.Add(new AppMessageString()
-                    {
-                        Key = (uint) message.Values.Count,
-                        Value = map.Get(state)
-                    });
-                }
+					string captions = "";
 
-                if (state.Message != null)
-                {
-                    message.Values.Add(new AppMessageString()
-                    {
-                        Key = (uint) message.Values.Count,
-                        Value = state.Message.Text
-                    });
-                }
+					for (int i = 0; i < _lineCount; i++) {
+						LineStateMap map = null;
+						lock (_lineValueIndexes) {
+							map = _lineStateMaps [_lineValueIndexes [i]];
+						}
+						message.Values.Add (new AppMessageString () { Key = (uint)message.Values.Count, Value = map.Caption });
+						captions = captions + map.Caption + ",";
+						message.Values.Add (new AppMessageString () {
+							Key = (uint)message.Values.Count,
+							Value = map.Get (state)
+						});
+					}
 
-                _lastSend = _pebble.SendApplicationMessage(message);
-                _lastSendAt = state.SystemTime;
-                _logger.Debug("Sent state to pebble " + _pebble.PebbleID+" ("+captions+")");
-            }
-            else
-            {
-                //_logger.Debug("Skipped send to pebble, previous send has not completed yet");
-            }
-        }
+					if (state.Message != null) {
+						message.Values.Add (new AppMessageString () {
+							Key = (uint)message.Values.Count,
+							Value = state.Message.Text
+						});
+					}
+
+					_lastSend = _pebble.SendApplicationMessage (message);
+					_lastSendAt = state.SystemTime;
+					_logger.Debug ("Sent state to pebble " + _pebble.PebbleID + " (" + captions + ")");
+				}
+			} 
+		}
+
+		private Task BeginReconnect (DateTime now)
+		{
+			return Task.Factory.StartNew (() => {
+				_logger.Warn("Pebble " + _pebble.PebbleID + " lost, Attempting to Reconnect");
+
+				try 
+				{
+					_pebble.Reconnect ();
+					_logger.Warn ("Pebble Reconnected Successfully");
+					_lastReconnectAttempt = null;
+				} 
+				catch 
+				{
+					_logger.Warn ("Pebble Reconnection Failed");
+					_lastReconnectAttempt = now;
+					throw;
+				}
+			});
+		}
 
 		/// <summary>
 		/// Given projected gps points, converts to a simple set of coordinates that can be 
