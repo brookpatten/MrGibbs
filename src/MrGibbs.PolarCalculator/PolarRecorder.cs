@@ -15,7 +15,7 @@ namespace MrGibbs.PolarCalculator
 		private IPlugin _plugin;
 		private IDbConnection _connection;
 		//TODO: make these configurable?
-		private double _directionResolution=2;
+		private double _directionResolution=5;
 		private double _speedResolution=0.5;
 
 		private bool _forceSymmetricalPolar;
