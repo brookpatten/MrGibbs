@@ -30,7 +30,8 @@ namespace MrGibbs.Models
 		MastBendBeam,
 		MastBendCenterline,
 		PeakSpeedInKnotsForWind,
-		PeakSpeedPercentForWind
+		PeakSpeedPercentForWind,
+		AbsoluteWindDirection,
 	}
 }
 

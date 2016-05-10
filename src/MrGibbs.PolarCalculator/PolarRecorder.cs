@@ -144,7 +144,7 @@ namespace MrGibbs.PolarCalculator
 				SpeedInKnots = state.StateValues[StateValue.SpeedInKnots],
 				Time = state.BestTime
 			};
-			var existing = _connection.Query<PolarValue> ("select * from Polar where TrueWindDirection=@TrueWindDirection and TrueWindSpeedKnots=@TrueWindSpeedKnots", newPolarValue).SingleOrDefault();
+			var existing = _connection.Query<PolarValue> ("select * from Polar where TrueWindDirection=@TrueWindDirection and TrueWindSpeedKnots<=@TrueWindSpeedKnots order by SpeedInKnots desc", newPolarValue).FirstOrDefault();
 
 			return existing;
 		}

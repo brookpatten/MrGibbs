@@ -1,10 +1,7 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.PolarCalculator/PolarRecorder.cs">
     <Files>
-      <File FileName="MrGibbs/App.config" Line="5" Column="48" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerModule.cs" Line="26" Column="32" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerPlugin.cs" Line="41" Column="23" />
-      <File FileName="MrGibbs.BlendMicroAnemometer/BlendMicroAnemometerSensor.cs" Line="104" Column="1" />
+      <File FileName="MrGibbs.PolarCalculator/PolarRecorder.cs" Line="17" Column="34" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

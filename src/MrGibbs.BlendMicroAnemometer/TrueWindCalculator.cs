@@ -56,6 +56,9 @@ namespace MrGibbs.BlendMicroAnemometer
 
 				state.StateValues[StateValue.TrueWindDirection] = AngleUtilities.RadiansToDegrees(trueWindPolar.Theta);
 				state.StateValues[StateValue.TrueWindSpeedKnots] = trueWindPolar.Radius;
+
+				//calculate absolute wind
+				state.StateValues [StateValue.AbsoluteWindDirection] = AngleUtilities.RadiansToDegrees (AngleUtilities.NormalizeAngle(trueWindPolar.Theta - boatPolar.Theta));
 			}
 		}
 
