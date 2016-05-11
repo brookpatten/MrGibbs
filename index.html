@@ -20,17 +20,16 @@
       <a href="http://blog.mrgibbs.io/mr-gibbs-bench" class="btn">Video</a>
       <a href="http://astore.amazon.com/mrgib-20" class="btn">Parts</a>
       <a href="http://brookp.me" class="btn">Author</a>
-      <!--<a href="https://github.com/brookpatten/MrGibbs/tarball/master" class="btn">Download .tar.gz</a>-->
     </section>
 
     <section class="main-content">
       <h3>
-<a id="welcome" class="anchor" href="#welcome" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>A powerful, inexpensive, and extensible tactical sailing computer</h3>
+<a id="welcome" class="anchor" href="#welcome" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>A powerful, inexpensive, and extensible tactical sailing computer for dinghy racers</h3>
 
 <p>The goal of this project is to build a system which will meet or exceed the functionality of commercially available tactical sailing compass/gps units, with inexpensive, easy to acquire commodity hardware. A minimum configuration of the Mr. Gibbs unit and a <a rel="nofollow" href="http://www.amazon.com/gp/product/B00BKEQBI0/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00BKEQBI0&linkCode=as2&tag=mrgib-20&linkId=VR5KWVYTKUIR67JH">Pebble</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00BKEQBI0" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
  watch will cost less than $150 to build. The software is developed primarily in .Net and uses a simple plugin framework to allow easy extensibiliy and modification.</p>
 
-<img src="images/2015.jpg" alt="gibbs hardware" class="paragraph-image"/>
+<img src="images/2016.jpg" alt="gibbs hardware" class="paragraph-image-portrait"/>
 
 <h3>
 <a id="theory" class="anchor" href="#theory" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Design and goals</h3>
@@ -47,7 +46,7 @@
 <h3>
 <a id="function" class="anchor" href="#function" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>So what does it do (now)?</h3>
 
-<p>The "2015" Model consisted of Mr. Gibbs and 2 pebble watches, one for skipper, one for crew.  At startup it calibrates the accelerometer and gyro to the current orientation, acquires a gps fix and pairs with the 2 watches.  Each watch displays a configurable "dashboard" which shows 3 metrics at a time.  The default 3 metrics are speed, heading, and stopwatch.  The users can start/stop/sync the watch (note that the watch runs on mr.gibbs, thus it is always "in sync" on the watches.</p>
+<p>The 2.0 Model consists of Mr. Gibbs, An optional mast sensor and 1 or more pebble watches, one for skipper, one for crew.  At startup it calibrates the accelerometer and gyro to the current orientation, acquires a gps fix, connects to the mast sensors (optional), and pairs with the watches.  Each watch displays a configurable "dashboard" which shows 3 metrics at a time.  The default 3 metrics are speed, heading, and stopwatch.  The users can start/stop/sync the watch (note that the watch runs on mr.gibbs, thus it is always "in sync" on the watches.</p>
 
 <p>Users can optionally give Mr.Gibbs data about the course so that more sophisticated metrics and tactical data can be calculated.  This can be done in one of several ways</p>
 <ul>
@@ -76,32 +75,42 @@
 	<li>Course Relative - The current heading, subtracted from the angle of the course (aka how many degrees off the course are you)</li>
 </ul>
 
+<p>If the wind sensor is used, the following values are also available</p>
+<ul>
+  <li>Apparent Wind Angle</li>
+  <li>Apparent Wind Speed</li>
+  <li>True Wind Angle</li>
+  <li>True Wind Direction</li>
+  <li>True Wind Speed</li>
+  <li>Mast Heel/Pitch</li>
+  <li>Mast Bend</li>
+  <li>Target Speed for Current Wind</li>
+  <li>Current Speed as % of Targe Speed</li>
+</ul>
+
 <p>Finally, all data is logged to a sqlite database and can be replayed and viewed in <a href='https://github.com/brookpatten/VisualSail'>VisualSail</a></p>
 
 <h3>
 <a id="hardware" class="anchor" href="#hardware" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Hardware</h3>
 <p>The current prototype consists of 3 major components...</p>
-<img src="images/gibbs.jpg" alt="gibbs" class="paragraph-image"/>
+<img src="images/2016-internal.JPG" alt="gibbs" class="paragraph-image"/>
+<img src="images/2016-open.JPG" alt="gibbs" class="paragraph-image"/>
+<img src="images/2016-closed.JPG" alt="gibbs" class="paragraph-image"/>
 <em>Mr. Gibbs himself, "The Box"</em>
 <p>The brains of the operation.  This should be secured somewhere in the boat where it will have a clear view of the sky and a minimal amount of radio or magnetic interference (away from electrical components or engine) as they will affect the accuracy of the compass.  This unit does not have any external display or buttons, display and control are both done entirely through the <a rel="nofollow" href="http://www.amazon.com/gp/product/B00BKEQBI0/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00BKEQBI0&linkCode=as2&tag=mrgib-20&linkId=F6ALZVFKDT53LOFR">Pebble</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00BKEQBI0" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
 .</p>
 <ul>
-	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B00T2U7R7I/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00T2U7R7I&linkCode=as2&tag=mrgib-20&linkId=EUSIVZ5PINSMCBSY">Raspberry Pi (A,B,B+,2, or Zero)</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00T2U7R7I" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-  (3 should work too, but it hasn't been tested yet)</li>
+	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B00T2U7R7I/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00T2U7R7I&linkCode=as2&tag=mrgib-20&linkId=EUSIVZ5PINSMCBSY">Raspberry Pi Zero</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00T2U7R7I" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></li>
 	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B00NSKW5KW/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00NSKW5KW&linkCode=as2&tag=mrgib-20&linkId=4UHF6NIGTHBZRQDY">Ublox NEO-6M</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00NSKW5KW" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /> GPS
 </li>
 	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B008BOPN40/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B008BOPN40&linkCode=as2&tag=mrgib-20&linkId=5N4NDSMY3RFPFGOT">MPU-6050</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B008BOPN40" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
  6 axis Accel/Gyro (support for MPU-9250 9-axis in development)</li>
 	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B00P7QBS12/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00P7QBS12&linkCode=as2&tag=mrgib-20&linkId=XVVTAUXLWZ6Z6YB6">HMC5883L</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00P7QBS12" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
  Magnetometer (Compass)</li>
-	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B00F25Z0FS/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00F25Z0FS&linkCode=as2&tag=mrgib-20&linkId=2XPIE6HARU3DWZHZ">Bluetooth 4.0 USB</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00F25Z0FS" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-</li>
-	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B00LRK8IV0/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00LRK8IV0&linkCode=as2&tag=mrgib-20&linkId=42AZSTNSN6IQ4IKL">Portable Power Bank - 5,600 mAh</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00LRK8IV0" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-</li>
-	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B003JFU652/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B003JFU652&linkCode=as2&tag=mrgib-20&linkId=ZEVS6OCB7ZFMCCTV">Plano Guide Series 1449 Size Polycarbonate Field Box</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B003JFU652" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-</li>
-	<li>Circuit board, wiring etc</li>
-	<li>Total Cost ~100</li>
+	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B00F25Z0FS/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00F25Z0FS&linkCode=as2&tag=mrgib-20&linkId=2XPIE6HARU3DWZHZ">Bluetooth 4.0 USB   </a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00F25Z0FS" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+  </li>
+  <li>Circuit board, wiring etc, PVC Enclosure etc</li>
+  <li>Total Cost ~$65 USD</li>
 </ul>
 <img src="images/2-pebbles.JPG" alt="pebble" class="paragraph-image"/>
 <em><a rel="nofollow" href="http://www.amazon.com/gp/product/B00BKEQBI0/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00BKEQBI0&linkCode=as2&tag=mrgib-20&linkId=F6ALZVFKDT53LOFR">Pebble Smartwatch</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00BKEQBI0" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
@@ -111,9 +120,9 @@
  model should work, but I prefer the original due to its low cost.  Multiple watches can be used simultaneously and independently (skipper view, crew view etc).</p>
 
 
-<img src="images/crowsnest.jpg" alt="crows nest mast rig" class="paragraph-image"/>
+<img src="images/crows-nest-apart.jpg" alt="crows nest mast rig" class="paragraph-image"/>
 
-<em>The Crows nest (optional and in development)</em>
+<em>The Crows nest (optional and in active development)</em>
 <p>The mast sensors which detect wind speed, direction, and tilt.  This unit is battery powered and uses bluetooth low energy to communicate so there are no wires to run.  It is primarily designed for training type use, as most fleets do not allow these type of sensors during races or regattas.</p>
 <ul>
 	<li><a rel="nofollow" href="http://www.amazon.com/gp/product/B009NGX8Q0/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B009NGX8Q0&linkCode=as2&tag=mrgib-20&linkId=A2H6S4WT27TOWVYN">Peet Bros Anemometer/Wind Vane</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B009NGX8Q0" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
@@ -127,7 +136,6 @@
 	<li>Cost ~$150</li>
 </ul>
 
-<img src="images/blend.JPG" alt="blend micro" class="paragraph-image"/>
 
 <h3>
 <a id="current" class="anchor" href="#current" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>In-Progress Enhancements</h3>
@@ -136,9 +144,9 @@
 <em>The "Crows nest" Anemometer and wind vane</em>
 <p>The anemometer and vane will allow Mr. Gibbs to calculate relative wind speed and velocity, and from that there are a number of exciting possibilities.  "True" speed and direction can theoretically be calculated by combining the wind vector with the boat vector.  Using this it should be possible to make deductions about shifts and recommend tacks.  Over time, the system will log boat speed relative to wind speed and direction and build polars, allowing metrics such as "% of nominal" speed etc.  Lastly, we have attached a 6 axis accel/gyro as well to see if we can calculate mast bend relative to the boat.</p>
 
-<em><a rel="nofollow" href="http://www.amazon.com/gp/product/B00KDRQEYQ/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00KDRQEYQ&linkCode=as2&tag=mrgib-20&linkId=BJVTELWDX3B6XUZR">Kindle</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00KDRQEYQ" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+<em><a rel="nofollow" href="http://amzn.to/24OQnZ0">Nook</a><img src="http://ir-na.amazon-adsystem.com/e/ir?t=mrgib-20&l=as2&o=1&a=B00KDRQEYQ" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
  "big display"</em>
-<p>We want to build a display we can mount centrally on the boat, which means some sort of radio to talk to Mr.Gibbs, some sort of controller, a battery, and a screen.  E-paper is ideal since it is most visible in broad daylight.  A refurbished kindle can be purchased for less than $60.  With this in mind, the idea is to hack a kindle such that it can display dashboard/gauges via a data feed from Mr.Gibbs.</p>
+<p>We want to build a display we can mount centrally on the boat, which means some sort of radio to talk to Mr.Gibbs, some sort of controller, a battery, and a screen.  E-paper is ideal since it is most visible in broad daylight.  A refurbished nook can be purchased for less than $50.  With this in mind, the idea is to hack a nook such that it can display dashboard/gauges via a data feed from Mr.Gibbs.</p>
 
 <h3><a id="future" class="anchor" href="#future" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Possible Future Enhancement Ideas</h3>
 <em>Make him talk!</em>
@@ -154,14 +162,6 @@
 
 <em>Wearable Screens</em>
 <p>If you follow this space at all you've probably seen the wearables the Oracle guys are wearing with the tiny screen in their sunglasses.  Their budget it just *slightly* bigger than mine, so I haven't gotten there yet.  My concern is two fold, first, the initial cost for such devices is still very high, and second, if it gets wet, you're now out the $700 or so that it costs.</p>
-
-<h3>
-<a id="bad" class="anchor" href="#bad" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Bad News</h3>
-<p>The "2015" model has a few problems that we are working on.  It runs on Raspbian Wheezy, which uses an old version of bluez (the linux bluetooth stack).  Integration with bluetooth requires the user to boot the pi to a desktop and pair the pebbles using a desktop widget or command line (although this only needs to be done once).  This version of bluez also does not support low-energy bluetooth, which is something we want to use in the future for various sensors (wind, load etc).</p>
-
-<p>The setup is onerous, to say the least.  It requires all the usual steps of installing raspbian, but also additional steps to configure bluetooth and compile a patched build of mono (the .Net runtime for linux)</p>
-
-<p>For the 2016 edition we are running raspbian Jessie, which runs a much newer version of bluez that allows us much better bluetooth capability.  The application can do its own device pairing, and can also use bluetooth low energy to communicate with the blend micro.  We still require a patch for mono, but this time we may be able to work around that by providing our own version of the mono.posix assembly.  We're planning on releasing a disk image that can simply be flashed to the pi and then used 100% "headless"</p>
 
 <div id="disqus_thread"></div>
 <script>
