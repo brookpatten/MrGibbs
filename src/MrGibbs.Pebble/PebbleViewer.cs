@@ -115,14 +115,14 @@ namespace MrGibbs.Pebble
 				_lineStateMaps.Add (StateValueMap(StateValue.SpeedInKnots, "Speed (kn)"));
 				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGood, "VMG (kn)",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGoodOnCourse, "VMC (kn)",missing:"?"));
-				_lineStateMaps.Add (StateValueMap(StateValue.CourseOverGroundByLocation, "Course Over Ground"));
+				_lineStateMaps.Add (StateValueMap(StateValue.CourseOverGroundDirection, "Course Over Ground"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeading, "Heading (Mag)"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeadingWithVariation, "Heading (True)"));
 				_lineStateMaps.Add (StateValueMap(StateValue.Heel, "Heel"));
 				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindSpeedKnots, "Wind Speed (Apparant)",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindSpeedKnots, "Wind Speed (True)",missing:"?"));
-				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindDirection, "Wind Direction (Aparant)"));
-				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindDirection, "Wind Direction (True)",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindAngle, "Wind Direction (Aparant)"));
+				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindAngle, "Wind Direction (True)",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedInKnotsForWind, "Nominal Speed",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedPercentForWind, "% Nominal Speed",format:"{0:0}%",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MaximumSpeedInKnots, "Top Speed (kn)"));

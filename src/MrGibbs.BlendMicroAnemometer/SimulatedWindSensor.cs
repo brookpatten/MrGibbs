@@ -35,7 +35,7 @@ namespace MrGibbs.BlendMicroAnemometer
 		/// <inheritdoc />
 		public void Update(State state)
 		{
-			state.StateValues [StateValue.ApparentWindDirection] = 45;
+			state.StateValues [StateValue.ApparentWindAngle] = 45;
 			state.StateValues [StateValue.ApparentWindSpeedKnots] =5;
 			state.StateValues [StateValue.MastHeel] = 20;
 			state.StateValues [StateValue.MastPitch] =2;

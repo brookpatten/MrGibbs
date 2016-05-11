@@ -25,29 +25,29 @@ namespace MrGibbs.Test
 		[Test]
 		public void SailingNorthIntoSouthWindShouldShowSouthWind()
 		{
-			_state.StateValues [StateValue.ApparentWindDirection] = 0;
+			_state.StateValues [StateValue.ApparentWindAngle] = 180;
 			_state.StateValues [StateValue.ApparentWindSpeedKnots] = 10;
-			_state.StateValues [StateValue.CourseOverGroundByLocation] = 0;
+			_state.StateValues [StateValue.CourseOverGroundDirection] = 0;
 			_state.StateValues [StateValue.SpeedInKnots] = 10;
 			_calculator.Calculate (_state);
 
-			Assert.AreEqual (20, _state.StateValues [StateValue.TrueWindSpeedKnots]);
-			Assert.AreEqual (0, _state.StateValues [StateValue.TrueWindDirection]);
-			Assert.AreEqual (0, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta);
+			Assert.AreEqual (180, _state.StateValues [StateValue.TrueWindAngle],"True Wind Angle");
+			Assert.AreEqual (20, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
+			Assert.AreEqual (180, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
 		}
 
 		[Test]
 		public void SailingSouthFromSouthWindShouldShowSouthWind()
 		{
-			_state.StateValues [StateValue.ApparentWindDirection] = 180;
+			_state.StateValues [StateValue.ApparentWindAngle] = 180;
 			_state.StateValues [StateValue.ApparentWindSpeedKnots] = 1;
-			_state.StateValues [StateValue.CourseOverGroundByLocation] = 180;
+			_state.StateValues [StateValue.CourseOverGroundDirection] = 180;
 			_state.StateValues [StateValue.SpeedInKnots] = 9;
 			_calculator.Calculate (_state);
 
-			Assert.AreEqual (180, _state.StateValues [StateValue.TrueWindDirection],_directionDelta);
-			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots]);
-			Assert.AreEqual (0, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta);
+			Assert.AreEqual (0, _state.StateValues [StateValue.TrueWindAngle],_directionDelta,"True Wind Angle");
+			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
+			Assert.AreEqual (360, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
 		}
 
 		[Test]
@@ -60,17 +60,17 @@ namespace MrGibbs.Test
 			//                 L__<-- 45° apparant wind direction
 			// 90° boat heading 10kts boat speed
 			//wind appears to be 45 degrees to the left at ~14 knots
-			_state.StateValues [StateValue.ApparentWindDirection] = 45;
+			_state.StateValues [StateValue.ApparentWindAngle] = 45;
 			_state.StateValues [StateValue.ApparentWindSpeedKnots] = Math.Sqrt(Math.Pow(10,2)+Math.Pow(10,2));//~14.14
 
 			//boat is traveling due east at 10 knots
-			_state.StateValues [StateValue.CourseOverGroundByLocation] = 270;
+			_state.StateValues [StateValue.CourseOverGroundDirection] = 270;
 			_state.StateValues [StateValue.SpeedInKnots] = 10;
 			_calculator.Calculate (_state);
 
-			Assert.AreEqual (90, _state.StateValues [StateValue.TrueWindDirection], _directionDelta);
-			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots], _directionDelta);
-			Assert.AreEqual (0, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta);
+			Assert.AreEqual (90, _state.StateValues [StateValue.TrueWindAngle], _directionDelta,"True Wind Angle");
+			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots], _directionDelta,"True Wind Speed");
+			Assert.AreEqual (360, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
 		}
 
 		[Test]
@@ -83,17 +83,17 @@ namespace MrGibbs.Test
 			//       315° -->__|
 			// 90° boat heading 10kts boat speed
 			//wind appears to be 45 degrees to the left at ~14 knots
-			_state.StateValues [StateValue.ApparentWindDirection] = 315;
+			_state.StateValues [StateValue.ApparentWindAngle] = 315;
 			_state.StateValues [StateValue.ApparentWindSpeedKnots] = Math.Sqrt(Math.Pow(10,2)+Math.Pow(10,2));//~14.14
 
 			//boat is traveling due east at 10 knots
-			_state.StateValues [StateValue.CourseOverGroundByLocation] = 90;
+			_state.StateValues [StateValue.CourseOverGroundDirection] = 90;
 			_state.StateValues [StateValue.SpeedInKnots] = 10;
 			_calculator.Calculate (_state);
 
-			Assert.AreEqual (270, _state.StateValues [StateValue.TrueWindDirection], _directionDelta);
-			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots], _directionDelta);
-			Assert.AreEqual (0, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta);
+			Assert.AreEqual (270, _state.StateValues [StateValue.TrueWindAngle], _directionDelta,"True Wind Angle");
+			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots], _directionDelta,"True Wind Speed");
+			Assert.AreEqual (360, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
 		}
 	}
 }

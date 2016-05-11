@@ -80,7 +80,7 @@ namespace MrGibbs.PolarCalculator
 					else 
 					{
 						double speed = state.StateValues [StateValue.TrueWindSpeedKnots];
-						double direction = state.StateValues [StateValue.TrueWindDirection];
+						double direction = state.StateValues [StateValue.TrueWindAngle];
 						NormalizeWind (ref direction, ref speed);
 
 						var newValue = new PolarValue () 
@@ -99,7 +99,7 @@ namespace MrGibbs.PolarCalculator
 
 		private bool StateHasRequiredValues (State state)
 		{
-			return state.StateValues.ContainsKey (StateValue.TrueWindDirection)
+			return state.StateValues.ContainsKey (StateValue.TrueWindAngle)
 						&& state.StateValues.ContainsKey (StateValue.TrueWindSpeedKnots)
 						&& state.StateValues.ContainsKey (StateValue.SpeedInKnots);
 		}
@@ -132,7 +132,7 @@ namespace MrGibbs.PolarCalculator
 		{
 			//get the exact values from the state
 			double windSpeed = state.StateValues [StateValue.TrueWindSpeedKnots];
-			double windDirection = state.StateValues [StateValue.TrueWindDirection];
+			double windDirection = state.StateValues [StateValue.TrueWindAngle];
 
 			//round/normalize them to fit in our polar
 			NormalizeWind (ref windDirection, ref windSpeed);

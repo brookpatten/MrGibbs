@@ -43,9 +43,9 @@ namespace MrGibbs.Calculators
         /// <inheritdoc />
         public void Calculate(State state)
         {
-			if (state.StateValues.ContainsKey(StateValue.CourseOverGroundByLocation))
+			if (state.StateValues.ContainsKey(StateValue.CourseOverGroundDirection))
             {
-				var cogRads = AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundByLocation]);
+				var cogRads = AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundDirection]);
 
 				//make sure whe're not in an "exclusion" aka a few seconds before/after a known tack
 				if (!_lastTackAt.HasValue || (_lastTackAt.Value + _dataExclusionTime < state.BestTime)) {
@@ -63,7 +63,7 @@ namespace MrGibbs.Calculators
 				} 
 
                 //calculate the delta on the current tack
-				if (state.StateValues.ContainsKey(StateValue.CourseOverGroundByLocation) && _currentTackStartCourseOverGroundRadians.HasValue)
+				if (state.StateValues.ContainsKey(StateValue.CourseOverGroundDirection) && _currentTackStartCourseOverGroundRadians.HasValue)
                 {
                     var delta = AngleUtilities.AngleDifference(cogRads, _currentTackStartCourseOverGroundRadians.Value);
 					state.StateValues[StateValue.CurrentTackCourseOverGroundDelta] = AngleUtilities.RadiansToDegrees(delta);

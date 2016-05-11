@@ -3,7 +3,7 @@ namespace MrGibbs.Models
 {
 	public enum StateValue
 	{
-		CourseOverGroundByLocation,
+		CourseOverGroundDirection,
 		SpeedInKnots,
 		MagneticCourseMadeGood ,
 		TrueCourseMadeGood ,
@@ -11,7 +11,7 @@ namespace MrGibbs.Models
 		Heel ,
 		Pitch ,
 		MagneticHeading, 
-		ApparentWindDirection, 
+		ApparentWindAngle, 
 		ApparentWindSpeedKnots, 
 		MagneticDeviation ,
 		MagneticHeadingWithVariation, 
@@ -23,7 +23,7 @@ namespace MrGibbs.Models
 		VelocityMadeGoodOnCoursePercent, 
 		CurrentTackCourseOverGroundDelta, 
 		CourseOverGroundRelativeToCourse ,
-		TrueWindDirection ,
+		TrueWindAngle ,
 		TrueWindSpeedKnots ,
 		MastHeel,
 		MastPitch,

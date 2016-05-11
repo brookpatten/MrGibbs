@@ -323,7 +323,7 @@ namespace MrGibbs.Gps
                         //don't set COG if we're not really moving
                         if (courseOverGroundByLocation != double.MinValue && speed>_minimumSpeed)
                         {
-							state.StateValues[StateValue.CourseOverGroundByLocation] = courseOverGroundByLocation;
+							state.StateValues[StateValue.CourseOverGroundDirection] = courseOverGroundByLocation;
                         }
                     }
                     

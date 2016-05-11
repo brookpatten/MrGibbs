@@ -91,12 +91,12 @@ namespace MrGibbs.Calculators
                 }
 
             }
-			else if(state.Course is CourseByAngle && state.StateValues.ContainsKey(StateValue.CourseOverGroundByLocation) && state.StateValues.ContainsKey(StateValue.SpeedInKnots))
+			else if(state.Course is CourseByAngle && state.StateValues.ContainsKey(StateValue.CourseOverGroundDirection) && state.StateValues.ContainsKey(StateValue.SpeedInKnots))
             {
-				state.StateValues[StateValue.VelocityMadeGood] = VelocityMadeGood((state.Course as CourseByAngle).CourseAngle, state.StateValues[StateValue.CourseOverGroundByLocation], state.StateValues[StateValue.SpeedInKnots]);
+				state.StateValues[StateValue.VelocityMadeGood] = VelocityMadeGood((state.Course as CourseByAngle).CourseAngle, state.StateValues[StateValue.CourseOverGroundDirection], state.StateValues[StateValue.SpeedInKnots]);
 				state.StateValues[StateValue.VelocityMadeGoodPercent] = state.StateValues[StateValue.VelocityMadeGood] / state.StateValues[StateValue.SpeedInKnots] * 100;
 
-				var relativeAngle = AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians((state.Course as CourseByAngle).CourseAngle), AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundByLocation]));
+				var relativeAngle = AngleUtilities.AngleDifference(AngleUtilities.DegreestoRadians((state.Course as CourseByAngle).CourseAngle), AngleUtilities.DegreestoRadians(state.StateValues[StateValue.CourseOverGroundDirection]));
 				state.StateValues[StateValue.CourseOverGroundRelativeToCourse] = AngleUtilities.RadiansToDegrees(relativeAngle);
             }
             

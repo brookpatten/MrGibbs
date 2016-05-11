@@ -238,7 +238,7 @@ namespace MrGibbs.BlendMicroAnemometer
 			{
 				if (_direction.HasValue) 
 				{
-					state.StateValues [StateValue.ApparentWindDirection] = _direction.Value;
+					state.StateValues [StateValue.ApparentWindAngle] = _direction.Value;
 				}
 				if (_speed.HasValue) 
 				{
