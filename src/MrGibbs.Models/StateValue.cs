@@ -31,7 +31,7 @@ namespace MrGibbs.Models
 		MastBendCenterline,
 		PeakSpeedInKnotsForWind,
 		PeakSpeedPercentForWind,
-		AbsoluteWindDirection,
+		TrueWindDirection,
 	}
 }
 

@@ -23,35 +23,35 @@ namespace MrGibbs.Test
 		}
 
 		[Test]
-		public void SailingNorthIntoSouthWindShouldShowSouthWind()
+		public void SailingNorthIntoNorthWindShouldShowNorthWind()
 		{
-			_state.StateValues [StateValue.ApparentWindAngle] = 180;
+			_state.StateValues [StateValue.ApparentWindAngle] = 0;
 			_state.StateValues [StateValue.ApparentWindSpeedKnots] = 10;
 			_state.StateValues [StateValue.CourseOverGroundDirection] = 0;
 			_state.StateValues [StateValue.SpeedInKnots] = 10;
 			_calculator.Calculate (_state);
 
-			Assert.AreEqual (180, _state.StateValues [StateValue.TrueWindAngle],"True Wind Angle");
-			Assert.AreEqual (20, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
-			Assert.AreEqual (180, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
+			Assert.AreEqual (0, _state.StateValues [StateValue.TrueWindAngle],"True Wind Angle");
+			//Assert.AreEqual (20, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
+			Assert.AreEqual (0, _state.StateValues [StateValue.TrueWindDirection],_directionDelta,"True Wind Direction");
 		}
 
 		[Test]
-		public void SailingSouthFromSouthWindShouldShowSouthWind()
+		public void SailingSouthFromNorthWindShouldShowNorthWind()
 		{
 			_state.StateValues [StateValue.ApparentWindAngle] = 180;
-			_state.StateValues [StateValue.ApparentWindSpeedKnots] = 1;
+			_state.StateValues [StateValue.ApparentWindSpeedKnots] = 10;
 			_state.StateValues [StateValue.CourseOverGroundDirection] = 180;
-			_state.StateValues [StateValue.SpeedInKnots] = 9;
+			_state.StateValues [StateValue.SpeedInKnots] = 5;
 			_calculator.Calculate (_state);
 
-			Assert.AreEqual (0, _state.StateValues [StateValue.TrueWindAngle],_directionDelta,"True Wind Angle");
-			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
-			Assert.AreEqual (360, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
+			Assert.AreEqual (180, _state.StateValues [StateValue.TrueWindAngle],_directionDelta,"True Wind Angle");
+			Assert.AreEqual (15, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
+			Assert.AreEqual (360, _state.StateValues [StateValue.TrueWindDirection],_directionDelta,"True Wind Direction");
 		}
 
 		[Test]
-		public void SailingWestInSouthWindShouldShowSouthWind()
+		public void SailingWestInNorthWindShouldShowSouthWind()
 		{
 			//                 |\
 			//                 | \
@@ -70,11 +70,11 @@ namespace MrGibbs.Test
 
 			Assert.AreEqual (90, _state.StateValues [StateValue.TrueWindAngle], _directionDelta,"True Wind Angle");
 			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots], _directionDelta,"True Wind Speed");
-			Assert.AreEqual (360, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
+			Assert.AreEqual (360, _state.StateValues [StateValue.TrueWindDirection],_directionDelta,"True Wind Direction");
 		}
 
 		[Test]
-		public void SailingEastInSouthWindShouldShowSouthWind()
+		public void SailingEastInNorthWindShouldShowSouthWind()
 		{
 			//                /|
 			//               / | 
@@ -93,7 +93,7 @@ namespace MrGibbs.Test
 
 			Assert.AreEqual (270, _state.StateValues [StateValue.TrueWindAngle], _directionDelta,"True Wind Angle");
 			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots], _directionDelta,"True Wind Speed");
-			Assert.AreEqual (360, _state.StateValues [StateValue.AbsoluteWindDirection],_directionDelta,"Absolute Wind Direction");
+			Assert.AreEqual (360, _state.StateValues [StateValue.TrueWindDirection],_directionDelta,"True Wind Direction");
 		}
 	}
 }

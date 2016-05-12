@@ -17,55 +17,6 @@ namespace MrGibbs.BlendMicroAnemometer
 			_logger = logger;
 		}
 
-		/// <inheritdoc />
-		public void Calculate2(State state)
-		{
-			if (state.StateValues.ContainsKey(StateValue.ApparentWindAngle)
-			    && state.StateValues.ContainsKey(StateValue.ApparentWindSpeedKnots)
-			    && state.StateValues.ContainsKey(StateValue.SpeedInKnots)
-			    && (state.StateValues.ContainsKey(StateValue.CourseOverGroundDirection)
-			        || state.StateValues.ContainsKey(StateValue.MagneticHeading)
-			        || state.StateValues.ContainsKey(StateValue.MagneticHeadingWithVariation))) 
-			{
-				var boatPolar = new Vector2Polar ();
-				var relativeApparantWindPolar = new Vector2Polar ();
-
-				//find the apprant wind vector
-				relativeApparantWindPolar.Radius = (float)state.StateValues[StateValue.ApparentWindSpeedKnots];
-				relativeApparantWindPolar.Theta = (float)AngleUtilities.DegreestoRadians(state.StateValues[StateValue.ApparentWindAngle])
-					+(float)Math.PI;//we add pi because wind directions are read as the direction FROM which it is coming
-
-				//find the boat vector, this might come from several places, though we prefer gps
-				boatPolar.Radius = (float)state.StateValues [StateValue.SpeedInKnots];
-				double boatHeading=0;
-				if (state.StateValues.ContainsKey (StateValue.CourseOverGroundDirection)) 
-				{
-					boatHeading = state.StateValues [StateValue.CourseOverGroundDirection];
-				} 
-				else if (state.StateValues.ContainsKey (StateValue.MagneticHeadingWithVariation)) 
-				{
-					boatHeading = state.StateValues [StateValue.MagneticHeadingWithVariation];
-				} 
-				else if (state.StateValues.ContainsKey (StateValue.MagneticHeading)) 
-				{
-					boatHeading = state.StateValues [StateValue.MagneticHeading];
-				}
-				boatPolar.Theta = (float)AngleUtilities.DegreestoRadians(boatHeading);
-
-				var negativeBoatPolar = new Vector2Polar () { Radius = -boatPolar.Radius, Theta = boatPolar.Theta };
-
-				var absoluteApparantWindPolar = new Vector2Polar () { Radius = relativeApparantWindPolar.Radius, Theta = relativeApparantWindPolar.Theta - boatPolar.Theta };
-
-				var absoluteTrueWindPolar = absoluteApparantWindPolar.Add (negativeBoatPolar);
-
-				var relativeTrueWindPolar = new Vector2Polar () { Radius = absoluteTrueWindPolar.Radius, Theta = absoluteTrueWindPolar.Theta + boatPolar.Theta };
-
-				state.StateValues[StateValue.TrueWindAngle] = AngleUtilities.RadiansToDegrees(AngleUtilities.NormalizeAngle(relativeTrueWindPolar.Theta+Math.PI));
-				state.StateValues[StateValue.TrueWindSpeedKnots] = relativeTrueWindPolar.Radius;
-				state.StateValues [StateValue.AbsoluteWindDirection] = AngleUtilities.RadiansToDegrees (AngleUtilities.NormalizeAngle(absoluteTrueWindPolar.Theta));
-			}
-		}
-
 		public void Calculate(State state)
 		{
 			if (state.StateValues.ContainsKey (StateValue.ApparentWindAngle)
@@ -86,7 +37,6 @@ namespace MrGibbs.BlendMicroAnemometer
 
 				double [] trueWindSpeed = new double[1];
 				double [] trueWindDirection = new double[1];
-				double [] trueWindAngle = new double[1];
 
 				TrueWind (1
 					,new double[]{ state.StateValues [StateValue.CourseOverGroundDirection]}
@@ -95,15 +45,15 @@ namespace MrGibbs.BlendMicroAnemometer
 		            ,0.0
 		            //TODO: change this to mag heading once it's reliable
 					,new double[]{ state.StateValues [StateValue.CourseOverGroundDirection]}
-					,trueWindAngle
+		          	,new double[1]
 			        ,new double[]{ state.StateValues [StateValue.ApparentWindSpeedKnots]}
 				    ,new double[]{ double.MaxValue,double.MaxValue,double.MaxValue,double.MaxValue,double.MaxValue}
 					,trueWindDirection
 					,trueWindSpeed);
-
-				state.StateValues [StateValue.TrueWindAngle] = trueWindAngle[0];
+				
+				state.StateValues [StateValue.TrueWindAngle] = AngleUtilities.NormalizeAngleDegrees(trueWindDirection[0] - boatHeading);
 				state.StateValues [StateValue.TrueWindSpeedKnots] = trueWindSpeed [0];
-				state.StateValues [StateValue.AbsoluteWindDirection] = trueWindDirection [0];
+				state.StateValues [StateValue.TrueWindDirection] = trueWindDirection [0];
 			}
 		}
 

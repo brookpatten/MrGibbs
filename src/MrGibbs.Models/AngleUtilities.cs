@@ -24,6 +24,15 @@ namespace MrGibbs.Models
             }
             return angle;
         }
+		public static double NormalizeAngleDegrees(double angle)
+		{
+			angle = angle % (360);
+			if (angle < 0)
+			{
+				angle = 360.0 + angle;
+			}
+			return angle;
+		}
         public static Vector2 PolarToRectangular(Vector2 origin, double theta, double r)
         {
             Vector2 result = new Vector2();
