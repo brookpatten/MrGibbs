@@ -26,14 +26,14 @@ namespace MrGibbs.Test
 		public void SailingNorthIntoNorthWindShouldShowNorthWind()
 		{
 			_state.StateValues [StateValue.ApparentWindAngle] = 0;
-			_state.StateValues [StateValue.ApparentWindSpeedKnots] = 10;
+			_state.StateValues [StateValue.ApparentWindSpeedKnots] = 20;
 			_state.StateValues [StateValue.CourseOverGroundDirection] = 0;
 			_state.StateValues [StateValue.SpeedInKnots] = 10;
 			_calculator.Calculate (_state);
 
 			Assert.AreEqual (0, _state.StateValues [StateValue.TrueWindAngle],"True Wind Angle");
-			//Assert.AreEqual (20, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
-			Assert.AreEqual (0, _state.StateValues [StateValue.TrueWindDirection],_directionDelta,"True Wind Direction");
+			Assert.AreEqual (10, _state.StateValues [StateValue.TrueWindSpeedKnots],"True Wind Speed");
+			Assert.AreEqual (360, _state.StateValues [StateValue.TrueWindDirection],_directionDelta,"True Wind Direction");
 		}
 
 		[Test]
