@@ -50,10 +50,16 @@ namespace MrGibbs.BlendMicroAnemometer
 				    ,new double[]{ double.MaxValue,double.MaxValue,double.MaxValue,double.MaxValue,double.MaxValue}
 					,trueWindDirection
 					,trueWindSpeed);
-				
-				state.StateValues [StateValue.TrueWindAngle] = AngleUtilities.NormalizeAngleDegrees(trueWindDirection[0] - boatHeading);
-				state.StateValues [StateValue.TrueWindSpeedKnots] = trueWindSpeed [0];
-				state.StateValues [StateValue.TrueWindDirection] = trueWindDirection [0];
+
+				if (trueWindDirection[0] != double.MaxValue) 
+				{
+					state.StateValues [StateValue.TrueWindAngle] = AngleUtilities.NormalizeAngleDegrees (trueWindDirection [0] - boatHeading);
+					state.StateValues [StateValue.TrueWindDirection] = trueWindDirection [0];
+				}
+				if (trueWindSpeed[0] != double.MaxValue) 
+				{
+					state.StateValues [StateValue.TrueWindSpeedKnots] = trueWindSpeed [0];
+				}
 			}
 		}
 
@@ -69,46 +75,48 @@ namespace MrGibbs.BlendMicroAnemometer
 
 		}
 
-		//borrowed from http://coaps.fsu.edu/woce/truewind/c-codes/truewind.c
-		//http://coaps.fsu.edu/woce/truewind/true-C.html
-		//http://coaps.fsu.edu/woce/truewind/paper/index.html
-		//INPUT VALUES:
-
-		//num	int		Number of observations in input (crse, cspd, wdir,
-		//                                         wspd, hd) and output (adir, tdir, tspd) data
-		//arrays.  
-		//          ALL ARRAYS MUST BE OF EQUAL LENGTH.
+//		shamelessly borrowed from:
+//		http://coaps.fsu.edu/woce/truewind/c-codes/truewind.c
+//		http://coaps.fsu.edu/woce/truewind/true-C.html
+//		http://coaps.fsu.edu/woce/truewind/paper/index.html
+//
+//		INPUT VALUES:
+//
+//		num	int		Number of observations in input (crse, cspd, wdir,
+//                                         wspd, hd) and output (adir, tdir, tspd) data arrays.  
+//          
+//					ALL ARRAYS MUST BE OF EQUAL LENGTH.
 //       crse	float array	Course TOWARD WHICH the vessel is moving over the 
 //       ground. Referenced to true north and the fixed earth.
-
+//
 //       cspd	float array	Speed of vessel over the ground. Referenced
 //       to the fixed earth.
-
+//
 //       hd	float array	Heading toward which bow of vessel is pointing. 
 //       Referenced to true north.
-
+//
 //       zlr	float		Zero line reference -- angle between bow and
 //       zero line on anemometer.  Direction is clockwise
 //       from the bow.  (Use bow=0 degrees as default 
-//when reference not known.)			
-
+//		  when reference not known.)			
+//
 //       wdir	float array	Wind direction measured by anemometer,
 //       referenced to the ship.
-
+//
 //       wspd	float array	Wind speed measured by anemometer,referenced to
 //       the vessel's frame of reference.
-
+//
 //       wmis	float array	Five element array containing missing values for
 //           crse, cspd, wdir, wspd, and hd. In the output, the missing
 //           value for tdir is identical to the missing value
 //               specified in wmis for wdir. Similarly, tspd uses
 //                   the missing value assigned to wmis for wspd.
-
+//
 //                       *** WDIR MUST BE METEOROLOGICAL (DIRECTION FROM)! CRSE AND CSPD MUST BE
 //                       RELATIVE TO A FIXED EARTH! ***
-
+//
 //                       OUTPUT VALUES:
-
+//
 //       tdir	float array	True wind direction - referenced to true north
 //                       and the fixed earth with a direction from which 
 //                       the wind is blowing (meteorological).

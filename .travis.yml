@@ -8,3 +8,4 @@ before_install:
  - git submodule update --init --recursive
 script:
  - xbuild /p:Configuration=Debug src/MrGibbs.sln
+ - mono src/packages/NUnit.ConsoleRunner.3.2.0/tools/nunit3-console.exe --noresult src/MrGibbs.Test/bin/Debug/MrGibbs.Test.dll
