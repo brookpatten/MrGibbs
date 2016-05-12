@@ -15,7 +15,7 @@ namespace MrGibbs.PolarCalculator
 		private IPlugin _plugin;
 		private IDbConnection _connection;
 		//TODO: make these configurable?
-		private double _directionResolution=5;
+		private double _angleResolution=5;
 		private double _speedResolution=0.5;
 
 		private bool _forceSymmetricalPolar;
@@ -49,7 +49,7 @@ namespace MrGibbs.PolarCalculator
 					//if the table doesn't exist, create it
 					_connection.Execute ("create table Polar(" +
 										"Id INTEGER PRIMARY KEY ASC," +
-										"TrueWindDirection NUMERIC," +
+										"TrueWindAngle NUMERIC," +
 										"TrueWindSpeedKnots NUMERIC," +
 										"SpeedInKnots NUMERIC," +
 										"Time DATETIME" +
@@ -80,17 +80,17 @@ namespace MrGibbs.PolarCalculator
 					else 
 					{
 						double speed = state.StateValues [StateValue.TrueWindSpeedKnots];
-						double direction = state.StateValues [StateValue.TrueWindAngle];
-						NormalizeWind (ref direction, ref speed);
+						double angle = state.StateValues [StateValue.TrueWindAngle];
+						NormalizeWind (ref angle, ref speed);
 
 						var newValue = new PolarValue () 
 						{
 							Time = state.BestTime,
-							TrueWindDirection = direction,
+							TrueWindAngle = angle,
 							TrueWindSpeedKnots = speed,
 							SpeedInKnots = state.StateValues [StateValue.SpeedInKnots]
 						};
-						_connection.Execute ("insert into Polar(TrueWindDirection,TrueWindSpeedKnots,SpeedInKnots,Time) values (@TrueWindDirection,@TrueWindSpeedKnots,@SpeedInKnots,@Time)", newValue);
+						_connection.Execute ("insert into Polar(TrueWindAngle,TrueWindSpeedKnots,SpeedInKnots,Time) values (@TrueWindAngle,@TrueWindSpeedKnots,@SpeedInKnots,@Time)", newValue);
 					}
 					//transaction.Complete();
 				}
@@ -104,25 +104,25 @@ namespace MrGibbs.PolarCalculator
 						&& state.StateValues.ContainsKey (StateValue.SpeedInKnots);
 		}
 
-		private void NormalizeWind(ref double direction, ref double speed)
+		private void NormalizeWind(ref double angle, ref double speed)
 		{
 			//normalize to angle between 0 and 360
-			direction = direction % 360;
+			angle = angle % 360;
 
 			//make it positive
-			if (direction < 0) 
+			if (angle < 0) 
 			{
-				direction = 360 + direction;
+				angle = 360 + angle;
 			}
 
 			//normalize to one half of the circle
-			if (_forceSymmetricalPolar && direction > 180) 
+			if (_forceSymmetricalPolar && angle > 180) 
 			{
-				direction = 360 - direction;
+				angle = 360 - angle;
 			}
 
 			//normalize precision
-			direction = direction - (direction % _directionResolution);
+			angle = angle - (angle % _angleResolution);
 
 			//normalize speed precision
 			speed = speed - (speed % _speedResolution);
@@ -132,19 +132,19 @@ namespace MrGibbs.PolarCalculator
 		{
 			//get the exact values from the state
 			double windSpeed = state.StateValues [StateValue.TrueWindSpeedKnots];
-			double windDirection = state.StateValues [StateValue.TrueWindAngle];
+			double windAngle = state.StateValues [StateValue.TrueWindAngle];
 
 			//round/normalize them to fit in our polar
-			NormalizeWind (ref windDirection, ref windSpeed);
+			NormalizeWind (ref windAngle, ref windSpeed);
 
 			//find the existing segment in the graph (if it exists)
 			var newPolarValue = new PolarValue () {
-				TrueWindDirection = windDirection,
+				TrueWindAngle = windAngle,
 				TrueWindSpeedKnots = windSpeed,
 				SpeedInKnots = state.StateValues[StateValue.SpeedInKnots],
 				Time = state.BestTime
 			};
-			var existing = _connection.Query<PolarValue> ("select * from Polar where TrueWindDirection=@TrueWindDirection and TrueWindSpeedKnots<=@TrueWindSpeedKnots order by SpeedInKnots desc", newPolarValue).FirstOrDefault();
+			var existing = _connection.Query<PolarValue> ("select * from Polar where TrueWindAngle=@TrueWindAngle and TrueWindSpeedKnots<=@TrueWindSpeedKnots order by SpeedInKnots desc", newPolarValue).FirstOrDefault();
 
 			return existing;
 		}
@@ -163,7 +163,7 @@ namespace MrGibbs.PolarCalculator
 	public class PolarValue
 	{
 		public int Id { get; set; }
-		public double TrueWindDirection { get; set; }
+		public double TrueWindAngle { get; set; }
 		public double TrueWindSpeedKnots { get; set; }
 		public double SpeedInKnots { get; set; }
 		public DateTime Time { get; set; }

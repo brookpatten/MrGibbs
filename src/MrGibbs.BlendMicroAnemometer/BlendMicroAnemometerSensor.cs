@@ -24,7 +24,7 @@ namespace MrGibbs.BlendMicroAnemometer
 		private IClock _clock;
 
 		private double? _speed;
-		private double? _direction;
+		private double? _angle;
 		private double? _heel;
 		private double? _pitch;
 		private DateTime? _lastReceivedAt;
@@ -127,13 +127,13 @@ namespace MrGibbs.BlendMicroAnemometer
 
 				_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
 
-				_direction = CalculateAngle (vaneDifference, anemometerDifference);
+				_angle = CalculateAngle (vaneDifference, anemometerDifference);
 				_speed = CalculateSpeedInKnots (anemometerDifference);
 
 				_heel = (double)(x-_calibrateX.Value) * AccelFactor * (360.0 / 4.0);
 				_pitch = (double)(y-_calibrateY.Value) * AccelFactor * (360.0 / 4.0);
 
-				_logger.Debug (string.Format ("speed={0:0.0},direction={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _direction, _heel, _pitch));
+				_logger.Debug (string.Format ("speed={0:0.0},angle={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _angle, _heel, _pitch));
 			}
 		}
 
@@ -236,9 +236,9 @@ namespace MrGibbs.BlendMicroAnemometer
 			if (_lastReceivedAt.HasValue 
 			    && _clock.GetUtcTime () - _lastReceivedAt < _maximumDataAge) 
 			{
-				if (_direction.HasValue) 
+				if (_angle.HasValue) 
 				{
-					state.StateValues [StateValue.ApparentWindAngle] = _direction.Value;
+					state.StateValues [StateValue.ApparentWindAngle] = _angle.Value;
 				}
 				if (_speed.HasValue) 
 				{
@@ -255,7 +255,7 @@ namespace MrGibbs.BlendMicroAnemometer
 			} 
 			else 
 			{
-				_direction = null;
+				_angle = null;
 				_speed = null;
 				_heel = null;
 				_pitch = null;
