@@ -39,12 +39,12 @@ namespace MrGibbs.BlendMicroAnemometer
 				double [] trueWindDirection = new double[1];
 
 				TrueWind (1
-					,new double[]{ state.StateValues [StateValue.CourseOverGroundDirection]}
+				    ,new double[]{ boatHeading}
 					,new double[]{ state.StateValues [StateValue.SpeedInKnots]}
 		            ,new double[]{ state.StateValues [StateValue.ApparentWindAngle]}
 		            ,0.0
 		            //TODO: change this to mag heading once it's reliable
-					,new double[]{ state.StateValues [StateValue.CourseOverGroundDirection]}
+		          	,new double[]{ boatHeading}
 		          	,new double[1]
 			        ,new double[]{ state.StateValues [StateValue.ApparentWindSpeedKnots]}
 				    ,new double[]{ double.MaxValue,double.MaxValue,double.MaxValue,double.MaxValue,double.MaxValue}

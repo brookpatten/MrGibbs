@@ -133,7 +133,7 @@ namespace MrGibbs.BlendMicroAnemometer
 				_heel = (double)(x-_calibrateX.Value) * AccelFactor * (360.0 / 4.0);
 				_pitch = (double)(y-_calibrateY.Value) * AccelFactor * (360.0 / 4.0);
 
-				_logger.Debug (string.Format ("speed={0:0.0},angle={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _angle, _heel, _pitch));
+				_logger.Info (string.Format ("speed={0:0.0},angle={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _angle, _heel, _pitch));
 			}
 		}
 
@@ -194,39 +194,59 @@ namespace MrGibbs.BlendMicroAnemometer
         public void Start()
         {
 			_device = _connection.System.GetObject<Device1> (BlueZPath.Service, BlueZPath.Device (_adapterName, _deviceAddress));
-			for (int i = 0; i < 3 && !_device.Connected;i++)
+			int retries = 3;
+			for (int i = 0; i < retries;i++)
 			{
 				try 
 				{
 					_logger.Info ("Connecting...");
 					_device.Connect ();
+					_logger.Info ("Connected");
+					System.Threading.Thread.Sleep (3000);
+					break;
 				} 
-				catch 
+				catch(Exception ex)
 				{
-					_logger.Warn ("Failed");
+					_logger.Warn ("Failed",ex);
 					//we can't really do much other than try again
+					if (i == retries - 1) {
+						throw new Exception ("Failed to connect to BLE Anemometer", ex);
+					} 
+					else 
+					{
+						System.Threading.Thread.Sleep (3000);
+					}
 				}
-				System.Threading.Thread.Sleep (3000);
-			}
 
-			if (!_device.Connected) 
-			{
-				throw new Exception ("Failed to connect to BLE Anemometer");
 			}
 
 			string name = _device.Name;
-			try 
+			for (int i = 0; i < retries; i++) 
 			{
-				var readCharPath = BlueZPath.GattCharacteristic (_adapterName, _deviceAddress, _serviceId, _readCharId);
-				_readChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, readCharPath);
-				_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, readCharPath);
+				try 
+				{
+					var readCharPath = BlueZPath.GattCharacteristic (_adapterName, _deviceAddress, _serviceId, _readCharId);
+					_readChar = _connection.System.GetObject<GattCharacteristic1> (BlueZPath.Service, readCharPath);
+					_properties = _connection.System.GetObject<Properties> (BlueZPath.Service, readCharPath);
 
-				_readChar.StartNotify ();
-				InitializePropertyListener ();
-			} 
-			catch (Exception ex) 
-			{
-				throw new Exception ("Are you sure BlueZ is running in experimental mode?", ex);
+					_readChar.StartNotify ();
+					InitializePropertyListener ();
+					_logger.Info ("Now listening for wind data");
+					break;
+				} 
+				catch (Exception ex) 
+				{
+					_logger.Warn ("Failed to configure listener",ex);
+
+					if (i == retries - 1) 
+					{
+						throw new Exception ("Are you sure BlueZ is running in experimental mode?", ex);
+					} 
+					else 
+					{
+						System.Threading.Thread.Sleep (3000);
+					}
+				}
 			}
         }
 

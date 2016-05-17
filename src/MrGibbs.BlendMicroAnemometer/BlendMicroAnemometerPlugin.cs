@@ -45,12 +45,12 @@ namespace MrGibbs.BlendMicroAnemometer
 
 			//TODO: maybe use the container or child container for this?
 			ISensor sensor;
-			if (_simulated) 
-			{
-				sensor = new SimulatedWindSensor (_logger,this);
-			} 
-			else 
-			{
+			//if (_simulated) 
+			//{
+			//	sensor = new SimulatedWindSensor (_logger,this);
+			//} 
+			//else 
+			//{
 				if (string.IsNullOrWhiteSpace (_deviceAddress)) 
 				{
 					throw new ArgumentNullException ("deviceAddress");
@@ -59,7 +59,7 @@ namespace MrGibbs.BlendMicroAnemometer
 				var bmas = new BlendMicroAnemometerSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_deviceAddress, _connection);
 				bmas.Start ();
 				sensor = bmas;
-			}
+			//}
 
 			_components.Add (sensor);
 			configuration.Sensors.Add (sensor);
