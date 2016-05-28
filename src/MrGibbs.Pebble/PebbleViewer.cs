@@ -119,10 +119,10 @@ namespace MrGibbs.Pebble
 				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeading, "Heading (Mag)",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MagneticHeadingWithVariation, "Heading (True)",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.Heel, "Heel",format:"{0:0}"));
-				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindSpeedKnots, "Wind Speed (Apparant)",missing:"?"));
-				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindSpeedKnots, "Wind Speed (True)",missing:"?"));
-				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindAngle, "Wind Direction (Aparant)",format:"{0:0}"));
-				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindAngle, "Wind Direction (True)",missing:"?",format:"{0:0}"));
+				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindSpeedKnots, "App Wind Speed",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindSpeedKnots, "True Wind Speed",missing:"?"));
+				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindAngle, "App Wind Direction",format:"{0:0}"));
+				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindAngle, "True Wind Direction",missing:"?",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedInKnotsForWind, "Nominal Speed",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedPercentForWind, "% Nominal Speed",format:"{0:0}%",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MaximumSpeedInKnots, "Top Speed (kn)"));
@@ -135,8 +135,8 @@ namespace MrGibbs.Pebble
 				_lineStateMaps.Add (StateValueMap(StateValue.CourseOverGroundRelativeToCourse, "Course Relative",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MastHeel, "Mast Heel",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MastPitch, "Mast Pitch",format:"{0:0}"));
-				_lineStateMaps.Add (StateValueMap(StateValue.MastBendBeam, "Mast Bend Port/Starboard"));
-				_lineStateMaps.Add (StateValueMap(StateValue.MastBendCenterline, "Mast Bend Fore/Aft"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MastBendBeam, "Mast Bend P/S"));
+				_lineStateMaps.Add (StateValueMap(StateValue.MastBendCenterline, "Mast Bend F/A"));
 			}
 
 			//TODO: remember what the last settings for this pebble were and use those
