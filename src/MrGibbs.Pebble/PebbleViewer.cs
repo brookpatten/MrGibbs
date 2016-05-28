@@ -121,8 +121,8 @@ namespace MrGibbs.Pebble
 				_lineStateMaps.Add (StateValueMap(StateValue.Heel, "Heel",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindSpeedKnots, "App Wind Speed",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindSpeedKnots, "True Wind Speed",missing:"?"));
-				_lineStateMaps.Add (StateValueMap(StateValue.ApparentWindAngle, "App Wind Direction",format:"{0:0}"));
-				_lineStateMaps.Add (StateValueMap(StateValue.TrueWindAngle, "True Wind Direction",missing:"?",format:"{0:0}"));
+				_lineStateMaps.Add (AngleStateValueMap(StateValue.ApparentWindAngle, "App Wind Angle"));
+				_lineStateMaps.Add (AngleStateValueMap(StateValue.TrueWindAngle, "True Wind Angle",missing:"?",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedInKnotsForWind, "Nominal Speed",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.PeakSpeedPercentForWind, "% Nominal Speed",format:"{0:0}%",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MaximumSpeedInKnots, "Top Speed (kn)"));
@@ -132,7 +132,7 @@ namespace MrGibbs.Pebble
 				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGoodPercent,"VMG %",format:"{0:0}%",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.VelocityMadeGoodOnCoursePercent,"VMC %",format:"{0:0}%",missing:"?"));
 				_lineStateMaps.Add (StateValueMap(StateValue.CurrentTackCourseOverGroundDelta, "Current Tack Delta",format:"{0:0}"));
-				_lineStateMaps.Add (StateValueMap(StateValue.CourseOverGroundRelativeToCourse, "Course Relative",format:"{0:0}"));
+				_lineStateMaps.Add (AngleStateValueMap(StateValue.CourseOverGroundRelativeToCourse, "Course Relative",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MastHeel, "Mast Heel",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MastPitch, "Mast Pitch",format:"{0:0}"));
 				_lineStateMaps.Add (StateValueMap(StateValue.MastBendBeam, "Mast Bend P/S"));
@@ -166,6 +166,23 @@ namespace MrGibbs.Pebble
 		private LineStateMap StateValueMap(StateValue val, string name,string format="{0:0.0}",string missing="")
 		{
 			return new LineStateMap (s=>s.StateValues.ContainsKey(val) ? string.Format(format,s.StateValues[val]) : missing,name);
+		}
+
+        private LineStateMap AngleStateValueMap(StateValue val, string name,string format="{0:0}",string missing="?")
+		{
+			return new LineStateMap (s => {
+				if (s.StateValues.ContainsKey (val)) {
+					double angle = s.StateValues [val];
+					//show "left" angles as negative
+					if (angle > 180) {
+						angle = angle - 360;
+					}
+					return string.Format (format, angle);
+				} else {
+					return missing;
+				}
+			}
+			,name);
 		}
 
         /// <summary>
