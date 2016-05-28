@@ -2,7 +2,8 @@
 //#define BOUNCE_LOCK_OUT
 #include <Bounce2.h>
 #include <RBL_nRF8001.h>
-#include<Wire.h>
+#include <Wire.h>
+#include "Yamartino.h"
 
 //mpu 6050 vars
 const int MPU_addr=0x68;  // I2C address of the MPU-6050
@@ -28,19 +29,27 @@ unsigned long anemometerDifference;
 unsigned long latestVane;
 unsigned long vaneDifference;
 
+//buffering/averaging
+int bufferCount=0;
+unsigned long anemometerBuffer;
+Yamartino vaneBuffer(5);
+
 //wind sensor hardware
-const int anemometerPin=1;
-const int vanePin=0;
+const int anemometerPin=0;
+const int vanePin=1;
 
 const int anemometerLedPin=10;
 bool anemometerLedStatus=false;
 
 //wind sensor debounce
-const unsigned long debounce=10;
+const unsigned long debounce=5;
 Bounce anemometerBounce = Bounce(); 
 Bounce vaneBounce = Bounce(); 
 
 void setup() {
+  //serial
+  //Serial.begin(9600); 
+  
   //bt setup
   ble_set_name("MrGibbs");
   ble_begin();
@@ -74,6 +83,7 @@ void setup() {
 
 void loop()
 {
+  //if(true)
   if(ble_connected())
   {
     digitalWrite(bleLedPin,HIGH);
@@ -81,12 +91,13 @@ void loop()
     now=micros();
     
     anemometerBounce.update();
+    vaneBounce.update();
+    
     if(anemometerBounce.rose()==1)
     {
       anemometer(now);
     }
     
-    vaneBounce.update();
     if(vaneBounce.rose()==1)
     {
       //it is intentional that we don't re-get micros because when the switches overlap the closures can occur 
@@ -104,12 +115,18 @@ void loop()
     {
       if(heartbeat != lastSentAtHeartbeat)
       {
-        anemometerLedStatus = !anemometerLedStatus;
-        digitalWrite(anemometerLedPin, anemometerLedStatus); 
-        
-        processMpuData();
-        writeBleData();
-        lastSentAtHeartbeat=heartbeat;
+        if(bufferCount>0)//if there's no buffer yet we keep waiting for data
+        {
+          anemometerLedStatus = !anemometerLedStatus;
+          digitalWrite(anemometerLedPin, anemometerLedStatus); 
+          
+          processMpuData();
+          writeBleData();
+          lastSentAtHeartbeat=heartbeat;
+  
+          anemometerBuffer=0;
+          bufferCount=-1;//set it to -1 to indicate we intend to "skip" the first measurement to avoid measuring the bt send time
+        }
       }
   
       ble_do_events();
@@ -131,15 +148,21 @@ void loop()
 void writeBleData()
 {
       //make a byte array that we can send via uart, terminate with 1s
-      unsigned long ad = anemometerDifference;
-      memcpy(tobytes,&ad,sizeof(long int));
+
+      unsigned long anemometer = anemometerBuffer / bufferCount;
+      
+      memcpy(tobytes,&anemometer,sizeof(long int));
       buffer[0] = tobytes[0];
       buffer[1] = tobytes[1];
       buffer[2] = tobytes[2];
       buffer[3] = tobytes[3];
+
+      float vane = vaneBuffer.averageHeading();
+      //Serial.print("a=");
+      //Serial.print(vane);
+      //Serial.println();
       
-      unsigned long vd = vaneDifference;
-      memcpy(tobytes,&vd,sizeof(long int));
+      memcpy(tobytes,&vane,sizeof(float));
       buffer[4] = tobytes[0];
       buffer[5] = tobytes[1];
       buffer[6] = tobytes[2];
@@ -184,14 +207,36 @@ void anemometer(unsigned long now)
   previousAnemometer = latestAnemometer;
   latestAnemometer = now;
   anemometerDifference = latestAnemometer - previousAnemometer;
+
+  if(latestVane!=0)
+  {
+    vaneDifference = latestVane - previousAnemometer;
+  }
+  else
+  {
+    //it's possible that we "missed" a vane switch
+    vaneDifference = anemometerDifference;
+  }
+
+  float vane = ((float)vaneDifference / (float)anemometerDifference)*(float)360.0;
+  //Serial.print("r=");
+  //Serial.print(vane);
+  //Serial.println();
+  
+  bufferCount++;
+  if(bufferCount>0){
+    anemometerBuffer += anemometerDifference;
+    vaneBuffer.add(vane);
+  }
+
+  latestVane=0;
+  
   heartbeat++;
 }
 
 void vane(unsigned long now)
 {
   latestVane=now;
-  vaneDifference = latestVane - latestAnemometer;
-  heartbeat++;
 }
 
 
