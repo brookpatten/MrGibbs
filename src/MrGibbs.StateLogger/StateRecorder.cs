@@ -100,6 +100,7 @@ namespace MrGibbs.StateLogger
 
 		public void RecordTack (Tack tack)
 		{
+			//TODO: consider adding true wind angle or dir?
 			_connection.Execute ("insert into Tack (start,endcourseoverground) values (@At,@CourseOverGround)", tack);
 			//TODO: there has to be a better way to do this
 			tack.Id = (long)_connection.ExecuteScalar ("select max(id) from Tack");

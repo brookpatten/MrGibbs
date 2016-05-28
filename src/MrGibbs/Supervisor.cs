@@ -201,6 +201,11 @@ namespace MrGibbs
                     }
                 }
 
+				//auto start a race (for debugging)
+				//if (!_state.StartTime.HasValue) {
+				//	_state.StartTime = _state.BestTime;
+				//}
+
                 //execute any pending commands from the plugins
                 lock (_commands)
                 {
@@ -220,7 +225,7 @@ namespace MrGibbs
                             }
                         }
 
-                        _raceController.ProcessMarkRoundings();
+						_raceController.ProcessMarkRoundings();
 					}
                 }
 

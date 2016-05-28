@@ -270,56 +270,59 @@ namespace MrGibbs
             }
         }
 
+		private bool DetectRaceStart()
+		{
+			if (_state.StartTime.HasValue && !_state.RaceStarted && _state.BestTime > _state.StartTime) {
+				_logger.Info ("Race Started");
+				_state.RaceStarted = true;
+				return true;
+			} 
+			else 
+			{
+				return false;
+			}
+		}
+
         /// <inheritdoc />
         public void ProcessMarkRoundings()
         {
-            if (_state.Course is CourseByMarks)
-            {
-                var course = _state.Course as CourseByMarks;
-                //if the race just started, set the line
-                if (_state.StartTime.HasValue && !_state.RaceStarted && _state.BestTime > _state.StartTime)
-                {
-					_logger.Info ("Race Started");
-                    _state.RaceStarted = true;
+			if (_state.Course is CourseByMarks) {
+				var course = _state.Course as CourseByMarks;
+				//if the race just started, set the line
+				if (DetectRaceStart ()) {
+					var line = course.Marks.FirstOrDefault (x => x.MarkType == MarkType.Line);
+					if (line == null) {
+						line = new Mark () {
+							MarkType = MarkType.Line,
+							CaptureMethod = MarkCaptureMethod.Location,
+							Location = _state.Location
+						};
+						course.Marks.Insert (0, line);
+					}
+					_state.PreviousMark = line;
 
-                    var line = course.Marks.FirstOrDefault(x => x.MarkType == MarkType.Line);
-                    if (line == null)
-                    {
-                        line = new Mark()
-                        {
-                            MarkType = MarkType.Line,
-                            CaptureMethod = MarkCaptureMethod.Location,
-                            Location = _state.Location
-                        };
-                        course.Marks.Insert(0, line);
-                    }
-                    _state.PreviousMark = line;
-
-                    if (course.Marks.Any(x => x.MarkType == MarkType.Windward))
-                    {
-                        State.TargetMark = course.Marks.Where(x => x.MarkType == MarkType.Windward).Last();
-                    }
-                    else
-                    {
-                        State.TargetMark = null;
-                    }
-                }
-                else if (_state.StartTime.HasValue && _state.BestTime > _state.StartTime && _state.TargetMark != null &&
-                         _state.TargetMark.Location != null && _autoRoundMarkDistanceMeters.HasValue)
-                {
-                    var nextMark = GetNextMark(_state.TargetMark);
-                    if (nextMark != null)
-                    {
-                        var distanceToMark = CoordinatePoint.HaversineDistance(_state.Location, _state.TargetMark.Location);
-                        if (distanceToMark < _autoRoundMarkDistanceMeters)
-                        {
-                            _logger.Info("Distance to " + _state.TargetMark.MarkType + " is " + string.Format("{0:0.0}m") +
-                                         ", advancing to next mark");
-                            NextMark();
-                        }
-                    }
-                }
-            }
+					if (course.Marks.Any (x => x.MarkType == MarkType.Windward)) {
+						State.TargetMark = course.Marks.Where (x => x.MarkType == MarkType.Windward).Last ();
+					} else {
+						State.TargetMark = null;
+					}
+				} else if (_state.StartTime.HasValue && _state.BestTime > _state.StartTime && _state.TargetMark != null &&
+						   _state.TargetMark.Location != null && _autoRoundMarkDistanceMeters.HasValue) {
+					var nextMark = GetNextMark (_state.TargetMark);
+					if (nextMark != null) {
+						var distanceToMark = CoordinatePoint.HaversineDistance (_state.Location, _state.TargetMark.Location);
+						if (distanceToMark < _autoRoundMarkDistanceMeters) {
+							_logger.Info ("Distance to " + _state.TargetMark.MarkType + " is " + string.Format ("{0:0.0}m") +
+										 ", advancing to next mark");
+							NextMark ();
+						}
+					}
+				}
+			} 
+			else 
+			{
+				DetectRaceStart ();
+			}
         }
     }
 }
