@@ -108,13 +108,13 @@ namespace MrGibbs.BlendMicroAnemometer
 			{
 				_lastReceivedAt = _clock.GetUtcTime ();
 				uint anemometerDifference;
-				uint vaneDifference;
+				float apparantAngle;
 				short x;
 				short y;
 				short z;
 
 				anemometerDifference = BitConverter.ToUInt32 (bytes, 0);
-				vaneDifference = BitConverter.ToUInt32 (bytes, 4);
+				apparantAngle = BitConverter.ToSingle(bytes, 4);
 
 				x = BitConverter.ToInt16 (bytes, 8);
 				y = BitConverter.ToInt16 (bytes, 10);
@@ -128,15 +128,15 @@ namespace MrGibbs.BlendMicroAnemometer
 					_calibrateZ = z;
 				}
 
-				_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
+				_logger.Debug(string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, apparantAngle, x, y, z));
 
-				_angle = CalculateAngle (vaneDifference);
+				_angle = apparantAngle + _windAngleOffset;
 				_speed = CalculateSpeedInKnots (anemometerDifference);
 
 				_heel = (double)(x-_calibrateX.Value) * AccelFactor * (360.0 / 4.0);
 				_pitch = (double)(y-_calibrateY.Value) * AccelFactor * (360.0 / 4.0);
 
-				_logger.Debug (string.Format ("speed={0:0.0},angle={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _angle, _heel, _pitch));
+				_logger.Info(string.Format ("speed={0:0.0},angle={1:0.0},heel={2:0.0},pitch={3:0.0}", _speed, _angle, _heel, _pitch));
 			}
 		}
 
