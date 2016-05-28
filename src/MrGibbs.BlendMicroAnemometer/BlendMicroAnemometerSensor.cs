@@ -59,7 +59,9 @@ namespace MrGibbs.BlendMicroAnemometer
 		private GattCharacteristic1 _readChar;//= GetObject<GattCharacteristic1>(Service,readCharPath);
 		private Properties _properties;// = GetObject<Properties>(Service,readCharPath);
 
-		public BlendMicroAnemometerSensor(ILogger logger,IClock clock,TimeSpan maximumDataAge, BlendMicroAnemometerPlugin plugin,string adapterName,string deviceAddress, DBusConnection connection)
+		private double _windAngleOffset;
+
+		public BlendMicroAnemometerSensor(ILogger logger,IClock clock,TimeSpan maximumDataAge, BlendMicroAnemometerPlugin plugin,string adapterName,string deviceAddress, DBusConnection connection, double windAngleOffset)
         {
 			_plugin = plugin;
             _logger = logger;
@@ -68,6 +70,7 @@ namespace MrGibbs.BlendMicroAnemometer
 			_connection = connection;
 			_clock = clock;
 			_maximumDataAge = maximumDataAge;
+			_windAngleOffset = windAngleOffset;
 		}
 
 		private void InitializePropertyListener ()
@@ -127,7 +130,7 @@ namespace MrGibbs.BlendMicroAnemometer
 
 				_logger.Debug (string.Format ("a={0},v={1},x={2},y={3},z={4}", anemometerDifference, vaneDifference, x, y, z));
 
-				_angle = CalculateAngle (vaneDifference, anemometerDifference);
+				_angle = CalculateAngle (vaneDifference);
 				_speed = CalculateSpeedInKnots (anemometerDifference);
 
 				_heel = (double)(x-_calibrateX.Value) * AccelFactor * (360.0 / 4.0);
@@ -184,10 +187,12 @@ namespace MrGibbs.BlendMicroAnemometer
 		/// </summary>
 		/// <returns>The angle.</returns>
 		/// <param name="vaneDifference">Vane difference.</param>
-		/// <param name="anemometerDifference">Anemometer difference.</param>
-		private double CalculateAngle(long vaneDifference,long anemometerDifference)
+		private double CalculateAngle(long vaneDifference)
 		{
-			return 360.0-((((double)vaneDifference/(double)anemometerDifference)*360.0) % 360.0);
+			double angle = ((double)vaneDifference / (double)uint.MaxValue) * 360.0;
+			angle = angle + _windAngleOffset;
+
+			return (angle % 360.0);
 		}
 
         /// <inheritdoc />

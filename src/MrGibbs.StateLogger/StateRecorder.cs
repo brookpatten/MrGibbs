@@ -83,6 +83,12 @@ namespace MrGibbs.StateLogger
 										 "end DATETIME" +
 										 ")");
 
+					_connection.Execute ("create table Tack(" +
+					                     "id INTEGER PRIMARY KEY," +
+					                     "start DATETIME," +
+					                     "endcourseoverground NUMERIC" +
+					                     ")");
+
 					var values = Enum.GetValues (typeof (StateValue)).Cast<StateValue> ().ToList ();
 					foreach (var val in values) {
 						_connection.Execute ("insert into StateKey(key,name) values(@key,@name)", new { key = (int)val, name = val.ToString () });
@@ -90,6 +96,13 @@ namespace MrGibbs.StateLogger
 				}
 				//transaction.Complete();
 			}
+		}
+
+		public void RecordTack (Tack tack)
+		{
+			_connection.Execute ("insert into Tack (start,endcourseoverground) values (@At,@CourseOverGround)", tack);
+			//TODO: there has to be a better way to do this
+			tack.Id = (long)_connection.ExecuteScalar ("select max(id) from Tack");
 		}
 
 		public void RecordRace (State state)
@@ -179,6 +192,14 @@ namespace MrGibbs.StateLogger
 				RecordRace (state);
 				RecordState (state);
 				RecordStateValues (state);
+
+				//make sure all tacks are recorded by walking the list backwards and looking for zero ids
+				//(once they are recorded they get real ids)
+				if (state.Tacks != null) {
+					for (int i = state.Tacks.Count - 1; i >= 0 && state.Tacks[i].Id==0; i--) {
+						RecordTack (state.Tacks [i]);
+					}
+				}
 				//transaction.Complete();
 			}
 		}

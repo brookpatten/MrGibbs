@@ -25,10 +25,12 @@ namespace MrGibbs.BlendMicroAnemometer
 			Kernel.Bind<IPlugin> ()
 				.To<BlendMicroAnemometerPlugin> ()
 				  .InSingletonScope ()
-			      .WithConstructorArgument("simulated",AppConfig.SimulateSensorData)
+				  .WithConstructorArgument ("simulated", AppConfig.SimulateSensorData)
 				  .WithConstructorArgument ("maximumDataAge", new TimeSpan (0, 0, 3))
-			      .WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting("BtAdapterName","hci0"))
-			      .WithConstructorArgument ("deviceAddress", address);
+				  .WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting ("BtAdapterName", "hci0"))
+				  .WithConstructorArgument ("deviceAddress", address)
+			      .WithConstructorArgument ("windAngleOffset", ConfigurationHelper.ReadDoubleAppSetting ("WindAngleOffset", 0.0));
+
 		}
 
 		public override void Unload ()

@@ -32,12 +32,14 @@ namespace MrGibbs.Calculators
         private double? _currentTackStartCourseOverGroundRadians;
 
         private IList<CourseHistory> _history;
+
+		private Tack _currentTack;
         
         public TackCalculator(ILogger logger, IPlugin plugin)
         {
             _history = new List<CourseHistory>();
             _plugin = plugin;
-            _logger = logger;
+			_logger = logger;
         }
 
         /// <inheritdoc />
@@ -106,7 +108,17 @@ namespace MrGibbs.Calculators
 
                 string message = string.Format("Tack: {0:0.0}°", differenceDegrees);
                 _logger.Info(message);
+
                 state.AddMessage(MessageCategory.Tactical, MessagePriority.Normal, 5, message);
+
+				//record the tack in the state
+				if (state.RaceStarted && _currentTack != null) {
+					_currentTack.CourseOverGround = AngleUtilities.RadiansToDegrees (_previousTackCourseOverGroundRadians.Value);
+					state.Tacks.Add (_currentTack);
+				}
+
+				_currentTack = new Tack ();
+				_currentTack.At = latest.Time;
             }
         }
 

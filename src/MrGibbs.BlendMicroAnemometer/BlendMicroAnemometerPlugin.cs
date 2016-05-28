@@ -24,8 +24,9 @@ namespace MrGibbs.BlendMicroAnemometer
 		private IClock _clock;
 		private TimeSpan _maximumDataAge;
 		private bool _simulated;
+		private double _windAngleOffset;
 
-		public BlendMicroAnemometerPlugin(ILogger logger,IClock clock,TimeSpan maximumDataAge,DBusConnection connection,string btAdapterName,string deviceAddress,bool simulated)
+		public BlendMicroAnemometerPlugin(ILogger logger,IClock clock,TimeSpan maximumDataAge,DBusConnection connection,string btAdapterName,string deviceAddress,bool simulated,double windAngleOffset)
         {
 			
 			_btAdapterName = btAdapterName;
@@ -35,6 +36,7 @@ namespace MrGibbs.BlendMicroAnemometer
 			_clock = clock;
 			_maximumDataAge = maximumDataAge;
 			_simulated = simulated;
+			_windAngleOffset = windAngleOffset;
 		}
 
         /// <inheritdoc />
@@ -56,7 +58,7 @@ namespace MrGibbs.BlendMicroAnemometer
 					throw new ArgumentNullException ("deviceAddress");
 				}
 
-				var bmas = new BlendMicroAnemometerSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_deviceAddress, _connection);
+				var bmas = new BlendMicroAnemometerSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_deviceAddress, _connection,_windAngleOffset);
 				bmas.Start ();
 				sensor = bmas;
 			}

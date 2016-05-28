@@ -12,8 +12,8 @@ namespace MrGibbs.Models
     /// </summary>
     public class State
     {
-        enum Tack : byte { Port = 0, Starboard = 1 }
-        enum Leg : byte { Windward = 0, Leeward = 1 }
+        //enum Tack : byte { Port = 0, Starboard = 1 }
+        //enum Leg : byte { Windward = 0, Leeward = 1 }
 
         //provided by system clock or gps
         public DateTime SystemTime { get; set; }
@@ -42,14 +42,17 @@ namespace MrGibbs.Models
         private int? _previousMarkIndex;
         public bool RaceStarted { get; set; }
 
-        //system state
-        private List<Message> _messages;
+		public IList<Tack> Tacks { get; set; }
+
+		//system state
+		private List<Message> _messages;
 
         public State()
         {
             _messages = new List<Message>();
 			StateValues = new Dictionary<StateValue, double> ();
             Course = null;
+			Tacks = new List<Tack> ();
         }
 
         public Message Message

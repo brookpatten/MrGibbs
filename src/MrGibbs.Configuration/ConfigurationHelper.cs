@@ -114,7 +114,7 @@ namespace MrGibbs.Configuration
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-		public static double ReadDoubleAppSetting(string key, int defaultValue)
+		public static double ReadDoubleAppSetting(string key, double defaultValue)
         {
             double val;
             if (double.TryParse(ConfigurationManager.AppSettings[key], out val))
