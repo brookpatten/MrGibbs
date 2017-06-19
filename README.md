@@ -30,9 +30,9 @@ sudo reboot
 ```
 sudo apt-get update
 sudo apt-get install git build-essential autoconf cmake libtool libglib2.0 libdbus-1-dev libudev-dev libical-dev libreadline-dev
-wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.39.tar.xz
-tar xvf bluez-5.39.tar.xz 
-cd bluez-5.39/
+wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.45.tar.xz
+tar xvf bluez-5.45.tar.xz 
+cd bluez-5.45/
 ./configure --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd
 make
 sudo make install
@@ -58,15 +58,6 @@ Edit /etc/dbus-1/system.d/bluetooth.conf, add the following
     <allow send_interface="org.freedesktop.DBus.Properties"/>
 </policy>
 ```
-Edit /etc/systemd/system/bluetooth.target.wants/bluetooth.service.
-Change the line
-```
-ExecStart=/usr/libexec/bluetooth/bluetoothd
-```
-to
-```
-ExecStart=/usr/libexec/bluetooth/bluetoothd --experimental
-```
 
 Start up bluetooth
 
@@ -78,26 +69,32 @@ sudo hciconfig hci0 up
 ```
 
 #3A (Raspberry Pi 2/3) Mono Installation
-As of this writing, a weekly build of mono is required as the necassary changes to mono.posix have not made it into a release yet.  CI builds do not include ArmHF packages so if you're intalling on a Pi, Weekly is the path of least resistance (Compiling mono from git on the pi is very time consuming).
+As of this writing, a beta build of mono is required as the necassary changes to mono.posix have not made it into a release yet.  CI builds do not include ArmHF packages so if you're intalling on a Pi, Weekly is the path of least resistance (Compiling mono from git on the pi is very time consuming).
 ```
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-echo "deb http://download.mono-project.com/repo/debian alpha main" | sudo tee /etc/apt/sources.list.d/mono-alpha.list
+echo "deb http://download.mono-project.com/repo/debian beta-jessie main" | sudo tee /etc/apt/sources.list.d/mono-official-beta.list
 sudo apt-get update
 sudo apt-get install mono-devel
+
+#clear bin cache
+hash -r
 ```
 
 #3B (Raspberry Pi A/B/+/Zero) Mono Compilation 
 ```
 sudo apt-get install autoconf libtool automake build-essential gettext libtool-bin
 #if you want to speed things up you could limit the depth
-git clone --recursive https://github.com/mono/mono.git
+git clone --depth 1 --recursive https://github.com/mono/mono.git
 cd mono
 ./autogen.sh --prefix=/usr/local
 make get-monolite-latest
-#(This will take about 6 hours)
+#(This will take 12+ hours on a pi zero)
 make 
 sudo make install
 cd ..
+
+#clear bin cache
+hash -r
 ```
 
 #4 Build Mr.Gibbs
