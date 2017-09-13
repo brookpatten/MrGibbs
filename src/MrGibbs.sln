@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.RouteCalculator", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.OnboardWebUI", "MrGibbs.OnboardWebUI\MrGibbs.OnboardWebUI.csproj", "{8DA4744B-7594-4863-B4EE-02C0305BCFA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.AndroidViewer", "MrGibbs.AndroidViewer\MrGibbs.AndroidViewer.csproj", "{FCD351BA-CC34-45FD-80E0-058BC275F862}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{57FE80A8-BBC9-40CD-B0D6-81F35BAB254C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MrGibbs.Test", "MrGibbs.Test\MrGibbs.Test.csproj", "{22546F50-64C4-4491-91DC-C79BE2F5DBE6}"
@@ -228,6 +230,20 @@ Global
 		{F476FFC0-F700-489F-BDE0-AE7D16F82FC1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F476FFC0-F700-489F-BDE0-AE7D16F82FC1}.WindowsDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F476FFC0-F700-489F-BDE0-AE7D16F82FC1}.WindowsDebug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.CodeAnalysis|Any CPU.Deploy.0 = Release|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.WindowsDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.WindowsDebug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD351BA-CC34-45FD-80E0-058BC275F862}.WindowsDebug|Any CPU.Deploy.0 = Debug|Any CPU
+		<<<<<<< HEAD
+		=======
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
@@ -246,6 +262,7 @@ Global
 		{9109FAAA-849B-4FDA-973C-847275353B5E} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{F476FFC0-F700-489F-BDE0-AE7D16F82FC1} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{8DA4744B-7594-4863-B4EE-02C0305BCFA3} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
+		{FCD351BA-CC34-45FD-80E0-058BC275F862} = {F5E624C6-9097-4A14-B2DC-5058B30F2373}
 		{22546F50-64C4-4491-91DC-C79BE2F5DBE6} = {57FE80A8-BBC9-40CD-B0D6-81F35BAB254C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
@@ -282,5 +299,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E8A52DF-B831-4F3B-8698-8284A6E2233D}
+>>>>>>> 8754c7d28df0926a9681204ea8412333ebc8460f
 	EndGlobalSection
 EndGlobal

@@ -1,5 +1,5 @@
 ﻿<Properties StartupItem="MrGibbs/MrGibbs.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.OnboardWebUI/WebViewer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MrGibbs.Pebble/PebbleModule.cs">
     <Files>
       <File FileName="MrGibbs.Pebble/PebbleViewer.cs" Line="1" Column="1" />
       <File FileName="MrGibbs/Supervisor.cs" Line="1" Column="1" />
@@ -7,14 +7,15 @@
       <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/SimpleObjectManager.cs" Line="1" Column="1" />
       <File FileName="lib/PebbleSharp/PebbleSharp.Mono.BlueZ5/PebbleManager.cs" Line="1" Column="1" />
       <File FileName="lib/PebbleSharp/Mono.BlueZ/Mono.BlueZ.DBus/DBusConnection.cs" Line="1" Column="1" />
-      <File FileName="MrGibbs.Configuration/BluetoothModule.cs" Line="1" Column="1" />
       <File FileName="MrGibbs.Configuration/AppConfig.cs" Line="1" Column="1" />
-      <File FileName="MrGibbs.OnboardWebUI/WebModule.cs" Line="16" Column="17" />
-      <File FileName="MrGibbs.OnboardWebUI/WebPlugin.cs" Line="47" Column="1" />
+      <File FileName="MrGibbs.OnboardWebUI/WebModule.cs" Line="1" Column="1" />
+      <File FileName="MrGibbs.OnboardWebUI/WebPlugin.cs" Line="1" Column="1" />
       <File FileName="MrGibbs.OnboardWebUI/WebViewer.cs" Line="89" Column="1" />
       <File FileName="MrGibbs/Program.cs" Line="1" Column="1" />
-      <File FileName="MrGibbs.OnboardWebUI/WebResolver.cs" Line="51" Column="1" />
+      <File FileName="MrGibbs.OnboardWebUI/WebResolver.cs" Line="1" Column="1" />
       <File FileName="MrGibbs/App.config" Line="1" Column="1" />
+      <File FileName="MrGibbs.OnboardWebUI/Api/DashboardController.cs" Line="65" Column="24" />
+      <File FileName="MrGibbs.Pebble/PebbleModule.cs" Line="19" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
