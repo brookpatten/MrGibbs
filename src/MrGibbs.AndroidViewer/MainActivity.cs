@@ -6,9 +6,11 @@ using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 
+using MrGibbs.Models;
+
 namespace MrGibbs.AndroidViewer
 {
-    [Activity(Label = "MrGibbs.AndroidViewer", MainLauncher = true, Icon = "@mipmap/icon")]
+    [Activity(Label = "MrGibbs.AndroidViewer", MainLauncher = true, Icon = "@mipmap/icon",ScreenOrientation =Android.Content.PM.ScreenOrientation.Landscape)]
     public class MainActivity : Activity
     {
         //ViewSwitcher _switcher;
@@ -17,7 +19,8 @@ namespace MrGibbs.AndroidViewer
         protected override void OnCreate(Bundle savedInstanceState)
         {
             this.RequestWindowFeature(Android.Views.WindowFeatures.NoTitle);
-            this.Window.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
+            //this.Window.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
+            this.Window.AddFlags(Android.Views.WindowManagerFlags.KeepScreenOn);
 
             base.OnCreate(savedInstanceState);
 
@@ -75,16 +78,24 @@ namespace MrGibbs.AndroidViewer
             }
         }
 
-        public void UpdateStartView(int x)
-        {
-        }
-
-        public void UpdateRaceView(int x)
+        public void Update(StateLite state)
         {
             var row1 = this.FindViewById<TextView>(Resource.Id.row1Value);
             row1.Post(() =>
             {
-                row1.Text = $"{x}";
+                if(state.StateValues.ContainsKey(StateValue.SpeedInKnots))
+                {
+                    row1.Text = $"{state.StateValues[StateValue.SpeedInKnots]:0.0}";
+                }
+
+                if(state.Countdown.HasValue && !state.RaceStarted)
+                {
+                    //start mode
+                }
+                else
+                {
+                    //race mode
+                }
             });
 
             var imageView = this.FindViewById<ImageView>(Resource.Id.imageView);
