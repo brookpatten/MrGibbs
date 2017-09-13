@@ -27,9 +27,33 @@ namespace MrGibbs.OnboardWebUI.Api
 
         [HttpGet]
         [Route("api/v1/state")]
-        public IDictionary<StateValue,double> State(IList<StateValue> values=null)
+        public StateLite State()
         {
-            return _state.StateValues;
+            var state = new StateLite();
+            state.Countdown = _state.Countdown;
+            state.RaceStarted = _state.RaceStarted;
+            state.StateValues = ImportEntries(_state.StateValues
+                , StateValue.SpeedInKnots
+                , StateValue.CourseOverGroundDirection
+                , StateValue.VelocityMadeGood
+                , StateValue.VelocityMadeGoodOnCourse
+                , StateValue.VelocityMadeGoodOnCoursePercent
+                , StateValue.VelocityMadeGoodPercent);
+
+            return state;
+        }
+
+        private Dictionary<StateValue, double> ImportEntries(IDictionary<StateValue,double> from,params StateValue[] stateValues)
+        {
+            var entries = new Dictionary<StateValue, double>();
+            foreach(var s in stateValues)
+            {
+                if(from.ContainsKey(s))
+                {
+                    entries.Add(s, from[s]);
+                }
+            }
+            return entries;
         }
 
         [HttpPost]
