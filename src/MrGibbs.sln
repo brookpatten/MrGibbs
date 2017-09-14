@@ -233,17 +233,9 @@ Global
 		{FCD351BA-CC34-45FD-80E0-058BC275F862}.CodeAnalysis|Any CPU.ActiveCfg = Release|Any CPU
 		{FCD351BA-CC34-45FD-80E0-058BC275F862}.CodeAnalysis|Any CPU.Build.0 = Release|Any CPU
 		{FCD351BA-CC34-45FD-80E0-058BC275F862}.CodeAnalysis|Any CPU.Deploy.0 = Release|Any CPU
-		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCD351BA-CC34-45FD-80E0-058BC275F862}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{FCD351BA-CC34-45FD-80E0-058BC275F862}.WindowsDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FCD351BA-CC34-45FD-80E0-058BC275F862}.WindowsDebug|Any CPU.Build.0 = Debug|Any CPU
 		{FCD351BA-CC34-45FD-80E0-058BC275F862}.WindowsDebug|Any CPU.Deploy.0 = Debug|Any CPU
-		<<<<<<< HEAD
-		=======
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C} = {E38D5C9B-42CF-48F1-A13E-BC66E00107EF}
@@ -302,6 +294,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E8A52DF-B831-4F3B-8698-8284A6E2233D}
->>>>>>> 8754c7d28df0926a9681204ea8412333ebc8460f
 	EndGlobalSection
 EndGlobal
