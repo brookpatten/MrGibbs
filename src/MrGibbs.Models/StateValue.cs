@@ -34,7 +34,8 @@ namespace MrGibbs.Models
 		TrueWindDirection,
 		BarometricPressurePascals,
 		TemperatureCelsius,
-		BarometricPressureDelta
+		BarometricPressureDelta,
+		BarometricPressureDeltaPercent
 	}
 }
 

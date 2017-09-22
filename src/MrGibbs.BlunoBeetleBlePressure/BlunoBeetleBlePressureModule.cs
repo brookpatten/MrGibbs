@@ -16,9 +16,10 @@ namespace MrGibbs.BlunoBeetleBlePressure
 	{
 		public override void Load()
 		{
-			string address = ConfigurationHelper.ReadStringAppSetting ("BlunoBeetleBlePressureAddress", "");
+			string portAddress = ConfigurationHelper.ReadStringAppSetting ("BlunoBeetleBlePressureAddressPort", "");
+			string starboardAddress = ConfigurationHelper.ReadStringAppSetting ("BlunoBeetleBlePressureAddressStarboard", "");
 
-			if (!string.IsNullOrEmpty (address)) 
+			if (!string.IsNullOrEmpty (portAddress) || !string.IsNullOrEmpty(starboardAddress)) 
 			{
 				Kernel.LoadIfNotLoaded<BluetoothModule> ();
 			}
@@ -29,7 +30,8 @@ namespace MrGibbs.BlunoBeetleBlePressure
 				.WithConstructorArgument ("simulated", false/*AppConfig.SimulateSensorData*/)
 				.WithConstructorArgument ("maximumDataAge", new TimeSpan (0, 0, 3))
 				.WithConstructorArgument ("btAdapterName", ConfigurationHelper.ReadStringAppSetting ("BtAdapterName", "hci0"))
-				.WithConstructorArgument ("deviceAddress", address);
+				.WithConstructorArgument ("portAddress", portAddress)
+				.WithConstructorArgument ("starboardAddress", starboardAddress);
 
 		}
 

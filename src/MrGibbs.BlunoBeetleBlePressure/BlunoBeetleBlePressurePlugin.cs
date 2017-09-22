@@ -17,16 +17,18 @@ namespace MrGibbs.BlunoBeetleBlePressure
 		private IList<IPluginComponent> _components;
 		private DBusConnection _connection;
 		private string _btAdapterName;
-		private string _deviceAddress;
+		private string _portAddress;
+		private string _starboardAddress;
 		private IClock _clock;
 		private TimeSpan _maximumDataAge;
 		private bool _simulated;
 
-		public BlunoBeetleBlePressurePlugin(ILogger logger,IClock clock,TimeSpan maximumDataAge,DBusConnection connection,string btAdapterName,string deviceAddress, bool simulated)
+		public BlunoBeetleBlePressurePlugin(ILogger logger,IClock clock,TimeSpan maximumDataAge,DBusConnection connection,string btAdapterName,string portAddress,string starboardAddress, bool simulated)
 		{
 
 			_btAdapterName = btAdapterName;
-			_deviceAddress = deviceAddress;
+			_portAddress = portAddress;
+			_starboardAddress = starboardAddress;
 			_connection = connection;
 			_logger = logger;
 			_clock = clock;
@@ -49,12 +51,17 @@ namespace MrGibbs.BlunoBeetleBlePressure
 			} 
 			else 
 			{
-				if (string.IsNullOrWhiteSpace (_deviceAddress)) 
+				if (string.IsNullOrWhiteSpace (_portAddress)) 
 				{
-					throw new ArgumentNullException ("deviceAddress");
+					throw new ArgumentNullException ("portAddress");
 				}
 
-				var bmas = new BlunoBeetleBlePressureSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_deviceAddress, _connection);
+				if (string.IsNullOrWhiteSpace (_starboardAddress)) 
+				{
+					throw new ArgumentNullException ("starboardAddress");
+				}
+
+				var bmas = new BlunoBeetleBlePressureSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_portAddress,_starboardAddress, _connection);
 				bmas.Start ();
 				sensor = bmas;
 			}
