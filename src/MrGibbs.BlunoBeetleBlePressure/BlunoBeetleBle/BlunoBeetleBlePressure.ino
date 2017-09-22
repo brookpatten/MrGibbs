@@ -1,20 +1,7 @@
-#include <Wire.h>
-#include <SPI.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 
-//int min=9999;
-//int max = 0;
-//int piezoPin=0;
-
-//#define BMP_SCK 13
-//#define BMP_MISO 12
-//#define BMP_MOSI 11 
-//#define BMP_CS 10
-
 Adafruit_BMP280 bmp; // I2C
-//Adafruit_BMP280 bmp(BMP_CS); // hardware SPI
-//Adafruit_BMP280 bmp(-1, -1, 4,  5);
 
 byte buffer[12];
 unsigned char tobytes[4];
@@ -23,11 +10,7 @@ float pressure;
 float altitude;
 
 void setup() {
-  //Serial.begin(9600);
-  //Serial.println(F("BMP280 test"));
   Serial.begin(115200);//115200 is apprently the secret code to be able to write bt?
-  //Serial.println("AT+SETTING=DEFPERIPHERAL");
-  //Serial.println("AT+BLUNODEBUG=ON");
   
   if (!bmp.begin()) {  
     Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
