@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6287DAFD-FAFA-4272-88A5-3D6FC2BB7EF8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>BlunoBeetleBlePressure</RootNamespace>
+    <AssemblyName>MrGibbs.BlunoBeetleBlePressure.Plugin</AssemblyName>
+    <ReleaseVersion>2.0</ReleaseVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BlunoBeetleBlePressureModule.cs" />
+    <Compile Include="BlunoBeetleBlePressurePlugin.cs" />
+    <Compile Include="BlunoBeetleBlePressureSensor.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\Mono.BlueZ.DBus\Mono.BlueZ.DBus.csproj">
+      <Project>{68E6EB3B-4076-48F6-9EB6-1181057C0977}</Project>
+      <Name>Mono.BlueZ.DBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\lib\PebbleSharp\Mono.BlueZ\dbus-sharp\src\dbus-sharp.csproj">
+      <Project>{09A0200F-F3AF-4BD6-9EC4-E7D80D273E4C}</Project>
+      <Name>dbus-sharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Contracts\MrGibbs.Contracts.csproj">
+      <Project>{5B22B394-D1CC-457F-B83D-04D2C797E3B3}</Project>
+      <Name>MrGibbs.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Configuration\MrGibbs.Configuration.csproj">
+      <Project>{0096B610-9EAD-421F-83AC-C3FE2559EC68}</Project>
+      <Name>MrGibbs.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Models\MrGibbs.Models.csproj">
+      <Project>{A41A884E-A7FE-4EC6-80A7-145E3FB4311F}</Project>
+      <Name>MrGibbs.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
