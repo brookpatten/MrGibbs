@@ -38,7 +38,8 @@ namespace MrGibbs.OnboardWebUI.Api
                 , StateValue.VelocityMadeGood
                 , StateValue.VelocityMadeGoodOnCourse
                 , StateValue.VelocityMadeGoodOnCoursePercent
-                , StateValue.VelocityMadeGoodPercent);
+                , StateValue.VelocityMadeGoodPercent
+                , StateValue.CurrentTackCourseOverGroundDelta);
 
             return state;
         }
