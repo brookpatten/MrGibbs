@@ -55,6 +55,8 @@ namespace MrGibbs.BlunoBeetleBlePressure
 			public Properties Properties{ get; set; }// = GetObject<Properties>(Service,readCharPath);
 
 			public Task Reconnect;
+
+			public double? Offset{get;set;}
 		}
 
 		IList<PressureSensor> _sensors;
@@ -119,7 +121,7 @@ namespace MrGibbs.BlunoBeetleBlePressure
 
 		private void DeserializeSensorValue (byte [] bytes,PressureSensor sensor)
 		{
-			if (bytes.Length == 12) 
+			if (bytes.Length == 12)
 			{
 				sensor.LastReceivedAt = _clock.GetUtcTime ();
 
@@ -130,7 +132,11 @@ namespace MrGibbs.BlunoBeetleBlePressure
 
 				sensor.LatestReading = reading;
 
-				_logger.Debug(string.Format ("Pressure {0},{1} t={2},p={3},a={4}", sensor.Side,sensor.Index,reading.Temperature, reading.Pressure, reading.Altitude));
+				_logger.Warn (string.Format ("Pressure {0},{1} t={2},p={3},a={4}", sensor.Side, sensor.Index, reading.Temperature, reading.Pressure, reading.Altitude));
+			} else
+			{
+				_logger.Warn ("Received " + (bytes != null ? bytes.Length + " bytes " : "null ") + "from " + sensor.Index + " " + sensor.Side);
+
 			}
 		}
 
@@ -142,9 +148,25 @@ namespace MrGibbs.BlunoBeetleBlePressure
 
 		public void Start()
 		{
+			bool anySuccess = false;
+			Exception lastException = null;
+
 			foreach (var sensor in _sensors)
 			{
-				StartSensor (sensor);
+				try
+				{
+					StartSensor (sensor);
+					anySuccess=true;
+				}
+				catch(Exception ex)
+				{
+					lastException = ex;
+				}
+			}
+
+			if (!anySuccess)
+			{
+				throw lastException;
 			}
 		}
 
@@ -259,8 +281,24 @@ namespace MrGibbs.BlunoBeetleBlePressure
 				{
 					if (port.LatestReading != null && starboard.LatestReading != null)
 					{
-						var delta = Math.Abs (port.LatestReading.Pressure - starboard.LatestReading.Pressure);
+						if (!port.Offset.HasValue || !starboard.Offset.HasValue)
+						{
+							if (port.LatestReading.Pressure > starboard.LatestReading.Pressure)
+							{
+								//this yeilds a negative offset
+								port.Offset = starboard.LatestReading.Pressure - port.LatestReading.Pressure;
+								starboard.Offset = 0;
+							} else
+							{
+								starboard.Offset = port.LatestReading.Pressure - starboard.LatestReading.Pressure;
+								port.Offset = 0;
+							}
+						}
+
+						var delta = /*Math.Abs*/ ((port.LatestReading.Pressure + port.Offset.Value) - (starboard.LatestReading.Pressure + starboard.Offset.Value));
 						state.StateValues [StateValue.BarometricPressureDelta] = delta;
+
+						delta = Math.Abs (delta);
 
 						if (!port.DeltaMax.HasValue || delta > port.DeltaMax)
 						{
@@ -268,6 +306,7 @@ namespace MrGibbs.BlunoBeetleBlePressure
 							starboard.DeltaMax = delta;
 						}
 						var percent = (delta / port.DeltaMax) * 100.0;
+						_logger.Warn (string.Format ("Pressure Delta {0:0.00} ({1:0.0}%)", delta, percent));
 						state.StateValues [StateValue.BarometricPressureDeltaPercent] = percent.Value;
 					}
 				} 
@@ -286,6 +325,11 @@ namespace MrGibbs.BlunoBeetleBlePressure
 				try 
 				{
 					sensor.Device.Connect ();
+					//foreach(Delegate d in sensor.Properties.PropertiesChanged.GetInvocationList())
+					//{
+					//	sensor.Properties.PropertiesChanged -= (PropertiesChangedHandler)d;
+					//}
+					//StartSensor(sensor);
 					_logger.Warn ("BLE Pressure Reconnected Successfully");
 					sensor.LastReconnectAttempt = null;
 				} 

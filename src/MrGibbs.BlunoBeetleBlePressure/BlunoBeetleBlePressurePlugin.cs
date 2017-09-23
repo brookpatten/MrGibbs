@@ -51,14 +51,9 @@ namespace MrGibbs.BlunoBeetleBlePressure
 			} 
 			else 
 			{
-				if (string.IsNullOrWhiteSpace (_portAddress)) 
+				if (string.IsNullOrWhiteSpace (_portAddress) && string.IsNullOrWhiteSpace (_starboardAddress)) 
 				{
-					throw new ArgumentNullException ("portAddress");
-				}
-
-				if (string.IsNullOrWhiteSpace (_starboardAddress)) 
-				{
-					throw new ArgumentNullException ("starboardAddress");
+					throw new ArgumentNullException ("pressure sensor address");
 				}
 
 				var bmas = new BlunoBeetleBlePressureSensor (_logger, _clock, _maximumDataAge, this,_btAdapterName,_portAddress,_starboardAddress, _connection);
