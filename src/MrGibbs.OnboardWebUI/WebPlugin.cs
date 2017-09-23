@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Ninject;
+
 using MrGibbs.Contracts;
 using MrGibbs.Contracts.Infrastructure;
 using MrGibbs.Models;
@@ -15,10 +17,12 @@ namespace MrGibbs.OnboardWebUI
         public bool Initialized { get; private set; }
         private IViewer _viewer;
         private ILogger _logger;
+		private IKernel _kernel;
 
-        public WebPlugin(ILogger logger)
+		public WebPlugin(ILogger logger,IKernel kernel)
         {
             _logger = logger;
+			_kernel = kernel;
         }
 
         public IList<IPluginComponent> Components
@@ -40,7 +44,7 @@ namespace MrGibbs.OnboardWebUI
         {
             try
             {
-                _viewer = new WebViewer(_logger,queueCommand, this);
+				_viewer = new WebViewer(_logger,queueCommand, this,_kernel);
 
                 configuration.DashboardViewers.Add(_viewer);
             }

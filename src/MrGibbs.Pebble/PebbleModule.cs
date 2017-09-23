@@ -15,6 +15,7 @@ namespace MrGibbs.Pebble
 	{
 		public override void Load()
 		{
+			
 			Kernel.LoadIfNotLoaded<BluetoothModule> ();
 
 			Kernel.Bind<IPlugin> ().To<PebblePlugin> ()

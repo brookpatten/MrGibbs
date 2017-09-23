@@ -290,7 +290,7 @@ namespace MrGibbs
 				var course = _state.Course as CourseByMarks;
 				//if the race just started, set the line
 				if (DetectRaceStart ()) {
-					var line = course.Marks.FirstOrDefault (x => x.MarkType == MarkType.Line);
+					var line = course?.Marks?.FirstOrDefault (x => x.MarkType == MarkType.Line);
 					if (line == null) {
 						line = new Mark () {
 							MarkType = MarkType.Line,

@@ -32,6 +32,10 @@ namespace MrGibbs.Models
 		PeakSpeedInKnotsForWind,
 		PeakSpeedPercentForWind,
 		TrueWindDirection,
+		BarometricPressurePascals,
+		TemperatureCelsius,
+		BarometricPressureDelta,
+		BarometricPressureDeltaPercent
 	}
 }
 

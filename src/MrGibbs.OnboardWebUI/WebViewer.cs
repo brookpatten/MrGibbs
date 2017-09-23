@@ -9,7 +9,6 @@ using Owin;
 using Ninject;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Ninject.Web.WebApi;
 using Microsoft.Owin.StaticFiles;
 using Microsoft.Owin.FileSystems;
 using Microsoft.Owin;
@@ -24,11 +23,10 @@ namespace MrGibbs.OnboardWebUI
     public class WebViewer:IViewer
     {
         private ILogger _logger;
-        private Action<Action<ISystemController, IRaceController>> _queueCommand;
         private IDisposable _webApp;
-        private IKernel _kernel;
+        private WebResolver _resolver;
         
-        public WebViewer(ILogger logger, Action<Action<ISystemController, IRaceController>> queueCommand, IPlugin plugin)
+		public WebViewer(ILogger logger, Action<Action<ISystemController, IRaceController>> queueCommand, IPlugin plugin,IKernel kernel)
         {
             //params to add:
             //wifi hostspot?
@@ -40,7 +38,6 @@ namespace MrGibbs.OnboardWebUI
 
 
             _logger = logger;
-            _queueCommand = queueCommand;
             this.Plugin = plugin;
 
             //possibly do these as another plugin/dependency eg how bt or i2c works?
@@ -48,13 +45,8 @@ namespace MrGibbs.OnboardWebUI
             //optionally configure dhcp
             //optionally configure dns
 
-            _kernel = new StandardKernel();
-            _kernel.Bind<ILogger>().ToConstant(logger).InSingletonScope();
-            _kernel.Bind<Action<Action<ISystemController, IRaceController>>>().ToConstant(queueCommand).InSingletonScope();
-            _kernel.Bind<State>().ToConstant((State)null);
-
             //initialize owin/katana
-            _webApp = WebApp.Start(new StartOptions() { Port = 9000 },app=>
+			_webApp = WebApp.Start("http://*:9000",app=>
             {
                 var webApiConfig = new System.Web.Http.HttpConfiguration();
                 webApiConfig.MapHttpAttributeRoutes();
@@ -66,8 +58,18 @@ namespace MrGibbs.OnboardWebUI
                                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                                 };
                 
-                webApiConfig.DependencyResolver = new NinjectDependencyResolver(_kernel);
+				_resolver = new WebResolver (webApiConfig.DependencyResolver,logger, queueCommand, kernel);
+				webApiConfig.DependencyResolver = _resolver;
                 app.UseWebApi(webApiConfig);
+
+				var fs = new PhysicalFileSystem("/home/brook/Desktop/MrGibbs/src/MrGibbs.OnboardWebUI/Web");
+				app.UseFileServer(new FileServerOptions(){
+					FileSystem = fs,
+					RequestPath=new PathString(""),
+					EnableDefaultFiles=true
+				});
+
+
             });
             //initialize static content
             //initialize default page
@@ -80,7 +82,7 @@ namespace MrGibbs.OnboardWebUI
         }
         public void Update(State state)
         {
-            _kernel.Rebind<State>().ToConstant(state);
+			_resolver.UpdateState (state);
             //somehow push updates via signal r?
             //or just an update to the web kernel state object?
         }
@@ -91,9 +93,9 @@ namespace MrGibbs.OnboardWebUI
             {
                 _webApp.Dispose();
             }
-            if(_kernel!=null)
+			if(_resolver!=null)
             {
-                _kernel.Dispose();
+				_resolver.Dispose();
             }
             //shutdown owin/katana
             //shutdown dhcpdns/wifi?

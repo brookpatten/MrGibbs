@@ -14,6 +14,10 @@ namespace MrGibbs.Models
     /// </summary>
     public class CourseByMarks:ICourse
     {
+		public CourseByMarks()
+		{
+			Marks = new List<Mark> ();
+		}
         public IList<Mark> Marks { get; set; }
     }
 

@@ -13,7 +13,7 @@ using MrGibbs.Models;
 
 namespace MrGibbs.OnboardWebUI.Api
 {
-    class DashboardController
+	public class DashboardController:ApiController
     {
         private ILogger _logger;
         private Action<Action<ISystemController, IRaceController>> _queueCommand;
@@ -27,6 +27,7 @@ namespace MrGibbs.OnboardWebUI.Api
 
         [HttpGet]
         [Route("api/v1/state")]
+
         public StateLite State()
         {
             var state = new StateLite();

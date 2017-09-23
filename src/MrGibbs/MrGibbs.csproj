@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -84,25 +84,9 @@
       <Project>{2BE5501B-FA4A-408F-8269-F2D6E7A02699}</Project>
       <Name>MrGibbs.MagneticVariation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.Pebble\MrGibbs.Pebble.csproj">
-      <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
-      <Name>MrGibbs.Pebble</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MrGibbs.Gps\MrGibbs.Gps.csproj">
       <Project>{4D9F09B7-BAD6-4F4A-A40D-E2A1440B3483}</Project>
       <Name>MrGibbs.Gps</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.BlendMicroAnemometer\MrGibbs.BlendMicroAnemometer.csproj">
-      <Project>{26A14CFB-80CB-4D89-9101-10D9E34514B9}</Project>
-      <Name>MrGibbs.BlendMicroAnemometer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
-      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
-      <Name>MrGibbs.HMC5883</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
-      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
-      <Name>MrGibbs.MPU6050</Name>
     </ProjectReference>
     <ProjectReference Include="..\MrGibbs.PolarCalculator\MrGibbs.PolarCalculator.csproj">
       <Project>{9109FAAA-849B-4FDA-973C-847275353B5E}</Project>
@@ -111,6 +95,30 @@
     <ProjectReference Include="..\MrGibbs.StateLogger\MrGibbs.StateLogger.csproj">
       <Project>{17B81C86-A8FF-46D5-8513-048B0571FDCF}</Project>
       <Name>MrGibbs.StateLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.OnboardWebUI\MrGibbs.OnboardWebUI.csproj">
+      <Project>{8DA4744B-7594-4863-B4EE-02C0305BCFA3}</Project>
+      <Name>MrGibbs.OnboardWebUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.Pebble\MrGibbs.Pebble.csproj">
+      <Project>{4DC33CF3-5DF6-4630-9297-E2DADC27CDDD}</Project>
+      <Name>MrGibbs.Pebble</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.BlendMicroAnemometer\MrGibbs.BlendMicroAnemometer.csproj">
+      <Project>{26A14CFB-80CB-4D89-9101-10D9E34514B9}</Project>
+      <Name>MrGibbs.BlendMicroAnemometer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.BlunoBeetleBlePressure\MrGibbs.BlunoBeetleBlePressure.csproj">
+      <Project>{6287DAFD-FAFA-4272-88A5-3D6FC2BB7EF8}</Project>
+      <Name>MrGibbs.BlunoBeetleBlePressure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.HMC5883\MrGibbs.HMC5883.csproj">
+      <Project>{AB46A638-42D2-436E-A40B-1123AC4653D4}</Project>
+      <Name>MrGibbs.HMC5883</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MrGibbs.MPU6050\MrGibbs.MPU6050.csproj">
+      <Project>{C03B4B43-1404-4449-8865-3AFD1FD626E7}</Project>
+      <Name>MrGibbs.MPU6050</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

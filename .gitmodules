@@ -8,3 +8,7 @@
 [submodule "src/MrGibbs.Pebble/Pebble"]
 	path = src/MrGibbs.Pebble/Pebble
 	url = https://github.com/brookpatten/MrGibbs-Pebble.git
+[submodule "src/MrGibbs.OnboardWebUI/Web"]
+	path = src/MrGibbs.OnboardWebUI/Web
+	url = https://github.com/brookpatten/vue-admin.git
+	branch = onboard
