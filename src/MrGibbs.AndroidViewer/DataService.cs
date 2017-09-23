@@ -63,24 +63,31 @@ namespace MrGibbs.AndroidViewer
 
         private void Update()
         {
-            //connect to wifi network
-            //wait for ip
-            //connect to gibbs
-            //request data
-            //push updated data to UI
-
-            var client = new HttpClient();
-            var uri = new Uri(string.Format("http://192.168.1.90:9000/api/v1/state", string.Empty));
-
-            var task = client.GetAsync(uri);
-            task.Wait();
-            var response = task.Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var readTask = response.Content.ReadAsStringAsync();
-                readTask.Wait();
-                var content = readTask.Result; 
-                _state = JsonConvert.DeserializeObject<StateLite>(content);
+                //connect to wifi network
+                //wait for ip
+                //connect to gibbs
+                //request data
+                //push updated data to UI
+
+                var client = new HttpClient();
+                var uri = new Uri(string.Format("http://192.168.42.1:9000/api/v1/state", string.Empty));
+
+                var task = client.GetAsync(uri);
+                task.Wait();
+                var response = task.Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var readTask = response.Content.ReadAsStringAsync();
+                    readTask.Wait();
+                    var content = readTask.Result;
+                    _state = JsonConvert.DeserializeObject<StateLite>(content);
+                }
+            }
+            catch
+            {
+                _state = null;
             }
         }
 

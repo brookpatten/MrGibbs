@@ -44,9 +44,6 @@ namespace MrGibbs.AndroidViewer
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050006
-			public const int imageView = 2131034118;
-			
 			// aapt resource value: 0x7f050001
 			public const int row1Name = 2131034113;
 			

@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿using System;
+
+using Android.App;
 using Android.Widget;
 using Android.OS;
 using Android.Util;
@@ -15,33 +17,17 @@ namespace MrGibbs.AndroidViewer
     {
         //ViewSwitcher _switcher;
         DataServiceConnection _serviceConnection;
-
+        
         protected override void OnCreate(Bundle savedInstanceState)
         {
             this.RequestWindowFeature(Android.Views.WindowFeatures.NoTitle);
-            //this.Window.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
+            this.Window.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
             this.Window.AddFlags(Android.Views.WindowManagerFlags.KeepScreenOn);
 
             base.OnCreate(savedInstanceState);
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
-
-            //_switcher = new ViewSwitcher(this);
-
-
-            //IAttributeSet
-            //var lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MatchParent, LinearLayout.LayoutParams.WrapContent);
-            //_switcher.AddView(new RaceView(this,lp))
-
-            // Get our button from the layout resource,
-            // and attach an event to it
-            //Button button = FindViewById<Button>(Resource.Id.myButton);
-
-            //button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
-
-            
-
         }
 
         void DoBindService()
@@ -78,45 +64,158 @@ namespace MrGibbs.AndroidViewer
             }
         }
 
+        private void SetRow(int index,string name,string value)
+        {
+            TextView nameView;
+            TextView valueView;
+
+            if(index==0)
+            {
+                nameView = FindViewById<TextView>(Resource.Id.row1Name);
+                valueView = FindViewById<TextView>(Resource.Id.row1Value);
+            }
+            else if (index == 1)
+            {
+                nameView = FindViewById<TextView>(Resource.Id.row2Name);
+                valueView = FindViewById<TextView>(Resource.Id.row2Value);
+            }
+            else if (index == 2)
+            {
+                nameView = FindViewById<TextView>(Resource.Id.row3Name);
+                valueView = FindViewById<TextView>(Resource.Id.row3Value);
+            }
+            else
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            nameView.Post(() => {
+                nameView.Text = name;
+            });
+            valueView.Post(() =>
+            {
+                valueView.Text = value;
+            });
+        }
+
+        private void SetRows(params Tuple<string,string>[] rows)
+        {
+            for(int i=0;i<rows.Length;i++)
+            {
+                SetRow(i, rows[i].Item1, rows[i].Item2);
+            }
+        }
+
         public void Update(StateLite state)
         {
-            var row1 = this.FindViewById<TextView>(Resource.Id.row1Value);
-            row1.Post(() =>
+            if(state==null)
             {
-                if(state.StateValues.ContainsKey(StateValue.SpeedInKnots))
+                var nothing = new Tuple<string, string>("ND", "000.0");
+                SetRows(nothing, nothing, nothing);
+                return;
+            }
+            if (!state.RaceStarted)
+            {
+                //start mode
+                if (state.Countdown.HasValue)
                 {
-                    row1.Text = $"{state.StateValues[StateValue.SpeedInKnots]:0.0}";
-                }
-
-                if(state.Countdown.HasValue && !state.RaceStarted)
-                {
-                    //start mode
+                    //countdown
+                    SetRow(0, "Start", state.Countdown.Value.Minutes + ":" + state.Countdown.Value.Seconds.ToString("00"));
                 }
                 else
                 {
-                    //race mode
+                    SetRow(0, "Start", "");
                 }
-            });
 
-            var imageView = this.FindViewById<ImageView>(Resource.Id.imageView);
-            imageView.Post(() =>
+                //cog
+                if (state.StateValues.ContainsKey(StateValue.CourseOverGroundDirection))
+                {
+                    SetRow(1, "cog", $"{state.StateValues[StateValue.CourseOverGroundDirection]:0.0}");
+                }
+                else
+                {
+                    SetRow(1, "cog", "?");
+                }
+
+                //speed
+                if (state.StateValues.ContainsKey(StateValue.SpeedInKnots))
+                {
+                    SetRow(2, "kts", $"{state.StateValues[StateValue.SpeedInKnots]:0.0}");
+                }
+                else
+                {
+                    SetRow(2, "kts", "?");
+                }
+            }
+            else
             {
-                var rect = new Rect();
-                imageView.GetDrawingRect(rect);
-                Bitmap tempBitmap = Bitmap.CreateBitmap(200, 200, Bitmap.Config.Rgb565);
-                
-                Canvas tempCanvas = new Canvas(tempBitmap);
-                Paint paint = new Paint();
-                paint.Color = Color.White;
-                //Draw everything else you want into the canvas, in this example a rectangle with rounded edges
-                tempCanvas.DrawRoundRect(new RectF(0, 0, 100, 100), 2, 2, paint);
-                
-                //Attach the canvas to the ImageView
-                //imageView.SetImageDrawable(new BitmapDrawable(tempBitmap));
+                //race mode
+                //cog
+                if (state.StateValues.ContainsKey(StateValue.CourseOverGroundDirection))
+                {
+                    SetRow(0, "cog", $"{state.StateValues[StateValue.CourseOverGroundDirection]:0.0}");
+                }
+                else
+                {
+                    SetRow(0, "cog", "?");
+                }
 
-                imageView.SetImageBitmap(tempBitmap);
+                //speed
+                if (state.StateValues.ContainsKey(StateValue.SpeedInKnots))
+                {
+                    SetRow(1, "kts", $"{state.StateValues[StateValue.SpeedInKnots]:0.0}");
+                }
+                else
+                {
+                    SetRow(1, "kts", "?");
+                }
+
+                //tactical speed
+                if (state.StateValues.ContainsKey(StateValue.VelocityMadeGoodOnCoursePercent))
+                {
+                    SetRow(2, "vmc%", $"{state.StateValues[StateValue.VelocityMadeGoodOnCoursePercent]:0.0}");
+                }
+                else if (state.StateValues.ContainsKey(StateValue.VelocityMadeGoodOnCourse))
+                {
+                    SetRow(2, "vmc", $"{state.StateValues[StateValue.VelocityMadeGoodOnCourse]:0.0}");
+                }
+                else if (state.StateValues.ContainsKey(StateValue.VelocityMadeGoodPercent))
+                {
+                    SetRow(2, "vmg%", $"{state.StateValues[StateValue.VelocityMadeGoodPercent]:0.0}");
+                }
+                else if(state.StateValues.ContainsKey(StateValue.VelocityMadeGood))
+                {
+                    SetRow(2, "vmg", $"{state.StateValues[StateValue.VelocityMadeGood]:0.0}");
+                }
+                else if (state.StateValues.ContainsKey(StateValue.CurrentTackCourseOverGroundDelta))
+                {
+                    SetRow(2, "tackΔ", $"{state.StateValues[StateValue.CurrentTackCourseOverGroundDelta]:0.0}");
+                }
+                else
+                {
+                    SetRow(2, "", "");
+                }
+            }
+
+            //var imageView = this.FindViewById<ImageView>(Resource.Id.imageView);
+            //imageView.Post(() =>
+            //{
+            //    var rect = new Rect();
+            //    imageView.GetDrawingRect(rect);
+            //    Bitmap tempBitmap = Bitmap.CreateBitmap(200, 200, Bitmap.Config.Rgb565);
                 
-            });
+            //    Canvas tempCanvas = new Canvas(tempBitmap);
+            //    Paint paint = new Paint();
+            //    paint.Color = Color.White;
+            //    //Draw everything else you want into the canvas, in this example a rectangle with rounded edges
+            //    tempCanvas.DrawRoundRect(new RectF(0, 0, 100, 100), 2, 2, paint);
+                
+            //    //Attach the canvas to the ImageView
+            //    //imageView.SetImageDrawable(new BitmapDrawable(tempBitmap));
+
+            //    imageView.SetImageBitmap(tempBitmap);
+                
+            //});
         }
     }
 }
